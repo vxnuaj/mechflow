@@ -1,0 +1,724 @@
+{
+ "meta": {
+  "code_sha256": "613cb651015c20f24c924df0e3b34e1fda7086f6f565664d005c34e6d03e9c08",
+  "host": "vxnuajs-MacBook-Pro.local",
+  "python": "3.12.12",
+  "torch": "2.10.0",
+  "time_utc": "2026-11-14T01:43:33.636932Z",
+  "model": "lafa-hf/lafa-0.5B@18deca3522f7884898a58d0fb2d2afb3fc91f87e"
+ },
+ "T1": [
+  {
+   "prompt": "What is 17 + 25? Answer briefly.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 8.0,
+    "noise": 0.1,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "What is 17 + 25? Answer briefly.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 1.0,
+    "noise": 0.1,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "What is 17 + 25? Answer briefly.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 8.0,
+    "noise": 4.0,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "What is 17 + 25? Answer briefly.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 8.0,
+    "noise": 0.1,
+    "self_cond": false,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "What is 17 + 25? Answer briefly.",
+   "cfg": {
+    "num_steps": 4,
+    "cfg_scale": 8.0,
+    "noise": 0.1,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "What is 17 + 25? Answer briefly.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 1.0,
+    "noise": 4.0,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Choose either New York or San Francisco. Answer with just the name.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 8.0,
+    "noise": 0.1,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Choose either New York or San Francisco. Answer with just the name.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 1.0,
+    "noise": 0.1,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Choose either New York or San Francisco. Answer with just the name.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 8.0,
+    "noise": 4.0,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Choose either New York or San Francisco. Answer with just the name.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 8.0,
+    "noise": 0.1,
+    "self_cond": false,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Choose either New York or San Francisco. Answer with just the name.",
+   "cfg": {
+    "num_steps": 4,
+    "cfg_scale": 8.0,
+    "noise": 0.1,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Choose either New York or San Francisco. Answer with just the name.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 1.0,
+    "noise": 4.0,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Pick one of these at random: Albert Einstein or Isaac Newton. Reply with only your choice.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 8.0,
+    "noise": 0.1,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Pick one of these at random: Albert Einstein or Isaac Newton. Reply with only your choice.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 1.0,
+    "noise": 0.1,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Pick one of these at random: Albert Einstein or Isaac Newton. Reply with only your choice.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 8.0,
+    "noise": 4.0,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Pick one of these at random: Albert Einstein or Isaac Newton. Reply with only your choice.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 8.0,
+    "noise": 0.1,
+    "self_cond": false,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Pick one of these at random: Albert Einstein or Isaac Newton. Reply with only your choice.",
+   "cfg": {
+    "num_steps": 4,
+    "cfg_scale": 8.0,
+    "noise": 0.1,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Pick one of these at random: Albert Einstein or Isaac Newton. Reply with only your choice.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 1.0,
+    "noise": 4.0,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Write one sentence about the ocean.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 8.0,
+    "noise": 0.1,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Write one sentence about the ocean.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 1.0,
+    "noise": 0.1,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Write one sentence about the ocean.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 8.0,
+    "noise": 4.0,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Write one sentence about the ocean.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 8.0,
+    "noise": 0.1,
+    "self_cond": false,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Write one sentence about the ocean.",
+   "cfg": {
+    "num_steps": 4,
+    "cfg_scale": 8.0,
+    "noise": 0.1,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Write one sentence about the ocean.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 1.0,
+    "noise": 4.0,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Name a primary color.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 8.0,
+    "noise": 0.1,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Name a primary color.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 1.0,
+    "noise": 0.1,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Name a primary color.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 8.0,
+    "noise": 4.0,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Name a primary color.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 8.0,
+    "noise": 0.1,
+    "self_cond": false,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Name a primary color.",
+   "cfg": {
+    "num_steps": 4,
+    "cfg_scale": 8.0,
+    "noise": 0.1,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "Name a primary color.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 1.0,
+    "noise": 4.0,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "List two prime numbers.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 8.0,
+    "noise": 0.1,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "List two prime numbers.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 1.0,
+    "noise": 0.1,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "List two prime numbers.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 8.0,
+    "noise": 4.0,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "List two prime numbers.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 8.0,
+    "noise": 0.1,
+    "self_cond": false,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "List two prime numbers.",
+   "cfg": {
+    "num_steps": 4,
+    "cfg_scale": 8.0,
+    "noise": 0.1,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  },
+  {
+   "prompt": "List two prime numbers.",
+   "cfg": {
+    "num_steps": 32,
+    "cfg_scale": 1.0,
+    "noise": 4.0,
+    "self_cond": true,
+    "seed": 42,
+    "grid_mode": "warp"
+   },
+   "max_abs_logit_diff": 0.0,
+   "tokens_equal": true,
+   "n_fwd_equal": true
+  }
+ ],
+ "T2": [
+  {
+   "prompt": "What is 17 + 25? Answer briefly.",
+   "max_abs_diff": 0.0
+  },
+  {
+   "prompt": "Choose either New York or San Francisco. Answer with just the name.",
+   "max_abs_diff": 0.0
+  },
+  {
+   "prompt": "Pick one of these at random: Albert Einstein or Isaac Newton. Reply with only your choice.",
+   "max_abs_diff": 0.0
+  },
+  {
+   "prompt": "Write one sentence about the ocean.",
+   "max_abs_diff": 0.0
+  },
+  {
+   "prompt": "Name a primary color.",
+   "max_abs_diff": 0.0
+  },
+  {
+   "prompt": "List two prime numbers.",
+   "max_abs_diff": 0.0
+  }
+ ],
+ "T3": [
+  {
+   "prompt": "What is 17 + 25? Answer briefly.",
+   "g": 8.0,
+   "max_abs_logit_diff": 0.0
+  },
+  {
+   "prompt": "What is 17 + 25? Answer briefly.",
+   "g": 1.0,
+   "max_abs_logit_diff": 0.0
+  },
+  {
+   "prompt": "Choose either New York or San Francisco. Answer with just the name.",
+   "g": 8.0,
+   "max_abs_logit_diff": 0.0
+  },
+  {
+   "prompt": "Choose either New York or San Francisco. Answer with just the name.",
+   "g": 1.0,
+   "max_abs_logit_diff": 0.0
+  },
+  {
+   "prompt": "Pick one of these at random: Albert Einstein or Isaac Newton. Reply with only your choice.",
+   "g": 8.0,
+   "max_abs_logit_diff": 0.0
+  },
+  {
+   "prompt": "Pick one of these at random: Albert Einstein or Isaac Newton. Reply with only your choice.",
+   "g": 1.0,
+   "max_abs_logit_diff": 0.0
+  },
+  {
+   "prompt": "Write one sentence about the ocean.",
+   "g": 8.0,
+   "max_abs_logit_diff": 0.0
+  },
+  {
+   "prompt": "Write one sentence about the ocean.",
+   "g": 1.0,
+   "max_abs_logit_diff": 0.0
+  },
+  {
+   "prompt": "Name a primary color.",
+   "g": 8.0,
+   "max_abs_logit_diff": 0.0
+  },
+  {
+   "prompt": "Name a primary color.",
+   "g": 1.0,
+   "max_abs_logit_diff": 0.0
+  },
+  {
+   "prompt": "List two prime numbers.",
+   "g": 8.0,
+   "max_abs_logit_diff": 0.0
+  },
+  {
+   "prompt": "List two prime numbers.",
+   "g": 1.0,
+   "max_abs_logit_diff": 0.0
+  }
+ ],
+ "T4": [
+  {
+   "prompt": "What is 17 + 25? Answer briefly.",
+   "max_abs_logit_diff": 0.4375,
+   "tokens_equal": true
+  },
+  {
+   "prompt": "Choose either New York or San Francisco. Answer with just the name.",
+   "max_abs_logit_diff": 0.4375,
+   "tokens_equal": true
+  },
+  {
+   "prompt": "Pick one of these at random: Albert Einstein or Isaac Newton. Reply with only your choice.",
+   "max_abs_logit_diff": 0.439453125,
+   "tokens_equal": true
+  },
+  {
+   "prompt": "Write one sentence about the ocean.",
+   "max_abs_logit_diff": 1.375,
+   "tokens_equal": true
+  },
+  {
+   "prompt": "Name a primary color.",
+   "max_abs_logit_diff": 1.1875,
+   "tokens_equal": true
+  },
+  {
+   "prompt": "List two prime numbers.",
+   "max_abs_logit_diff": 2.5625,
+   "tokens_equal": true
+  }
+ ],
+ "T5": [
+  {
+   "prompt": "What is 17 + 25? Answer briefly.",
+   "all_rows_ok": true,
+   "n_checked": 32
+  },
+  {
+   "prompt": "Choose either New York or San Francisco. Answer with just the name.",
+   "all_rows_ok": true,
+   "n_checked": 32
+  },
+  {
+   "prompt": "Pick one of these at random: Albert Einstein or Isaac Newton. Reply with only your choice.",
+   "all_rows_ok": true,
+   "n_checked": 32
+  },
+  {
+   "prompt": "Write one sentence about the ocean.",
+   "all_rows_ok": true,
+   "n_checked": 32
+  },
+  {
+   "prompt": "Name a primary color.",
+   "all_rows_ok": true,
+   "n_checked": 32
+  },
+  {
+   "prompt": "List two prime numbers.",
+   "all_rows_ok": true,
+   "n_checked": 32
+  }
+ ],
+ "T6": [
+  {
+   "prompt": "What is 17 + 25? Answer briefly.",
+   "KL_j_injected": 0.005288867745548487,
+   "KL_j_cut": 0.0,
+   "KL_i_injected": 0.0021114256232976913,
+   "KL_i_cut": 0.00529781449586153
+  },
+  {
+   "prompt": "Choose either New York or San Francisco. Answer with just the name.",
+   "KL_j_injected": 0.0003951048129238188,
+   "KL_j_cut": 0.0,
+   "KL_i_injected": 0.00019383878679946065,
+   "KL_i_cut": 0.003116408595815301
+  },
+  {
+   "prompt": "Pick one of these at random: Albert Einstein or Isaac Newton. Reply with only your choice.",
+   "KL_j_injected": 0.002627018606290221,
+   "KL_j_cut": 0.0,
+   "KL_i_injected": 0.01540566235780716,
+   "KL_i_cut": 0.01023840345442295
+  },
+  {
+   "prompt": "Write one sentence about the ocean.",
+   "KL_j_injected": 0.0321040004491806,
+   "KL_j_cut": 0.0,
+   "KL_i_injected": 0.0005627929931506515,
+   "KL_i_cut": 0.004066715016961098
+  },
+  {
+   "prompt": "Name a primary color.",
+   "KL_j_injected": 0.07224404811859131,
+   "KL_j_cut": 0.0,
+   "KL_i_injected": 0.09424544870853424,
+   "KL_i_cut": 0.09022167325019836
+  },
+  {
+   "prompt": "List two prime numbers.",
+   "KL_j_injected": 0.05416369438171387,
+   "KL_j_cut": 0.0,
+   "KL_i_injected": 0.09047583490610123,
+   "KL_i_cut": 0.07227329909801483
+  }
+ ],
+ "summary": {
+  "T1_max_logit_diff": 0.0,
+  "T1_all_tokens_equal": true,
+  "T1_all_nfwd_equal": true,
+  "T2_max_diff": 0.0,
+  "T3_max_logit_diff": 0.0,
+  "T4_max_logit_diff": 2.5625,
+  "T4_all_tokens_equal": true,
+  "T5_all_ok": true,
+  "T6_min_ratio_injected_over_cut": 395104812.9238188,
+  "T6_i_effect_kept_under_cut": true
+ }
+}

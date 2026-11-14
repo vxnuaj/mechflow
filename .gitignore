@@ -12,3 +12,4 @@ src/results/runner_selftest/
 # OS
 .DS_Store
 !prereg_hashes.log
+src/slurm/carc.env
