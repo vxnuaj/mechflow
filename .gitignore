@@ -11,3 +11,4 @@ src/results/k3_test.json
 src/results/runner_selftest/
 # OS
 .DS_Store
+!prereg_hashes.log
