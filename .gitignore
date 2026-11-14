@@ -1,0 +1,13 @@
+# environments and caches
+.venv/
+**/.venv/
+__pycache__/
+*.pyc
+hf_home/
+.uv_cache/
+# logs and transient outputs
+*.log
+src/results/k3_test.json
+src/results/runner_selftest/
+# OS
+.DS_Store
