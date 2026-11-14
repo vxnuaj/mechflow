@@ -1,0 +1,11 @@
+{
+ "source": "HuggingFaceH4/ultrachat_200k:test_sft",
+ "seed": 20261113,
+ "docs_sha256": "aac4f15f0c050983aa6662eb84b5d92eac0ee4a4dc6b1e1415b6e3309f09006c",
+ "split_ids_sha256": "5fa96eb55e910c8443bca68eeda68d819695bea67b058ec3889eb146c085c2e7",
+ "counts": {
+  "exploration": 4536,
+  "confirmation": 16258,
+  "circuit_validation": 1777
+ }
+}

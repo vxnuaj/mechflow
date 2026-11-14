@@ -147,35 +147,61 @@ A hook bug silently invalidates every downstream result, so test the instrument 
 
 - [ ] **CARC readiness** (*access verified 2026-11-13: Claude can run commands via the `ssh carc` alias, using your key + a persistent ControlMaster session; account `<slurm-account>`; `gpu` partition (A100 / A40 / L40S); work in `/scratch1/<carc-user>` (9.8 TiB quota); avoid `/project2` (92% full) and keep `/home1` light; `module load conda` needs `bash -l`*) (before any full-benchmark or 7B run): batch the block-level scripts (many blocks per forward pass; batch-1 runs are latency-bound, so a GPU alone gives only ~2–3×). *Done so far: env at `/scratch1/<carc-user>/mechflow/env` (uv, py3.12, torch 2.10+cu128, transformers 5.3.0, lm-eval 0.4.11); models in `hf_home` (0.5B `18deca35`, 7B `434c100d`, Mistral-7B judge); `src/runner.py` (multi-worker per GPU, sharded, resumable) + `src/slurm/run_sharded.sbatch` (array jobs); runner self-test job 14228762.*
 - [x] Reproduce plain Lafa-0.5B generation with the official code (smoke `00_throughput.py`; instrumented sampler `src/lafa_instr.py` mirrors `_euler_denoise_block`).
-- [ ] Reproduce at least one reported number (or a subset) to within noise. *Submitted: official harness, GSM8K, 250-problem limit, paper settings (CARC job 14228754; `src/slurm/phase6_reproduce.sbatch`); target 30.4 ± ~6 pp.*
+- [x] Reproduce at least one reported number: **official harness, GSM8K (`gsm8k_cot`, flexible-extract), 100 problems, paper settings (32 steps, g = 8, noise 0.1): 30.0% ± 4.6 vs. paper 30.4%** ✓. Run locally (MPS, `results_local/repro_gsm8k_K32_g8_mps/`, ~45 s/problem); strict-match is 2% (formatting). CARC copies cancelled.
 - [x] Determinism: same seed → bitwise identical (T2: max diff 0.0, MPS).
 - [x] **Identity-hook test** (T1: instrumented sampler vs. `_euler_denoise_block`, 6 prompts × 6 configs: **max logit diff 0.0**, same tokens and same #forwards).
 - [x] **K/V-selection identity test** (T4): tokens identical; logits within **5e-5 in fp32** (CPU). In bf16, step 0 is exact, but re-routing adds ~1e-2 prob rounding noise from step 1, compounding to ≤ 2.6 logits by step 32. → **Rule: every arm of a comparison runs through the same re-routed code path (identity re-route in controls); precision-critical runs in fp32 with TF32 off.**
-- [ ] **A7 / K3 instrument validation (critical; per phase4 §2.7 / prereg §5, replacing the circular drift test):** `src/k3_drift.py`: (i) mixed-context Mahalanobis OOD, (ii) cross-candidate δ^D agreement, (iii) efficacy. *Running on the Mac (120 exploration blocks).*
+- [x] **A7 / K3 instrument validation** (`src/k3_drift.py`, `src/k3_calibrate.py`; 120 exploration blocks; MR regime). **K3 NOT triggered → candidate (a) plain-x selected.**
+  - (i) Null-calibrated Mahalanobis (rule pre-registered in prereg §12 before calibration, pushed as `ced33a2`): the null exceeds in 6.3% of cells (pooled 0.85). (a): 5.6%, pooled 0.82 ✓; (b) 6.9%, 0.84 ✓; (c) 3.5%, 0.81 ✓.
+  - (iii) Efficacy: (b) 0.86 ✗, (c) 0.75 ✗ (both < 0.9). (a) is trivially 1.
+  - (ii) Cross-candidate agreement not applicable (only (a) passes at full efficacy).
+  - Single-step δ^D (log-prob of the clean token, targets 2–3 from sources 0–1): (a) 0.060 ± 0.008, (b) 0.029 ± 0.005, (c) 0.152 ± 0.011 → **effect sizes depend on the off definition; report as sensitivity.**
 - [x] **Off-hook test** (T3: hook returning plain x == `self_cond=False`, g ∈ {1, 8}: max logit diff 0.0).
 - [x] Single-position knockout changes only the intended position's input (T5: all rows ok).
 - [x] **Positive control** (prereg §5 PC; T6): a planted one-hot feedback signal at position 1 changes position 3's prediction (KL > 0); cutting all other positions' reads of position 1 removes it (injected/cut KL ratio ≥ 4e8); position 1's own effect is kept. *The x-erasure arm of PC is deferred to Phase 7 (needs LEACE maps fit on exploration).*
-- [ ] Trajectory logging: states, q, qE, the feedback contribution, selected attention, all at chosen steps (`record=True` in the sampler). Check storage size per example.
+- [x] Trajectory logging (`record=True`): a full trajectory record is ~0.75 MB/block (PR) / 0.52 MB (MR) in fp16 (~1.4 / 1.0 MB in fp32) → ~30–45 GB for 7,350 blocks × 8 cells; fits scratch. **Policy:** full states only for exploration probing/LEACE subsets; confirmatory runs store scalars + window-step states.
 - [ ] Throughput and memory benchmark at 0.5B and 7B on CARC A100s (*submitted: job 14228716 with `bench.py`, plus the validation suite on CUDA*). Turn the Phase 5 power analysis into GPU-hours.
 - [x] Experiment tracking: `run_meta()` (code SHA-256 of `src/*.py`, host, versions, model snapshot, config) is saved with every result and runner shard.
 
-### Phase 7 — Exploratory pilot (3–4 days; exploration split only)
-Purpose: check that the phenomenon exists before building tasks around it.
+### Phase 7 — Exploratory pilot (exploration split only; produces the prereg §11 [PILOT] values)
+Purpose: confirm the instruments and phenomena on exploration data, and freeze every pilot-derived value **before** any confirmation data exists. Each §11 value is hashed and pushed when it's set.
 
-- [ ] Full vs. feedback-off on ~1,000 natural prompts. Collect the blocks where outputs differ and categorize them by hand (coupled-token mixing? arithmetic? repetition? other?).
-- [ ] Baseline mode-mixing rate and time-to-commitment against step count (4 / 8 / 16 / 32), with feedback on and off.
-- [ ] Full-vs-none self-conditioning gap at **g = 1 vs. g = 8** (does the benefit exist without guidance?).
-- [ ] Seed diversity of block outputs at noise 0.1 vs. 4.0 (can seeds produce competing modes at all?).
-- [ ] Hybrid rate at **1 step** (the paper says one-step drafts are inconsistent across positions: a positive control for the hybrid metric).
-- [ ] Linear probe: can the top-2 tokens be recovered from qE for bimodal positions?
-- [ ] Natural block entropy: how often is a 4-token block actually ambiguous given the prefix?
-- [ ] **Scale check (new, after Phase 3.5):** rerun `03_hybrid.py` + `04_coherence.py` on **Lafa-7B** (CARC). If hybrids mostly vanish at 7B, the phenomenon is a small-model quirk → reframe.
-- [ ] **Naturalness check (new):** hybrids/incoherence on *natural* prompts, not only deliberately bimodal ones (e.g. the coherence metric on held-out natural text blocks, plus the token-level hybrid classifier).
-- [ ] Task competence check at 0.5B on draft joint-consistency tasks; move to 7B if needed.
+**7.1 Data (exploration and confirmation built now; confirmation is NOT run until Phase 8 go)**
+- [x] Two-answer prompt bank (*done: `src/data/entities.py`, `src/data/build_bank.py` → `data/bank.jsonl`; exploration 240 pairs, confirmation 602 (9,632 prompts), circuit-validation 118; 0 tokenization drops; hashed in §11*): 12 categories × ≥ 40 two-word entities → ≥ 80 pairs per category; exploration = 3 smoke categories × 6 templates (5 smoke + 1 new); confirmation = 9 categories × 8 new templates; circuit-validation = 15% of confirmation pairs; in-context tokenization filter. Hash the bank and split membership (§11).
+- [x] Natural text (*done: `src/data/build_natural.py` → UltraChat only; exploration 4,536 / confirmation 16,258 / circuit-validation 1,777 docs; hashed in §11*): UltraChat-200k `test_sft` (primary) + GSM8K-train + SVAMP; document-level 20/80 split; hash the document lists (§11).
+- [x] *(not executable as specified: SVAMP has no solution text → GSM8K-train conservatively excluded; recorded in §11)* GSM8K-train contamination check (exploration): own-AR coherence vs. SVAMP ≤ +0.25 nats/block → keep or drop GSM8K-train (§11).
+
+**7.2 Phenomenon and measures (exploration)**
+- [ ] Token-aligned hybrid classifier (`phase4.md` §2.3) + **audit of ≥ 150 labels** (≥ 90% overall, ≥ 85% on hybrids). *Claude does a first-pass label review; the PI spot-checks a sample.*
+- [ ] P1 point estimate on **non-smoke** exploration prompts (Phase 8 go/no-go: ≥ 10 pp).
+- [ ] dep_j / coherence (own-AR + Mistral judge) on natural blocks, SC on vs. off (PR) → P2 pilot effect and SDs.
+- [ ] Natural-text check: incoherence-event rate, flow vs. AR (S2 pilot).
+
+**7.3 Mechanism pilot values (exploration, MR)**
+- [ ] Linear probes for "which answer" on x and on q per step bucket (held-out) → **q–x window** (acc_q ≥ 0.85, acc_x ≤ 0.65) → K12 (§11).
+- [ ] LEACE erasers per (position, step bucket); verify the probe on erased x ≤ 0.55; hash the maps (§11). Then the PC erasure arm.
+- [ ] Block-level single-step SC effect on μ_j → **margin_C1** (20%) and the **C1 floor** (≤ 0.05 nats → drop C1′) (§11).
+- [ ] b_S3, b_S4 (max(50% of the exploration PR SC effect on dep_{2,3}, 0.05)) (§11).
+- [ ] Pilot SDs (cluster-level) → required n for P1 / P2 / C1′; H2-N simulated power; expand the bank if needed (§11).
+
+**7.4 Gates**
+- [ ] **K11 (scale):** 7B on exploration: hybrid rate + SC coherence gain at positions 2–3 (CARC).
+- [ ] **G1 (regime relevance):** MR SC coherence gain under both judges ≥ ½ of PR; end-task SC gain at MR on the reserved 25% benchmark slice (CARC).
+- [ ] Record all gate outcomes and the primary-family substitution (§5.2) in §11; hash and push.
+
+- [ ] **Interp additions (exploratory; `interp_methods.md` §3 Tier 1):**
+  - [ ] T1a: information-flow routes + AtP* head × step screen (fp32);
+  - [ ] T1b: cross-position Jacobian (q-path vs. x-path) over steps;
+  - [ ] T1c: interpretable-bottleneck test (top-1 feedback);
+  - [ ] T1d: contrastive "which answer" q-direction + dose–response steering.
+- [ ] Add to the literature ledger (`phase3.md` §6): DiffusionGemma transparency (2606.20560, "token smearing" — must differentiate), DiffusionGemma commitment (2606.14620), CANDI (2510.22510), DifFRACT (2606.15796), PEAP (2502.04577), MIB (2504.13151).
+
+- [x] *(answered by the Phase 3.5 smoke test)* SC gap at g = 1 vs. g = 8 (≈ equal); hybrid rate at 1 step (positive control: hybrids present); seed diversity at noise 0.1 (seeds barely matter → minimal-pair donors); feedback-off vs. full on natural blocks (coherence drop at positions 2–3).
 
 ### Phase 8 — Decision gate
 - [ ] Write a one-page pilot memo: what Phase 7 showed, which hypotheses survived, and what changed.
 - [ ] Update `mechflow/mechflow.md` (framing, experiments, primary step-count regime).
 - [ ] Decide: **go** (run confirmatory Experiment 1 on the confirmation split) / **reframe** / **kill**.
+- [ ] **Localization decision** (`interp_methods.md` §3 Tier 2): if C1′ or H2-N looks real in the pilot, commit to head-level q-path vs. x-path path patching → EAP-IG (PEAP, MIB metrics) → mediation → DAS / causal-scrubbing validation, on the circuit-validation split. To make it **confirmatory**, add its estimands to prereg §12 and push **before** any confirmation data. Also consider the Tier 3 methods contribution: path patching through the recurrent feedback edge.
 - [ ] **(partly done 2026-11-13: prereg v1.4 is anchored by public GitHub commit `6acca33`; still to do: push each §11 entry before confirmation data)** **YOU (required before any confirmation run): anchor the prereg hash externally.** Post the latest SHA-256 from `mechflow/prereg_hashes.log` to OSF (preferred), a public gist, or an email to an advisor/co-author. Then record the URL or message in `prereg_hashes.log`. Repeat for each §11 entry before confirmation data exists.
 - [ ] If go: freeze the pre-registration and start.

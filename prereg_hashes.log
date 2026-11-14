@@ -4,3 +4,4 @@
 2026-11-14T01:40:24Z prereg.md v1.4 FROZEN sha256=4cee521f721aafc6f6edebb7b2e600c22661be62bf9c5a991056dac9b85f68d5  [EXTERNAL ANCHOR: pending — PI to post this hash]
 2026-11-14T02:02:03Z EXTERNAL ANCHOR for prereg.md v1.4 (sha256 4cee521f...): public GitHub commit 6acca33, https://github.com/vxnuaj/mechflow/commit/6acca33 (pushed 2026-11-13; hash changed from f9026bf after a history rewrite that only edited commit messages). Each later §11 entry must also be pushed before confirmation data exists.
 2026-11-14T02:26:19Z prereg.md v1.4 + §12 K3-rule clarification (pre-calibration) sha256=7b438aafd9f324e1f915e98bcb6d0c2da8de91674a23502b67ec26d96bd8e6d5
+2026-11-14T08:21:25Z prereg.md §11 data hashes recorded sha256=f87065611aa407698487465b43de33d9e018c50d80a451907c0e75b9f2e15fa9

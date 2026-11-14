@@ -262,14 +262,14 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 
 | Item | Value | Date |
 |---|---|---|
-| Selected off candidate; PC; K3 | — | — |
+| Selected off candidate; PC; K3 | **(a) plain-x**. PC passed (planted-signal detection and cut; injected/cut KL ratio ≥ 4e8; the erasure arm is deferred to Phase 7 when LEACE exists). K3 **not triggered** (null-calibrated rule, §12): (a) pooled 0.82, exceed 5.6% vs. null 6.3%; (b)/(c) fail efficacy (0.86/0.75) | 2026-11-13 |
 | q–x window steps (MR, g = 1); K12 | — | — |
 | margin_C1 and the C1 floor outcome | — | — |
 | b_S3, b_S4 | — | — |
 | Pilot SDs; required n; H2-N simulated power; bank expansion (if any) | — | — |
 | LEACE maps (hash); probe accuracies | — | — |
 | Classifier audit agreement | — | — |
-| Prompt-bank hash; split-membership hash; natural-text document lists (hash); GSM8K-train contamination-check outcome | — | — |
+| Prompt-bank hash; split-membership hash; natural-text document lists (hash); GSM8K-train contamination-check outcome | bank sha256 `030d096f1c224068…`, split membership `72b775ac07058809…` (exploration 240 pairs; confirmation 602; circuit-validation 118; 0 tokenization drops). Natural text: UltraChat-200k test_sft, docs `aac4f15f0c050983…`, split ids `5fa96eb55e910c84…` (exploration 4,536; confirmation 16,258; circuit-validation 1,777). **GSM8K-train excluded:** the pre-registered check (vs. SVAMP) can't be run as specified (SVAMP has no solution text) → conservative exclusion; natural text = UltraChat only | 2026-11-14 |
 | 7B snapshot; Qwen judge snapshot | — | — |
 | K11; G1 outcomes; primary-family substitution (§5.2) | — | — |
 | Confirmatory code hash | — | — |

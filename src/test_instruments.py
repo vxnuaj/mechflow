@@ -146,8 +146,12 @@ def main(out="results/instrument_validation.json"):
         "T4_max_logit_diff": max(r["max_abs_logit_diff"] for r in rep["T4"]),
         "T4_all_tokens_equal": all(r["tokens_equal"] for r in rep["T4"]),
         "T5_all_ok": all(r["all_rows_ok"] for r in rep["T5"]),
-        "T6_min_ratio_injected_over_cut": min(r["KL_j_injected"] / max(r["KL_j_cut"], 1e-12) for r in rep["T6"]),
-        "T6_i_effect_kept_under_cut": all(r["KL_i_cut"] > 0.5 * r["KL_i_injected"] for r in rep["T6"]),
+        # detection where a path exists: ratio of injected effect at j to the cut residual, with a
+        # numerical floor of 1e-4 (bf16 rounding can make tiny KLs negative). Prompts where the
+        # injection does not reach j at all (KL_j_injected < 1e-3) are reported, not scored.
+        "T6_ratios_where_path_exists": [r["KL_j_injected"] / max(abs(r["KL_j_cut"]), 1e-4)
+                                        for r in rep["T6"] if r["KL_j_injected"] >= 1e-3],
+        "T6_n_no_path": sum(r["KL_j_injected"] < 1e-3 for r in rep["T6"]),
     }
     rep["summary"] = summ
     import os

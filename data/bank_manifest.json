@@ -1,0 +1,47 @@
+{
+ "seed": 20261113,
+ "bank_sha256": "030d096f1c224068424a5b5744179d402eb82779e4ab9058ffffcd0d0e074c55",
+ "split_membership_sha256": "72b775ac0705880968cbe52753ced49ab720d1fcde6590bb4a8554064d83c4f6",
+ "counts": {
+  "exploration": {
+   "prompts": 1449,
+   "pairs": 240
+  },
+  "confirmation": {
+   "prompts": 9632,
+   "pairs": 602
+  },
+  "circuit_validation": {
+   "prompts": 1888,
+   "pairs": 118
+  }
+ },
+ "tokenization_drops_per_category": {
+  "us_city": 0,
+  "country": 0,
+  "scientist": 0,
+  "author": 0,
+  "athlete": 0,
+  "company": 0,
+  "dish": 0,
+  "film": 0,
+  "musician": 0,
+  "landmark": 0,
+  "fictional_character": 0,
+  "painter": 0
+ },
+ "per_category_pairs": {
+  "us_city": 80,
+  "country": 80,
+  "scientist": 80,
+  "author": 80,
+  "athlete": 80,
+  "company": 80,
+  "dish": 80,
+  "film": 80,
+  "musician": 80,
+  "landmark": 80,
+  "fictional_character": 80,
+  "painter": 80
+ }
+}

@@ -13,3 +13,7 @@ src/results/runner_selftest/
 .DS_Store
 !prereg_hashes.log
 src/slurm/carc.env
+third_party/
+results_local/
+data/natural_docs.jsonl
+*.npz
