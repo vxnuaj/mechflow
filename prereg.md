@@ -263,7 +263,7 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Item | Value | Date |
 |---|---|---|
 | Selected off candidate; PC; K3 | **(a) plain-x**. PC passed (planted-signal detection and cut; injected/cut KL ratio ≥ 4e8; the erasure arm is deferred to Phase 7 when LEACE exists). K3 **not triggered** (null-calibrated rule, §12): (a) pooled 0.82, exceed 5.6% vs. null 6.3%; (b)/(c) fail efficacy (0.86/0.75) | 2026-11-13 |
-| q–x window steps (MR, g = 1); K12 | — | — |
+| q–x window steps (MR, g = 1); K12 | **Window = [] (0 steps) → K12 TRIGGERED.** Held-out pair-relative linear probe (3,036 instances; 771 test from held-out pairs; base rate 0.54): acc_q rises 0.73 → 0.99, acc_x 0.57 → 0.93. q leads x by ~0.1–0.2 at every step, but acc_q first reaches ≥ 0.85 at step 14, when acc_x = 0.71 > 0.65. → Per §5.2, the **primary family = {P1, P2, H2-N}** (Holm over 3); C1′ reported as 'not separable in Lafa' | 2026-11-14 |
 | margin_C1 and the C1 floor outcome | — | — |
 | b_S3, b_S4 | — | — |
 | Pilot SDs; required n; H2-N simulated power; bank expansion (if any) | — | — |
@@ -271,11 +271,15 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Classifier audit agreement | — | — |
 | Prompt-bank hash; split-membership hash; natural-text document lists (hash); GSM8K-train contamination-check outcome | bank sha256 `030d096f1c224068…`, split membership `72b775ac07058809…` (exploration 240 pairs; confirmation 602; circuit-validation 118; 0 tokenization drops). Natural text: UltraChat-200k test_sft, docs `aac4f15f0c050983…`, split ids `5fa96eb55e910c84…` (exploration 4,536; confirmation 16,258; circuit-validation 1,777). **GSM8K-train excluded:** the pre-registered check (vs. SVAMP) can't be run as specified (SVAMP has no solution text) → conservative exclusion; natural text = UltraChat only | 2026-11-14 |
 | 7B snapshot; Qwen judge snapshot | — | — |
-| K11; G1 outcomes; primary-family substitution (§5.2) | — | — |
+| K11; G1 outcomes; primary-family substitution (§5.2) | Substitution: **K12 → {P1, P2, H2-N}** (2026-11-14). K11, G1: pending | partial |
 | Confirmatory code hash | — | — |
 | Phase 8 decision | — | — |
 
 ## 12. Deviations / Change Log
+- **2026-11-14 (Phase 7, exploration only): K12 probe implementation.**
+  - **First implementation:** a single logistic probe on raw x/q vectors predicting "mode A vs. B" across pairs. It was **invalid**: "A" is a different token in every pair, so no single direction generalizes across pairs. Diagnostic: acc_q was only 0.64 at the final step, where q *is* the readout. It was discarded without being used for any decision.
+  - **Replacement (used for K12):** a pair-relative linear probe. Features per instance are cos(v, E_a) − cos(v, E_b), the projection on the normalized (E_a − E_b), and |v|. Standardized logistic regression, trained on 75% of pairs and tested on 25% held-out pairs. This implements the pre-registered "held-out linear probe" faithfully.
+  - **Robustness of the K12 conclusion:** any richer x-probe can only raise acc_x, which makes the window (acc_x ≤ 0.65) harder to meet, so the trigger is conservative in the hypothesis-neutral direction.
 - **2026-11-13 (Phase 6, before any confirmation data): clarification of the K3 Mahalanobis rule (`phase4.md` §2.7(i)), fixed BEFORE seeing the calibration result.**
   - **Why:** the rule did not say whether the threshold applies per (layer, step, position) cell or pooled. The first exploration run (120 blocks) gave candidate (a) a median cell ratio of 0.76, a max of 1.10, and 6% of 144 cells > 1. With ~60 reference samples per cell, the per-cell maximum is noise-dominated.
   - **Rule adopted:** candidate (i)-passes if **both**

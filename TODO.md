@@ -185,9 +185,9 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [ ] Natural-text check: incoherence-event rate, flow vs. AR (S2 pilot).
 
 **7.3 Mechanism pilot values (exploration, MR)**
-- [ ] Linear probes for "which answer" on x and on q per step bucket (held-out) → **q–x window** (acc_q ≥ 0.85, acc_x ≤ 0.65) → K12 (§11).
+- [x] Linear probes for "which answer" on x and on q per step (held-out pairs; pair-relative features; `src/pilot_qx.py`) → **q–x window = [] → K12 TRIGGERED** (q leads x by 0.1–0.2 at every step, but never q ≥ 0.85 with x ≤ 0.65). **Primary family → {P1, P2, H2-N}**; C1′ = not separable (§11, §12).
 - [ ] LEACE erasers per (position, step bucket); verify the probe on erased x ≤ 0.55; hash the maps (§11). Then the PC erasure arm.
-- [ ] Block-level single-step SC effect on μ_j → **margin_C1** (20%) and the **C1 floor** (≤ 0.05 nats → drop C1′) (§11).
+- [x] ~~margin_C1 and the C1 floor~~: moot, since C1′ left the primary family via K12 (it may still run as exploratory).
 - [ ] b_S3, b_S4 (max(50% of the exploration PR SC effect on dep_{2,3}, 0.05)) (§11).
 - [ ] Pilot SDs (cluster-level) → required n for P1 / P2 / C1′; H2-N simulated power; expand the bank if needed (§11).
 
