@@ -142,10 +142,10 @@ Found 2026-11-13 after the freeze; fixes are allowed because no confirmation dat
 - [x] Apply the amendments → prereg v1.4, hash in `prereg_hashes.log`.
 - [ ] Weekly scoop check — next due ~2026-11-20.
 
-### Phase 6 — Build and validate infrastructure (2–3 days)
+### Phase 6 — Build and validate infrastructure ✅ (2026-11-14)
 A hook bug silently invalidates every downstream result, so test the instrument before using it.
 
-- [ ] **CARC readiness** (*access verified 2026-11-13: Claude can run commands via the `ssh carc` alias, using your key + a persistent ControlMaster session; account `<slurm-account>`; `gpu` partition (A100 / A40 / L40S); work in `/scratch1/<carc-user>` (9.8 TiB quota); avoid `/project2` (92% full) and keep `/home1` light; `module load conda` needs `bash -l`*) (before any full-benchmark or 7B run): batch the block-level scripts (many blocks per forward pass; batch-1 runs are latency-bound, so a GPU alone gives only ~2–3×). *Done so far: env at `/scratch1/<carc-user>/mechflow/env` (uv, py3.12, torch 2.10+cu128, transformers 5.3.0, lm-eval 0.4.11); models in `hf_home` (0.5B `18deca35`, 7B `434c100d`, Mistral-7B judge); `src/runner.py` (multi-worker per GPU, sharded, resumable) + `src/slurm/run_sharded.sbatch` (array jobs); runner self-test job 14228762.*
+- [x] **CARC readiness** — *done 2026-11-14. Instead of multi-block batching, parallelism is multi-worker sharding (runner verified: 24/24 tasks, 2 GPUs × 4 workers, no duplicates); the benchmark confirms batch-1 passes are latency-bound, so workers are the right lever. Account via gitignored `src/slurm/carc.env`.* (*access verified 2026-11-13: Claude can run commands via the `ssh carc` alias, using your key + a persistent ControlMaster session; account `<slurm-account>`; `gpu` partition (A100 / A40 / L40S); work in `/scratch1/<carc-user>` (9.8 TiB quota); avoid `/project2` (92% full) and keep `/home1` light; `module load conda` needs `bash -l`*) (before any full-benchmark or 7B run): batch the block-level scripts (many blocks per forward pass; batch-1 runs are latency-bound, so a GPU alone gives only ~2–3×). *Done so far: env at `/scratch1/<carc-user>/mechflow/env` (uv, py3.12, torch 2.10+cu128, transformers 5.3.0, lm-eval 0.4.11); models in `hf_home` (0.5B `18deca35`, 7B `434c100d`, Mistral-7B judge); `src/runner.py` (multi-worker per GPU, sharded, resumable) + `src/slurm/run_sharded.sbatch` (array jobs); runner self-test job 14229410 ✓.*
 - [x] Reproduce plain Lafa-0.5B generation with the official code (smoke `00_throughput.py`; instrumented sampler `src/lafa_instr.py` mirrors `_euler_denoise_block`).
 - [x] Reproduce at least one reported number: **official harness, GSM8K (`gsm8k_cot`, flexible-extract), 100 problems, paper settings (32 steps, g = 8, noise 0.1): 30.0% ± 4.6 vs. paper 30.4%** ✓. Run locally (MPS, `results_local/repro_gsm8k_K32_g8_mps/`, ~45 s/problem); strict-match is 2% (formatting). CARC copies cancelled.
 - [x] Determinism: same seed → bitwise identical (T2: max diff 0.0, MPS).
@@ -160,7 +160,14 @@ A hook bug silently invalidates every downstream result, so test the instrument 
 - [x] Single-position knockout changes only the intended position's input (T5: all rows ok).
 - [x] **Positive control** (prereg §5 PC; T6): a planted one-hot feedback signal at position 1 changes position 3's prediction (KL > 0); cutting all other positions' reads of position 1 removes it (injected/cut KL ratio ≥ 4e8); position 1's own effect is kept. *The x-erasure arm of PC is deferred to Phase 7 (needs LEACE maps fit on exploration).*
 - [x] Trajectory logging (`record=True`): a full trajectory record is ~0.75 MB/block (PR) / 0.52 MB (MR) in fp16 (~1.4 / 1.0 MB in fp32) → ~30–45 GB for 7,350 blocks × 8 cells; fits scratch. **Policy:** full states only for exploration probing/LEACE subsets; confirmatory runs store scalars + window-step states.
-- [ ] Throughput and memory benchmark at 0.5B and 7B on CARC A100s (*submitted: job 14228716 with `bench.py`, plus the validation suite on CUDA*). Turn the Phase 5 power analysis into GPU-hours.
+- [x] Throughput and memory benchmark (*ran on A40 via the debug partition, 2026-11-14; A100 never got scheduled*): batch-1 single process, 0.5B bf16 ≈ 24 ms/pass (1.5 GB), 0.5B fp32 ≈ 21.5 ms (3.1 GB), 7B bf16 ≈ 41–43 ms (15.5 GB). **Latency-bound (slower than the Mac's 13 ms) → throughput comes from multiple workers per GPU** (`runner.py`: ~8 workers for 0.5B, 2–3 for 7B on 48 GB).
+  **GPU-hour budget (A40, with workers):**
+  - 2 × 2 × 2 decomposition (7,350 blocks, ~3.8M passes): ~3 GPU-h.
+  - Exp F phenomenon (~2,600 prompts × ~20 conditions × ≤ 2 blocks): ~6 GPU-h.
+  - C1′ single-step and donor swaps: < 2 GPU-h.
+  - 7B (K11 + S1 + C1′ subset, ~1,000 prompts): ~3 GPU-h.
+  - End task (GSM8K + HumanEval + IFEval, 4 configs, ~46 s/problem per worker): ~13 GPU-h.
+  - **Total ≈ 30 A40 GPU-h** (+ ~50% contingency ≈ 45 GPU-h). Feasible; the bottleneck is queue wait, not compute.
 - [x] Experiment tracking: `run_meta()` (code SHA-256 of `src/*.py`, host, versions, model snapshot, config) is saved with every result and runner shard.
 
 ### Phase 7 — Exploratory pilot (exploration split only; produces the prereg §11 [PILOT] values)
