@@ -1,0 +1,181 @@
+# TODO
+
+## mechflow — pre-experiment checklist
+
+Proposal: `mechflow/mechflow.md`. Started 2026-11-13. ICML 2027 deadline ≈ late Jan 2027.
+
+Rule: no confirmatory experiment runs until Phases 1–6 are done. Phase 7 is exploratory only, and its data is never reused for confirmation.
+
+---
+
+### Phase 1 — Pin down the claim ✅ (2026-11-13) → `mechflow/phase1.md`
+Writing these down first keeps the reading from quietly reshaping the question.
+
+- [x] Write the core claim in one sentence, in a form a reviewer could disagree with. (§1: claim, sub-claims C1–C4, scope, operationalization)
+- [x] Write the *strongest skeptical alternative* in one sentence. (§2.1: R0/R6 + R1, "noisy-state coordination + generic leakage"; rival table R0–R9 in §2)
+- [x] List what evidence would convince *you* the claim is false. (§3: kill criteria K1–K10 in phase order, interval-vs-margin rule, success criteria, exhaustive outcome lattice)
+- [x] List what the paper's headline figure would be if everything works. (§4: 4-panel Figure 1 sketch + headline sentence)
+- [x] (added) Assumptions the claim rests on, each mapped to the check that tests it. (§5: A1–A8)
+- [x] Independent adversarial review: 3 rounds (v1 → v3.1), reviewer signed off with no blockers. All issues logged in `phase1.md` §8.
+- [ ] *(optional)* **You:** skim `phase1.md` §1 and §3.4; push back if you'd frame the claim differently.
+
+### Phase 2 — Ground truth on the artifact ✅ (2026-11-13) → `mechflow/phase2.md`
+Everything downstream depends on these answers.
+
+**Lafa paper (read in full, not the abstract):**
+- [x] Exact self-conditioning ablation numbers. **32.3 → 38.1 (+5.8 pp)**, Table 3. GPT was right; the "~4" summary was wrong.
+- [x] Train-time or inference-time ablation? **Inference-time** (same model, self-conditioning off at decode).
+- [x] Training recipe. Stop-grad pass on the same I_t; p_sc = 0.5; when dropped, the input is plain x; W₁, W₂ zero-initialized.
+- [x] Sampler details. Euler (x-prediction) on a learned **asynchronous** per-position grid; readout = per-position argmax at t_{K−1}; "prefix guidance" = CFG against a prefix-free pass, with separate feedback per branch.
+- [x] Settings behind the reported numbers. 0.5B, B = 4, 32 steps, **g = 8**, inference noise **0.1** (training 4.0).
+
+**Official code (`lafa-gh/large-flow-lms`):**
+- [x] "Off" input. **Plain x_t** (no W₁, no W₂). q = 0 would give x + xW₁ᵀ, which was never trained.
+- [x] q at the first step. A bootstrap pass on the raw noise at t = 0 (per branch under CFG).
+- [x] Block boundaries. Absolute in training; **prompt end at inference**, so alignment is controllable (A3 ✅).
+- [x] Hook points. `_apply_self_cond` (FM:1185); eager HF attention; `DiTAdaLN.patch_layer` wrap point.
+- [x] **K1 faithfulness.** Per-query K/V selection is feasible: append off-pass K/V to the `DynamicCache`, use a dense additive mask, then trim. **Drop granularity = whole batch per optimizer step** → mixed per-position masks are out of distribution (A7 ⚠️; K3 is now critical).
+- [x] Determinism. Deterministic given the seed; the only randomness is the initial noise (batched eval shares it across rows).
+- [x] Checkpoints. Apache-2.0; 0.5B 2.9 GB, 7B 30.9 GB, 8B 33.3 GB (EMA + raw).
+
+- [x] **Gate.** K1 not triggered. §0 of `mechflow.md` updated. Experiments affected → Phase 4 revision list (`phase2.md` §3–4): scope/origination, C3 donor source, primary regime g = 8, lead–lag no longer counts as evidence.
+
+### Phase 2.5 — Widen the hypothesis set ✅ (2026-11-13)
+After Phase 2, our cross-position claim is one of **four competing explanations** for the +5.8 pp self-conditioning gain. Phase 3 has to check novelty for all of them, so list them first. The full rewrite waits for Phase 4.
+
+- [x] Add the four mechanisms to `mechflow.md` (new §1.1):
+  - **M1: per-position stabilization** (the skeptic). Predicts: the gain survives at g = 1; per-token CE improves; the hybrid rate barely changes.
+  - **M2: cross-position coordination** (our original claim, `phase1.md`). Predicts: the gain survives at g = 1; the hybrid rate drops with feedback on, concentrated on coupled blocks.
+  - **M3: guidance anchoring** (new). The feedback is the *unguided* prediction while the step follows the 8× guided one. Predicts: the gain mostly **disappears at g = 1**.
+  - **M4: tie-breaking at low noise** (new). Sampling starts at 0.1·σ, so something has to break ties between answers. Predicts: the gain is larger at noise 0.1 than at 4.0; without feedback, positions stall between answers.
+- [x] New framing (to be written up properly in Phase 4): *decompose the self-conditioning gain causally across M1–M4, then dissect whichever mechanism wins.* M2 stays the headline candidate.
+
+### Phase 3 — Literature review ✅ (2026-11-13) → `mechflow/phase3.md`
+Goal: decide whether the idea is novel and what's already known, not to collect citations.
+
+- [x] Verify every reference in the proposal (existence, authors, what it actually claims). Fix [3], [4], [5], [7], [8], [9], [10].
+- [x] **Novelty threat 1:** mode mixing / factorization error in parallel decoding (masked and discrete diffusion, copula-style fixes, remasking). Has anyone shown continuous flows or self-conditioning fix it?
+- [x] **Novelty threat 2:** concurrent work on Lafa (papers citing it; arXiv from Oct–Nov 2026).
+- [x] **Read first:** the papers Lafa itself cites as closest prior work: [47, 57] (noise-to-token maps capturing joint dependencies) and [62, 63] (independent sampling limits few-step quality). These are the M2 threat.
+- [x] **M3 novelty:** Li & Xu, untied self-conditioning (2608.22244). It feeds the raw prediction back and uses the corrected one for the step, which is close to what Lafa does with respect to guidance. Also search for self-conditioning × classifier-free-guidance interactions.
+- [x] **M4 novelty:** symmetry breaking / tie-breaking in low-temperature or deterministic diffusion sampling; reduced-noise sampling in continuous diffusion LMs.
+- [x] Commitment and symmetry breaking in diffusion (Raya & Ambrogioni; Biroli & Mézard; Sclocchi et al.). Can we borrow a principled definition of "commitment time"?
+- [x] Self-conditioning origins and recipes (Analog Bits; SED) and continuous diffusion LMs (Diffusion-LM, CDCD, Plaid, LangFlow).
+- [x] Fixed-point self-conditioning (2607.00714): read in full. Does "can be removed or compressed" apply to Lafa's setting?
+- [x] Mech interp of diffusion LMs: has anyone already patched self-conditioning inputs?
+- [x] For each paper, record one line: *relevant / threat / irrelevant*, plus its implication for H1–H4.
+- [x] **Gate:** for each of M1–M4, record *novel / partly known / known*. If M2 is already shown, the decomposition framing still stands, but the headline moves to whichever mechanism is still open.
+- [x] **Outcome:**
+  - M2 mechanism **open** (phenomenon known: FMLM, CoCommit);
+  - M3 demoted to moderator;
+  - new rival **M5** (Shabalin et al. 2604.02028);
+  - commitment-time definition and χ(t) adopted.
+  
+  Not yet read (before submission): full D3PM, DFM, ReMDM and TESS 2; the tails of the Lafa/Yoo/Shabalin/Davis HTML.
+- [ ] **Ongoing:** check arXiv weekly for the Kim/Boffi/Lee/Yoo group and for papers citing Lafa (scoop risk).
+- [ ] **Before submission:** read the full texts of D3PM, DFM, ReMDM and TESS 2, and the unread tails of the Lafa / Yoo (2607.00714) / Shabalin (2604.02028) / Davis (2610.13834) HTML versions. Update `phase3.md` §6.
+
+### Phase 3.5 — Smoke test ✅ (2026-11-13) → `mechflow/smoke_memo.md`
+Cheap, and decisive about which mechanism to bet on. Prompts used here are **never** reused for confirmation.
+
+- [x] **Decide where to run it:** Mac for the smoke test (see throughput); CARC later for full benchmarks.
+- [x] Set up Lafa-0.5B in an isolated venv (done: `mechflow/smoke/.venv`, py3.12, torch 2.10, transformers 5.3.0, + pillow/matplotlib, which the remote code requires; checkpoint snapshot `18deca35`, EMA only): `pip install -r requirements.txt -c constraints-tested.txt`; checkpoint `lafa-hf/lafa-0.5B`, 2.9 GB. Pass `num_steps`, `cfg_scale` and `noise_scale_override` explicitly; the HF defaults ≠ the paper's settings.
+- [x] Measure throughput (sec per block-step) → decide Mac vs. CARC for the rest. **Done 2026-11-13: Mac M4 Pro (MPS, bf16) ≈ 13 ms per forward pass. Paper settings (32 steps, g = 8) ≈ 66 passes per block ≈ 0.9 s per block. End-to-end GSM8K ≈ 1 min per problem per config → Mac is OK for slices; use CARC for full benchmarks.** Setup in `mechflow/smoke/` (`.venv`, `common.py`, `00_throughput.py`).
+- [x] **Block-level teacher-forced test** — *done; results in `smoke_memo.md` §1. SC barely changes accuracy vs gold, but pulls blocks toward the model's own AR mode (+8 pp block EM vs AR, CI excludes 0); the effect is ≈ equal at g = 1 and g = 8, so M3 is not supported* — (`02_block_tf.py`; cheap and higher-powered). The prefix is the chat prompt plus a gold GSM8K solution truncated at a random point; generate one 4-token block; score against the gold tokens (per-token accuracy, block exact match, cross-position correctness correlation). Configs: SC {on, off} × g {1, 8} × noise {0.1, 4.0} at 32 steps, plus 4 steps. ~300 paired blocks per config. This carries the M1/M3/M4 comparisons below; the end-to-end slice is only the sanity check.
+- [x] Reproduce one sanity number (*done: SC 0.38 vs noSC 0.34, +0.04 [−0.10, +0.18], n = 50; direction matches the paper, underpowered*): a small GSM8K slice (`01_gsm8k_e2e.py`, n ≈ 50, runs in the background) at the paper settings (32 steps, g = 8, noise 0.1), self-conditioning on vs. off. It should show a gap in the direction of 38.1 vs. 32.3. *Caveat:* the prompt format approximates lm-eval `gsm8k_cot`, so absolute numbers aren't comparable to the paper.
+- [x] Full vs. no self-conditioning at **g = 1 vs. g = 8** → separates M3. *SC effect ≈ equal at g = 1 and g = 8 → M3 dropped.*
+- [x] Full vs. none at **noise 0.1 vs. 4.0** → separates M4. *The SC benefit is larger at 4.0 → M4 contradicted; dropped.*
+- [x] Hybrid rate, full vs. none, at **1 / 4 / 32 steps** on ~50 hand-made ambiguous prompts (1 step = positive control) → existence check for M2. *Script written: `03_hybrid.py`* (≈ 60 prompts with two-word entities in 3 categories, open + 'pick one of A or B'; word-level valid/hybrid/other; K {1, 4, 32} × SC × g {1, 8} at noise 0.1, plus noise 4.0 × 4 seeds). *Done: hybrids ≈ 30% on bimodal prompts at the paper setting vs. 0% for AR; without SC, many sub-word garbles ("Albertaac"); SC climbs garble → hybrid → valid and never makes outputs worse.*
+- [x] Per-token CE vs. joint consistency, full vs. none → separates M1/M5 from M2. *Covered by the coherence check: the gain sits at in-block positions 2–3. Consistent with M2, but doesn't yet separate it from M1/M5 (later positions are also the slowest).*
+- [x] **Coherence check** (`04_coherence.py`; *done: in differing blocks SC is +3.6 nats more coherent [+2.4, +4.9], almost all at positions 2–3*): AR log-prob of the SC vs. no-SC blocks. Are no-SC blocks less coherent (hybrid-like), or valid alternatives? Needed because gold-match can't separate "worse" from "different".
+- [x] Write a half-page memo `mechflow/smoke_memo.md`: which of M1–M5 the evidence favours. **This is the input to Phase 4.**
+
+### Phase 4 — Sharpen hypotheses and definitions ✅ (2026-11-13) → `mechflow/phase4.md` (v4.3; supersedes `phase1.md` as the working spec)
+- [x] **Apply the Phase 3.5 verdict** (`smoke_memo.md` §5):
+  - [x] narrow to **M2 vs. R0 vs. M1/M5**. M3/M4 are "not supported (underpowered)" and kept as measured secondary interactions (phase4 §0.1);
+  - [x] primary metrics: own-AR coherence + **external judge (co-primary)** + **in-block dependence dep_j**; token-level hybrid classifier with alignment and precedence; gold-match demoted (phase4 §2.2–2.3);
+  - [x] position-specific predictions recast as discriminating magnitudes (phase4 §3.1);
+  - [x] regime decision: **mechanism at noise 4.0 / g = 1** (q–x window), **headline at the paper regime** (phase4 §4);
+  - [x] novelty check for P1 ("flow LMs mode-mix where their own AR head doesn't"): **novel** (phase4 §9);
+  - [x] exclusion list saved: `smoke/results/EXCLUDE_gsm8k_test_indices.json` (434) + smoke prompts (phase4 §7).
+- [x] **q–x information-gap diagnostic** (new; `smoke/05_qx_gap.py`): at noise 0.1 the state catches up with the feedback by step ~2; at noise 4.0 the feedback leads by ~15–20 steps → mechanism regime moved; new kill criterion K12 (phase4 §0.2, §5).
+- [x] Apply the Phase 3 design changes:
+  - rival M5 via a stale-own test + accumulation null;
+  - cloning τ_i (per-position re-noising, ε sweep, R ≥ 32) + margin proxy;
+  - within-block χ;
+  - fixed-point gap (descriptive only);
+  - α/cutoff baselines.
+  
+  M3 sweep → `leads/01`; M4 null → `leads/05`. **B = 8/16 checkpoints are not released → block-size test dropped.**
+- [x] Reframe around M2 vs. R0 vs. M1/M5, with per-mechanism claims and predictions (phase4 §1, §3.1) and the lattice → paper mapping (§5.5).
+- [x] Revise H1–H4 → H1–H5 (phase4 §3; proposal §4 marked superseded).
+- [x] Apply the Phase 2 revision list:
+  - origination back in scope (secondary);
+  - minimal-pair donors;
+  - both CFG branches;
+  - matched schedule → x-neutralization intervention;
+  - power redone per estimand (prompts as the unit).
+- [x] Single-position "off" candidates (a)/(b)/(c), plus the CFG rule. Selection by **efficacy + own-fidelity**, not neighbour drift (phase4 §2.1, §2.7).
+- [x] Operational definitions: off; coherence / dep_j; hybrid classes; mode margin; cloning commitment; χ; state decodability (phase4 §2).
+- [x] Confound tables per experiment (phase4 §4), plus a positive control (§2.8) and a multiplicity plan (§5.4).
+- [x] Adversarial review round 1 → v4.1 (phase4 §10).
+- [x] Review rounds 2–3 → v4.3. All blockers resolved; the last one (N share zero by construction) was fixed with the reviewer's proposed shadow-pass decoupling, which the reviewer stated makes the spec ready for Phase 5.
+
+### Phase 5 — Pre-register ✅ (2026-11-13) → `mechflow/prereg.md`
+Write to `mechflow/prereg.md` and don't edit it after confirmatory runs start (departures → prereg §12).
+- [x] **Decide the paper framing:** phenomenon-first (adopted per recommendation; PI may override until the first confirmatory run; prereg §0).
+- [x] **Scope trim:** primary family = P1, P2, C1′, H2-N. M5, χ and cloning commitment are optional/exploratory (prereg §0, §2.3).
+- [x] Predictions for each hypothesis, with direction and rough size (prereg §2; prior on shares stated).
+- [x] Kill criteria and go/no-go thresholds: gates PC → K3 → K12 → K11 → G1 → Phase 8 go/no-go (prereg §5); outcome → framing map (§7).
+- [x] Primary vs. secondary metrics: dep_j, hybrid rate and μ_j primary; coherence judges as co-requirements; benchmarks secondary; gold-match not primary (prereg §3).
+- [x] Data splits: exploration (smoke categories + 3 templates) / confirmation (7 held-out categories × held-out templates) / circuit-validation (15% of confirmation pairs); natural text split by document; GSM8K test excluded from block-level work (prereg §4).
+- [x] Statistical plan: cluster bootstrap; interval-vs-margin decisions; Holm (primary); BH (secondary); TOST (S3); one Pocock-bounded extension; exclusion rules; BH for head sweeps (prereg §6).
+- [x] Power + compute (prereg §8; [PILOT] items fixed by rule in §11).
+- [x] Independent methodological review of prereg.md: round 1 (v1.0 → v1.1: margins, clustering, gate substitutions, extension removed); round 2 (v1.1 → v1.2: lattice holes, S6 fallback, external anchoring); round 3 (v1.3: last lattice cell). **Reviewer confirmed freeze-ready → v1.3 FROZEN.** Hashes in `prereg_hashes.log`.
+- [x] External hash anchoring is required before confirmation runs → moved to **Phase 8** (it's a user action due before the first confirmatory run, not a Phase 5 deliverable).
+
+### Phase 5.5 — Pre-run verification ✅ (2026-11-13) → prereg v1.4
+Found 2026-11-13 after the freeze; fixes are allowed because no confirmation data exists yet (log as prereg v1.4 in §12 and re-hash).
+- [x] **External judge isn't independent.** Lafa-0.5B/7B were initialized from **Qwen2.5-Instruct**, so a Qwen2.5-7B-Instruct judge shares pretraining lineage and would agree with Lafa's own notion of "typical". → *Done: switched to **Mistral-7B-Instruct-v0.3** (Apache-2.0, ungated; Llama and Gemma are gated).* Replace it with a different family (candidates: Llama-3.1-8B-Instruct or Gemma-2-9B-it; check the license and HF access on CARC). Amend prereg §2.1 (P2 co-requirement), §9 and `phase4.md` §2.2.
+- [x] **Natural-text contamination.** Lafa's SFT data (Dolci-Instruct-SFT) includes OpenMathInstruct-2 (built on GSM8K/MATH *train* problems) and persona-GSM, so **GSM8K-train blocks may be near-training data** (inflated coherence). UltraChat isn't listed in the Dolci card. → Make **UltraChat-200k `test_sft` the primary** natural-text source. Keep GSM8K-train only if a contamination check passes: own-AR coherence and AR-agreement on GSM8K-train blocks are not higher than on a held-out math source (e.g. SVAMP) by more than 0.25 nats/block on the exploration split. Amend prereg §4.2.
+- [x] **Quick scoop check before committing CARC compute** (*done 2026-11-13: nothing new on mode mixing/coherence in Lafa*): arXiv since 2026-11-13 for papers citing Lafa or from the Kim/Boffi/Lee/Yoo group, on self-conditioning / mode mixing / coherence. (Then weekly; the next is due ~2026-11-20.)
+- [x] Apply the amendments → prereg v1.4, hash in `prereg_hashes.log`.
+- [ ] Weekly scoop check — next due ~2026-11-20.
+
+### Phase 6 — Build and validate infrastructure (2–3 days)
+A hook bug silently invalidates every downstream result, so test the instrument before using it.
+
+- [ ] **CARC readiness** (*access verified 2026-11-13: Claude can run commands via the `ssh carc` alias, using your key + a persistent ControlMaster session; account `<slurm-account>`; `gpu` partition (A100 / A40 / L40S); work in `/scratch1/<carc-user>` (9.8 TiB quota); avoid `/project2` (92% full) and keep `/home1` light; `module load conda` needs `bash -l`*) (before any full-benchmark or 7B run): batch the block-level scripts (many blocks per forward pass; batch-1 runs are latency-bound, so a GPU alone gives only ~2–3×). *Done so far: env at `/scratch1/<carc-user>/mechflow/env` (uv, py3.12, torch 2.10+cu128, transformers 5.3.0, lm-eval 0.4.11); models in `hf_home` (0.5B `18deca35`, 7B `434c100d`, Mistral-7B judge); `src/runner.py` (multi-worker per GPU, sharded, resumable) + `src/slurm/run_sharded.sbatch` (array jobs); runner self-test job 14228762.*
+- [x] Reproduce plain Lafa-0.5B generation with the official code (smoke `00_throughput.py`; instrumented sampler `src/lafa_instr.py` mirrors `_euler_denoise_block`).
+- [ ] Reproduce at least one reported number (or a subset) to within noise. *Submitted: official harness, GSM8K, 250-problem limit, paper settings (CARC job 14228754; `src/slurm/phase6_reproduce.sbatch`); target 30.4 ± ~6 pp.*
+- [x] Determinism: same seed → bitwise identical (T2: max diff 0.0, MPS).
+- [x] **Identity-hook test** (T1: instrumented sampler vs. `_euler_denoise_block`, 6 prompts × 6 configs: **max logit diff 0.0**, same tokens and same #forwards).
+- [x] **K/V-selection identity test** (T4): tokens identical; logits within **5e-5 in fp32** (CPU). In bf16, step 0 is exact, but re-routing adds ~1e-2 prob rounding noise from step 1, compounding to ≤ 2.6 logits by step 32. → **Rule: every arm of a comparison runs through the same re-routed code path (identity re-route in controls); precision-critical runs in fp32 with TF32 off.**
+- [ ] **A7 / K3 instrument validation (critical; per phase4 §2.7 / prereg §5, replacing the circular drift test):** `src/k3_drift.py`: (i) mixed-context Mahalanobis OOD, (ii) cross-candidate δ^D agreement, (iii) efficacy. *Running on the Mac (120 exploration blocks).*
+- [x] **Off-hook test** (T3: hook returning plain x == `self_cond=False`, g ∈ {1, 8}: max logit diff 0.0).
+- [x] Single-position knockout changes only the intended position's input (T5: all rows ok).
+- [x] **Positive control** (prereg §5 PC; T6): a planted one-hot feedback signal at position 1 changes position 3's prediction (KL > 0); cutting all other positions' reads of position 1 removes it (injected/cut KL ratio ≥ 4e8); position 1's own effect is kept. *The x-erasure arm of PC is deferred to Phase 7 (needs LEACE maps fit on exploration).*
+- [ ] Trajectory logging: states, q, qE, the feedback contribution, selected attention, all at chosen steps (`record=True` in the sampler). Check storage size per example.
+- [ ] Throughput and memory benchmark at 0.5B and 7B on CARC A100s (*submitted: job 14228716 with `bench.py`, plus the validation suite on CUDA*). Turn the Phase 5 power analysis into GPU-hours.
+- [x] Experiment tracking: `run_meta()` (code SHA-256 of `src/*.py`, host, versions, model snapshot, config) is saved with every result and runner shard.
+
+### Phase 7 — Exploratory pilot (3–4 days; exploration split only)
+Purpose: check that the phenomenon exists before building tasks around it.
+
+- [ ] Full vs. feedback-off on ~1,000 natural prompts. Collect the blocks where outputs differ and categorize them by hand (coupled-token mixing? arithmetic? repetition? other?).
+- [ ] Baseline mode-mixing rate and time-to-commitment against step count (4 / 8 / 16 / 32), with feedback on and off.
+- [ ] Full-vs-none self-conditioning gap at **g = 1 vs. g = 8** (does the benefit exist without guidance?).
+- [ ] Seed diversity of block outputs at noise 0.1 vs. 4.0 (can seeds produce competing modes at all?).
+- [ ] Hybrid rate at **1 step** (the paper says one-step drafts are inconsistent across positions: a positive control for the hybrid metric).
+- [ ] Linear probe: can the top-2 tokens be recovered from qE for bimodal positions?
+- [ ] Natural block entropy: how often is a 4-token block actually ambiguous given the prefix?
+- [ ] **Scale check (new, after Phase 3.5):** rerun `03_hybrid.py` + `04_coherence.py` on **Lafa-7B** (CARC). If hybrids mostly vanish at 7B, the phenomenon is a small-model quirk → reframe.
+- [ ] **Naturalness check (new):** hybrids/incoherence on *natural* prompts, not only deliberately bimodal ones (e.g. the coherence metric on held-out natural text blocks, plus the token-level hybrid classifier).
+- [ ] Task competence check at 0.5B on draft joint-consistency tasks; move to 7B if needed.
+
+### Phase 8 — Decision gate
+- [ ] Write a one-page pilot memo: what Phase 7 showed, which hypotheses survived, and what changed.
+- [ ] Update `mechflow/mechflow.md` (framing, experiments, primary step-count regime).
+- [ ] Decide: **go** (run confirmatory Experiment 1 on the confirmation split) / **reframe** / **kill**.
+- [ ] **YOU (required before any confirmation run): anchor the prereg hash externally.** Post the latest SHA-256 from `mechflow/prereg_hashes.log` to OSF (preferred), a public gist, or an email to an advisor/co-author. Then record the URL or message in `prereg_hashes.log`. Repeat for each §11 entry before confirmation data exists.
+- [ ] If go: freeze the pre-registration and start.
