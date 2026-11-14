@@ -276,6 +276,12 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | — | — |
 
 ## 12. Deviations / Change Log
+- **2026-11-13 (Phase 6, before any confirmation data): clarification of the K3 Mahalanobis rule (`phase4.md` §2.7(i)), fixed BEFORE seeing the calibration result.**
+  - **Why:** the rule did not say whether the threshold applies per (layer, step, position) cell or pooled. The first exploration run (120 blocks) gave candidate (a) a median cell ratio of 0.76, a max of 1.10, and 6% of 144 cells > 1. With ~60 reference samples per cell, the per-cell maximum is noise-dominated.
+  - **Rule adopted:** candidate (i)-passes if **both**
+    1. its **pooled** ratio (the 95th percentile of nearer-reference distances over all cells, each normalised by its cell threshold) is ≤ 1.0; **and**
+    2. its fraction of exceeding cells is ≤ that of an **in-distribution null** + 0.05. The null is held-out fully-on runs with a different noise seed, scored with the identical procedure.
+  - Computed on exploration blocks only; the outcome is recorded in §11.
 - **2026-11-13 v1.3 → v1.4** (Phase 5.5, before any data generation):
   - **external judge changed from Qwen2.5-7B-Instruct to Mistral-7B-Instruct-v0.3** (Apache-2.0, ungated). Lafa was initialized from Qwen2.5-Instruct, so a Qwen judge isn't independent;
   - **UltraChat is the primary natural-text source**; GSM8K-train is conditional on a contamination check, because Dolci-Instruct-SFT includes OpenMathInstruct-2 and persona-GSM;

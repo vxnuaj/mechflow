@@ -27,6 +27,7 @@ from lafa_instr import Sampler, BlockCfg, sc_apply, run_meta
 
 N = int(sys.argv[1]) if len(sys.argv) > 1 else 120
 OUT = sys.argv[2] if len(sys.argv) > 2 else "results/k3_drift.json"
+STATES_ONLY = "--states-only" in sys.argv
 LAYERS = [3, 7, 11, 15, 19, 23]
 STEPS = [4, 8, 12, 16, 20, 24]
 CFG = BlockCfg(32, 1.0, 4.0, True, seed=7)
@@ -113,6 +114,15 @@ def main():
             return sc_apply(model, z, e, [i_off], "c", repl=ue) if e is not None else z
         run(cache, L, sc_fn=sc_c, record_states=states["c"], track_u=True)
 
+        if STATES_ONLY:
+            # extra in-distribution sample for the null calibration: a second full-on run (seed+1000)
+            global CFG
+            _c = CFG
+            CFG = BlockCfg(32, 1.0, 4.0, True, seed=_c.seed + 1000)
+            run(cache, L, record_states=states.setdefault("on2", []), track_u=True)
+            CFG = _c
+            print(n, flush=True)
+            continue
         # (iii) efficacy: b and c at ALL positions vs block-off tokens
         allp = [0, 1, 2, 3]
         rb = run(cache, L, sc_fn=lambda s, br, z, e, cx: sc_apply(model, z, e, allp, "b", repl=cx["bootstrap_esc"]["c"]) if e is not None else z)
@@ -152,6 +162,11 @@ def main():
                         dD[cand].append(float(torch.log(pb[j, y[j]].clamp_min(1e-12)) - torch.log(pi[j, y[j]].clamp_min(1e-12))))
         print(n, flush=True)
 
+    if STATES_ONLY:
+        np.savez_compressed(OUT.replace(".json", "_states.npz"),
+                            **{f"{k}": np.array([np.concatenate([[l, s_, p_], v]) for (l, s_, p_, v) in lst], dtype=np.float32)
+                               for k, lst in states.items() if lst})
+        print("saved states"); return
     # (i) Mahalanobis
     def arr(lst, li, st, p):
         return np.array([v for (l, s, q, v) in lst if l == li and s == st and q == p])

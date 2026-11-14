@@ -177,5 +177,5 @@ Purpose: check that the phenomenon exists before building tasks around it.
 - [ ] Write a one-page pilot memo: what Phase 7 showed, which hypotheses survived, and what changed.
 - [ ] Update `mechflow/mechflow.md` (framing, experiments, primary step-count regime).
 - [ ] Decide: **go** (run confirmatory Experiment 1 on the confirmation split) / **reframe** / **kill**.
-- [ ] **YOU (required before any confirmation run): anchor the prereg hash externally.** Post the latest SHA-256 from `mechflow/prereg_hashes.log` to OSF (preferred), a public gist, or an email to an advisor/co-author. Then record the URL or message in `prereg_hashes.log`. Repeat for each §11 entry before confirmation data exists.
+- [ ] **(partly done 2026-11-13: prereg v1.4 is anchored by public GitHub commit `6acca33`; still to do: push each §11 entry before confirmation data)** **YOU (required before any confirmation run): anchor the prereg hash externally.** Post the latest SHA-256 from `mechflow/prereg_hashes.log` to OSF (preferred), a public gist, or an email to an advisor/co-author. Then record the URL or message in `prereg_hashes.log`. Repeat for each §11 entry before confirmation data exists.
 - [ ] If go: freeze the pre-registration and start.
