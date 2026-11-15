@@ -271,7 +271,7 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Classifier audit agreement | — | — |
 | Prompt-bank hash; split-membership hash; natural-text document lists (hash); GSM8K-train contamination-check outcome | bank sha256 `030d096f1c224068…`, split membership `72b775ac07058809…` (exploration 240 pairs; confirmation 602; circuit-validation 118; 0 tokenization drops). Natural text: UltraChat-200k test_sft, docs `aac4f15f0c050983…`, split ids `5fa96eb55e910c84…` (exploration 4,536; confirmation 16,258; circuit-validation 1,777). **GSM8K-train excluded:** the pre-registered check (vs. SVAMP) can't be run as specified (SVAMP has no solution text) → conservative exclusion; natural text = UltraChat only | 2026-11-14 |
 | 7B snapshot; Qwen judge snapshot | — | — |
-| K11; G1 outcomes; primary-family substitution (§5.2) | Substitution: **K12 → {P1, P2, H2-N}** (2026-11-14). **K11 (partial, 2026-11-14):** 7B exploration hybrid rate flow(SC) = 0.3% vs. AR 0.0% (Δ +0.3 pp [0.0, 0.8]) → the first conjunct (≤ 5%) is met; the coherence conjunct is pending. G1: pending | partial |
+| K11; G1 outcomes; primary-family substitution (§5.2) | Substitution: **K12 → {P1, P2, H2-N}** (2026-11-14). **K11 NOT TRIGGERED (2026-11-15):** first conjunct met (7B hybrid rate 0.3% ≤ 5%), but the second fails. The 7B SC effect on coh_{2,3} is **4.2× (own-AR: +2.38 vs. +0.57) and 1.9× (Mistral: +2.37 vs. +1.23) the 0.5B value** on the same 100 exploration blocks, not < ½. → No reframe to 0.5B-specific; S1 reported (7B hybrids ≈ 0). G1: pending | partial |
 | Confirmatory code hash | — | — |
 | Phase 8 decision | — | — |
 

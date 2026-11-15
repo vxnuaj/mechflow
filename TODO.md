@@ -210,12 +210,13 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
     - Still needed: confirmation split; G1 relevance; Mistral judge (P2 pilot queued: `src/jobs_p2.py`). (`src/analyze_h2n.py`)
 
 **7.4 Gates**
-- [ ] **K11 (scale):** 7B on exploration (CARC). **Hybrid part DONE (400 prompts, same prompts as 0.5B):**
+- [x] **K11 (scale) — NOT TRIGGERED:** 7B on exploration (CARC). **Hybrid part DONE (400 prompts, same prompts as 0.5B):**
   - 7B flow(SC) hybrids − AR = **+0.3 pp [0.0, 0.8]** (0.5B: +7.7); non-valid +1.8 pp (0.5B: +22.5).
   - **Without SC, 7B is 38% garbled and 1.3% hybrid; SC raises valid answers by +37.5 pp [32.5, 42.6]** (0.5B: +31).
   - → First K11 conjunct met (h_flow ≤ 5%). The coherence conjunct is still to run.
   - → **P1 is a small-model effect; the robust, scale-general finding is that SC is necessary for coherent parallel multi-token output.**
-- [ ] **G1 (regime relevance):** MR SC coherence gain under both judges ≥ ½ of PR; end-task SC gain at MR on the reserved 25% benchmark slice (CARC).
+  - **Coherence conjunct: 7B SC gain on coh_{2,3} = +2.38 (own-AR) / +2.37 (Mistral) vs. 0.5B +0.57 / +1.23 → 4.2× / 1.9× larger at 7B → K11 NOT TRIGGERED** (both conjuncts were required).
+- [ ] **G1 (regime relevance):** MR SC coherence gain under both judges ≥ ½ of PR; end-task SC gain at MR on the reserved 25% benchmark slice (CARC). *Queued 2026-11-15: reserved slices `data/benchmark_slices.json` (seed 20261113; G1 = GSM8K 330 / HumanEval 41 / IFEval 135; S10 = the other 75%; sha256 `5082968c…`); 6 harness jobs (`src/slurm/g1_harness.sbatch`, MR, SC on/off). Also needed: the MR coherence gain under both judges (run `jobs_p2` at MR).*
 - [ ] Record all gate outcomes and the primary-family substitution (§5.2) in §11; hash and push.
 
 - [ ] **Interp additions (exploratory; `interp_methods.md` §3 Tier 1):**
