@@ -113,6 +113,27 @@ All primary tests are **one-sided** against a margin m: H0: θ ≤ m vs. H1: θ 
 
 ---
 
+### 2.4 Localization family (added 2026-11-15 by §12 amendment; before any confirmation data)
+
+**Procedure.**
+- **Discovery** (exploration split, 0.5B, MR regime):
+  - Run per-head path patching of the feedback channel. For head (l, h) at target j ∈ {2, 3}, replace j's reads of the neighbours' K/V **from the shadow pass** (neighbours with feedback) by their K/V **from the off pass**, at that head only. This is the head-resolved N factor of the 2 × 2 × 2.
+  - Rank heads by their effect on dep_{2,3}.
+  - **k** = the smallest number of top heads whose joint patch reproduces ≥ 50% of the full N effect on exploration, capped at 10% of all heads (≤ 33 of 336). This defines **H\*** (the "feedback-reader heads").
+  - k and H\* are frozen and hashed in §11 before any circuit-validation data is run.
+- **Test** (circuit-validation split: 118 pairs, 1,777 documents; 0.5B, MR).
+
+**Estimands and decisions** (Holm over {L1, L2}, familywise α = 0.05; separate from the primary family):
+- **L1 (necessity and specificity).** θ = (reduction of the N effect on dep_{2,3} when H\*'s feedback-channel reads are cut) − (the mean reduction for 20 random size-matched head sets, matched on layer distribution). Decide on the share contrast: (reduction_H\* − reduction_random) / N > **0.30**. Cluster bootstrap by document.
+- **L2 (behavioural).** On circuit-validation bimodal prompts (PR regime), cutting H\*'s feedback-channel reads raises the non-valid answer rate (hybrid + garble) by **> 3 pp** more than random size-matched head sets. Paired, cluster bootstrap by pair.
+
+**Reported secondary (no test):**
+- MIB CPR/CMD faithfulness curves under zero / mean / resample ablation;
+- the 7B replication of H\*'s role (at the layer-normalized positions);
+- base-Qwen2.5-0.5B comparison: do the same heads attend across positions before flow training?
+
+**Outcome mapping.** L1 ✓ (± L2) → "a sparse set of heads reads neighbours' self-conditioning feedback"; mech-interp headline. L1 ✗ → "the coordination is distributed"; reported as such.
+
 ## 3. Metrics
 - **Primary:** dep_j (positions 2–3); the hybrid rate; μ_j.
 - **Co-requirement:** external-judge and own-AR coh_j.
@@ -273,9 +294,11 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | 7B snapshot; Qwen judge snapshot | — | — |
 | K11; G1 outcomes; primary-family substitution (§5.2) | Substitution: **K12 → {P1, P2, H2-N}** (2026-11-14). **K11 NOT TRIGGERED (2026-11-15):** first conjunct met (7B hybrid rate 0.3% ≤ 5%), but the second fails. The 7B SC effect on coh_{2,3} is **4.2× (own-AR: +2.38 vs. +0.57) and 1.9× (Mistral: +2.37 vs. +1.23) the 0.5B value** on the same 100 exploration blocks, not < ½. → No reframe to 0.5B-specific; S1 reported (7B hybrids ≈ 0). G1: pending | partial |
 | Confirmatory code hash | — | — |
+| Localization: k, H* (head list hash) | — | — |
 | Phase 8 decision | — | — |
 
 ## 12. Deviations / Change Log
+- **2026-11-15 (before any confirmation data): localization family added (§2.4).** Head-level discovery on exploration; test on the circuit-validation split; L1 (necessity/specificity vs. random size-matched heads, share contrast > 0.30) and L2 (behavioural, > 3 pp); Holm over {L1, L2}. Motivation: the exploration H2-N pilot (N share 0.7–0.9 at 0.5B) makes component-level localization a planned, confirmatory question rather than a post-hoc one.
 - **2026-11-14 (Phase 7, exploration only): K12 probe implementation.**
   - **First implementation:** a single logistic probe on raw x/q vectors predicting "mode A vs. B" across pairs. It was **invalid**: "A" is a different token in every pair, so no single direction generalizes across pairs. Diagnostic: acc_q was only 0.64 at the final step, where q *is* the readout. It was discarded without being used for any decision.
   - **Replacement (used for K12):** a pair-relative linear probe. Features per instance are cos(v, E_a) − cos(v, E_b), the projection on the normalized (E_a − E_b), and |v|. Standardized logistic regression, trained on 75% of pairs and tested on 25% held-out pairs. This implements the pre-registered "held-out linear probe" faithfully.

@@ -14,6 +14,8 @@ import load
 from lafa_instr import BlockCfg
 from jobs_h2n import ar_logprob, sample_prefixes
 
+import os
+REGIME = os.environ.get("P2_REGIME", "PR")   # PR (paper: g=8, noise 0.1) or MR (mechanism: g=1, noise 4.0)
 JUDGE = "mistralai/Mistral-7B-Instruct-v0.3"
 S_SAMPLES = 16
 
@@ -63,7 +65,8 @@ def p2_task(task, ctx):
     out = {"cut": cut}
     resp_prefix = tok.decode(r_ids[:cut])
     for name, sc in (("SC", True), ("NO", False)):
-        y = S.run_block(cache, L, BlockCfg(32, 8.0, 0.1, sc, seed=42)).tokens
+        g, nz = (1.0, 4.0) if REGIME == "MR" else (8.0, 0.1)
+        y = S.run_block(cache, L, BlockCfg(32, g, nz, sc, seed=42)).tokens
         coh = [float(ar_logprob(model, [prefix + y[:j + 1]], L + j)[0]) for j in range(4)]
         dep = [None]
         for j in range(1, 4):
