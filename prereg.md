@@ -265,7 +265,7 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Selected off candidate; PC; K3 | **(a) plain-x**. PC passed (planted-signal detection and cut; injected/cut KL ratio ≥ 4e8; the erasure arm is deferred to Phase 7 when LEACE exists). K3 **not triggered** (null-calibrated rule, §12): (a) pooled 0.82, exceed 5.6% vs. null 6.3%; (b)/(c) fail efficacy (0.86/0.75) | 2026-11-13 |
 | q–x window steps (MR, g = 1); K12 | **Window = [] (0 steps) → K12 TRIGGERED.** Held-out pair-relative linear probe (3,036 instances; 771 test from held-out pairs; base rate 0.54): acc_q rises 0.73 → 0.99, acc_x 0.57 → 0.93. q leads x by ~0.1–0.2 at every step, but acc_q first reaches ≥ 0.85 at step 14, when acc_x = 0.71 > 0.65. → Per §5.2, the **primary family = {P1, P2, H2-N}** (Holm over 3); C1′ reported as 'not separable in Lafa' | 2026-11-14 |
 | margin_C1 and the C1 floor outcome | — | — |
-| b_S3, b_S4 | — | — |
+| b_S3, b_S4 | **0.25 nats** each (= max(50% × exploration PR SC effect on dep_{2,3} = 0.50, 0.05)). P2 pilot (exploration, 300 blocks): dep_{2,3} +0.50 [0.20, 0.82]; Mistral coh_{2,3} +1.44 [1.01, 1.90] | 2026-11-15 |
 | Pilot SDs; required n; H2-N simulated power; bank expansion (if any) | **H2-N pilot (exploration, 196 blocks):** linear contrast N − 0.20·T on dep_{2,3} = +0.48 [0.13, 0.84] (n = 196 clusters; SE ≈ 0.18) → at ≥ 2,000 confirmation documents the expected SE ≈ 0.06, so power ≫ 80% if the effect holds. P1 pair-level pilot: 7.5 pp [5.5, 9.7] (0.5B). Bank expansion: not needed for H2-N; P1 is now secondary in practice (small-model effect, K11) | 2026-11-14 |
 | LEACE maps (hash); probe accuracies | — | — |
 | Classifier audit agreement | — | — |

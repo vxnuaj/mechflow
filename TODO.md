@@ -186,14 +186,17 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
   - SC effect: hybrid −11.3 pp [−14.2, −8.3]; valid +31 pp [26, 35].
   - Lower than the smoke test's ~30% because the smoke pairs were hand-picked to recombine; countries 2.5%, cities 8.3%, scientists 10.4%.
   - **→ Flag for the Phase 8 decision**; the audit may move the hybrid/other boundary, but the definition must not be tuned to clear the bar.
-- [ ] dep_j / coherence (own-AR + Mistral judge) on natural blocks, SC on vs. off (PR) → P2 pilot effect and SDs.
+- [x] dep_j / coherence (own-AR + Mistral judge) on natural blocks, SC on vs. off (PR) → P2 pilot (300 exploration blocks; `src/jobs_p2.py`):
+  - **dep_{2,3} +0.50 [0.20, 0.82]** (one-sided LB 0.24 > margin 0.10 ✓).
+  - Own-AR coh_{2,3} +0.75 [0.46, 1.04] ✓; **Mistral coh_{2,3} +1.44 [1.01, 1.90]** (LB 1.07 > 0 ✓); position 0 ≈ 0 (later-position pattern ✓).
+  - SC changes 62% of blocks; conditional on change, Mistral +2.32.
 - [ ] Natural-text check: incoherence-event rate, flow vs. AR (S2 pilot).
 
 **7.3 Mechanism pilot values (exploration, MR)**
 - [x] Linear probes for "which answer" on x and on q per step (held-out pairs; pair-relative features; `src/pilot_qx.py`) → **q–x window = [] → K12 TRIGGERED** (q leads x by 0.1–0.2 at every step, but never q ≥ 0.85 with x ≤ 0.65). **Primary family → {P1, P2, H2-N}**; C1′ = not separable (§11, §12).
 - [ ] LEACE erasers per (position, step bucket); verify the probe on erased x ≤ 0.55; hash the maps (§11). Then the PC erasure arm.
 - [x] ~~margin_C1 and the C1 floor~~: moot, since C1′ left the primary family via K12 (it may still run as exploratory).
-- [ ] b_S3, b_S4 (max(50% of the exploration PR SC effect on dep_{2,3}, 0.05)) (§11).
+- [x] b_S3 = b_S4 = max(50% × 0.50, 0.05) = **0.25 nats** (§11).
 - [ ] Pilot SDs (cluster-level) → required n for P1 / P2 / C1′; H2-N simulated power; expand the bank if needed (§11).
   - **H2-N pilot (300/300 blocks, 0.5B, MR; identity checks all pass) — STRONGLY SUPPORTS M2 (coordination):**
     - dep: total T = +0.95 [0.50, 1.40]; **N main = +0.70 [0.40, 1.02]**; O ≈ 0; F ≈ 0; **N share 0.74 (Möbius) / 1.02 (Shapley)**; N − 0.20·T = +0.51 [0.25, 0.78].
