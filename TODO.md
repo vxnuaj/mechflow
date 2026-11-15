@@ -180,7 +180,12 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 
 **7.2 Phenomenon and measures (exploration)**
 - [ ] Token-aligned hybrid classifier (`phase4.md` §2.3) + **audit of ≥ 150 labels** (≥ 90% overall, ≥ 85% on hybrids). *Claude does a first-pass label review; the PI spot-checks a sample.*
-- [ ] P1 point estimate on **non-smoke** exploration prompts (Phase 8 go/no-go: ≥ 10 pp).
+- [x] P1 point estimate on **non-smoke** exploration prompts (0.5B, PR, 1,436 prompts; text-level token-boundary classifier `src/classify_text.py`, **not yet audited**):
+  - **Hybrid: flow(SC) − AR = 7.5 pp [5.5, 9.7] → below the 10 pp go/no-go bar.**
+  - Non-valid (hybrid + garble/truncation): 20.3 pp [16.9, 24.0].
+  - SC effect: hybrid −11.3 pp [−14.2, −8.3]; valid +31 pp [26, 35].
+  - Lower than the smoke test's ~30% because the smoke pairs were hand-picked to recombine; countries 2.5%, cities 8.3%, scientists 10.4%.
+  - **→ Flag for the Phase 8 decision**; the audit may move the hybrid/other boundary, but the definition must not be tuned to clear the bar.
 - [ ] dep_j / coherence (own-AR + Mistral judge) on natural blocks, SC on vs. off (PR) → P2 pilot effect and SDs.
 - [ ] Natural-text check: incoherence-event rate, flow vs. AR (S2 pilot).
 
@@ -190,9 +195,18 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [x] ~~margin_C1 and the C1 floor~~: moot, since C1′ left the primary family via K12 (it may still run as exploratory).
 - [ ] b_S3, b_S4 (max(50% of the exploration PR SC effect on dep_{2,3}, 0.05)) (§11).
 - [ ] Pilot SDs (cluster-level) → required n for P1 / P2 / C1′; H2-N simulated power; expand the bank if needed (§11).
+  - **H2-N pilot (196/300 blocks, 0.5B, MR; identity checks all pass) — STRONGLY SUPPORTS M2 (coordination):**
+    - dep: total T = +1.07 [0.52, 1.61]; **N main = +0.69 [0.29, 1.10]**; O ≈ 0; F ≈ 0; **N share 0.65 (Möbius) / 0.93 (Shapley)**; N − 0.20·T = +0.48 [0.13, 0.84].
+    - coh: T = +1.74; **N = +1.22 [0.80, 1.65]**; N share 0.70 / 0.89; contrast +0.87 [0.50, 1.25].
+    - → SC's coherence benefit is carried almost entirely by positions **reading neighbours' fed-back predictions**; own feedback and the state route ≈ 0 (contrary to the stated prior).
+    - Still needed: confirmation split; 7B replication; G1 relevance; Mistral judge. (`src/analyze_h2n.py`)
 
 **7.4 Gates**
-- [ ] **K11 (scale):** 7B on exploration: hybrid rate + SC coherence gain at positions 2–3 (CARC).
+- [ ] **K11 (scale):** 7B on exploration (CARC). **Hybrid part DONE (400 prompts, same prompts as 0.5B):**
+  - 7B flow(SC) hybrids − AR = **+0.3 pp [0.0, 0.8]** (0.5B: +7.7); non-valid +1.8 pp (0.5B: +22.5).
+  - **Without SC, 7B is 38% garbled and 1.3% hybrid; SC raises valid answers by +37.5 pp [32.5, 42.6]** (0.5B: +31).
+  - → First K11 conjunct met (h_flow ≤ 5%). The coherence conjunct is still to run.
+  - → **P1 is a small-model effect; the robust, scale-general finding is that SC is necessary for coherent parallel multi-token output.**
 - [ ] **G1 (regime relevance):** MR SC coherence gain under both judges ≥ ½ of PR; end-task SC gain at MR on the reserved 25% benchmark slice (CARC).
 - [ ] Record all gate outcomes and the primary-family substitution (§5.2) in §11; hash and push.
 

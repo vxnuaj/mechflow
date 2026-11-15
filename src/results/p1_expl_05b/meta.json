@@ -1,0 +1,13 @@
+{
+ "code_sha256": "ea321f91a7f8bd7b907a804d783aed5dda1ec9df4b2fec1b20fde1e908b1585c",
+ "host": "vxnuajs-MacBook-Pro.local",
+ "python": "3.12.12",
+ "torch": "2.10.0",
+ "time_utc": "2026-11-14T22:14:35.739882Z",
+ "model": "lafa-hf/lafa-0.5B@18deca3522f7884898a58d0fb2d2afb3fc91f87e",
+ "tasks": "tasks_p1_expl.jsonl",
+ "job": "jobs_p1:p1_task",
+ "out": "results/p1_expl_05b",
+ "workers_per_gpu": 1,
+ "dtype": "bf16"
+}

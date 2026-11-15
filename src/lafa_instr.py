@@ -245,3 +245,61 @@ def run_meta(cfg: BlockCfg | None = None, extra: dict | None = None) -> dict:
     if extra:
         meta.update(extra)
     return meta
+
+
+@torch.no_grad()
+def run_block_two_pass(S: "Sampler", cache, block_start: int, cfg: BlockCfg, fbA: set, fbB: set, take: list):
+    """2x2x2 trajectory primitive (phase4 §2.6; no CFG, i.e. cfg_scale must be 1).
+
+    Every step runs two passes on the same states:
+      pass A: self-conditioning applied at positions in fbA (others get plain x = candidate (a));
+      pass B: self-conditioning applied at positions in fbB.
+    Position p's output (its prediction, hence its state update and its next-step feedback) is
+    taken from pass take[p] in {"A","B"}. Returns final tokens and per-position final logits.
+    Identities: fbA=all, take=all A  ->  normal SC decoding; fbB=empty, take=all B -> SC off.
+    """
+    m, E, bd, dt, dev = S.m, S.E, S.bd, S.dtype, S.dev
+    assert abs(cfg.cfg_scale - 1.0) < 1e-6
+    saved_noise, saved_sc = m.noise_scale_mult, m.enable_self_cond
+    m.noise_scale_mult = float(cfg.noise)
+    orig_attn = getattr(m.backbone.config, "_attn_implementation", None)
+    m.backbone.config._attn_implementation = "eager"
+    try:
+        torch.manual_seed(cfg.seed)
+        grid = m._get_generation_time_grid(cfg.num_steps, dev, grid_mode=cfg.grid_mode, t_max=0.2)
+        K = grid.shape[-1] - 1
+        pos_ids = torch.arange(block_start, block_start + bd, device=dev).unsqueeze(0)
+        cache_len = cache.get_seq_length()
+        base_mask = torch.zeros(1, 1, bd, cache_len + bd, dtype=dt, device=dev)
+        e_t = torch.randn(1, bd, m._d_model, device=dev, dtype=dt) * m._noise_sigma * m.noise_scale_mult
+        # bootstrap feedback (as in the reference: one pass at t=0 without SC)
+        tb0 = m._compute_t_bn(grid[:, 0].to(dt)[None, :])
+        lg0, _, _ = S._fwd(e_t, tb0, base_mask, cache, pos_ids)
+        esc = (F.softmax(lg0, -1).to(dt) @ E).unsqueeze(0)
+        idxA = sorted(fbA); idxB = sorted(fbB)
+        last = None
+        for step in range(K):
+            t_fwd, t_out = grid[:, step], grid[:, step + 1]
+            z = e_t
+            tb = m._compute_t_bn(t_fwd.to(dt)[None, :])
+            full = m._apply_self_cond(z, esc)
+            outs = {}
+            for name, idx in (("A", idxA), ("B", idxB)):
+                e_in = z.clone()
+                if idx:
+                    e_in[:, idx, :] = full[:, idx, :]
+                lg, _, _ = S._fwd(e_in, tb, base_mask, cache, pos_ids)
+                outs[name] = lg
+            lg_mix = torch.stack([outs[take[p]][p] for p in range(bd)], 0)
+            probs = F.softmax(lg_mix, dim=-1).to(dt)
+            e_den = (probs @ E).unsqueeze(0)
+            esc = e_den.detach()
+            last = lg_mix
+            if step == K - 1:
+                break
+            tf, to = t_fwd[None, :, None].float(), t_out[None, :, None].float()
+            e_t = (z.float() + (to - tf) * (e_den.float() - z.float()) / (1.0 - tf).clamp(min=1e-6)).to(dt)
+        return last.argmax(-1).tolist(), last.cpu()
+    finally:
+        m.noise_scale_mult, m.enable_self_cond = saved_noise, saved_sc
+        m.backbone.config._attn_implementation = orig_attn

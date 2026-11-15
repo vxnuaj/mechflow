@@ -266,12 +266,12 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | q–x window steps (MR, g = 1); K12 | **Window = [] (0 steps) → K12 TRIGGERED.** Held-out pair-relative linear probe (3,036 instances; 771 test from held-out pairs; base rate 0.54): acc_q rises 0.73 → 0.99, acc_x 0.57 → 0.93. q leads x by ~0.1–0.2 at every step, but acc_q first reaches ≥ 0.85 at step 14, when acc_x = 0.71 > 0.65. → Per §5.2, the **primary family = {P1, P2, H2-N}** (Holm over 3); C1′ reported as 'not separable in Lafa' | 2026-11-14 |
 | margin_C1 and the C1 floor outcome | — | — |
 | b_S3, b_S4 | — | — |
-| Pilot SDs; required n; H2-N simulated power; bank expansion (if any) | — | — |
+| Pilot SDs; required n; H2-N simulated power; bank expansion (if any) | **H2-N pilot (exploration, 196 blocks):** linear contrast N − 0.20·T on dep_{2,3} = +0.48 [0.13, 0.84] (n = 196 clusters; SE ≈ 0.18) → at ≥ 2,000 confirmation documents the expected SE ≈ 0.06, so power ≫ 80% if the effect holds. P1 pair-level pilot: 7.5 pp [5.5, 9.7] (0.5B). Bank expansion: not needed for H2-N; P1 is now secondary in practice (small-model effect, K11) | 2026-11-14 |
 | LEACE maps (hash); probe accuracies | — | — |
 | Classifier audit agreement | — | — |
 | Prompt-bank hash; split-membership hash; natural-text document lists (hash); GSM8K-train contamination-check outcome | bank sha256 `030d096f1c224068…`, split membership `72b775ac07058809…` (exploration 240 pairs; confirmation 602; circuit-validation 118; 0 tokenization drops). Natural text: UltraChat-200k test_sft, docs `aac4f15f0c050983…`, split ids `5fa96eb55e910c84…` (exploration 4,536; confirmation 16,258; circuit-validation 1,777). **GSM8K-train excluded:** the pre-registered check (vs. SVAMP) can't be run as specified (SVAMP has no solution text) → conservative exclusion; natural text = UltraChat only | 2026-11-14 |
 | 7B snapshot; Qwen judge snapshot | — | — |
-| K11; G1 outcomes; primary-family substitution (§5.2) | Substitution: **K12 → {P1, P2, H2-N}** (2026-11-14). K11, G1: pending | partial |
+| K11; G1 outcomes; primary-family substitution (§5.2) | Substitution: **K12 → {P1, P2, H2-N}** (2026-11-14). **K11 (partial, 2026-11-14):** 7B exploration hybrid rate flow(SC) = 0.3% vs. AR 0.0% (Δ +0.3 pp [0.0, 0.8]) → the first conjunct (≤ 5%) is met; the coherence conjunct is pending. G1: pending | partial |
 | Confirmatory code hash | — | — |
 | Phase 8 decision | — | — |
 
