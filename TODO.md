@@ -195,11 +195,16 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [x] ~~margin_C1 and the C1 floor~~: moot, since C1′ left the primary family via K12 (it may still run as exploratory).
 - [ ] b_S3, b_S4 (max(50% of the exploration PR SC effect on dep_{2,3}, 0.05)) (§11).
 - [ ] Pilot SDs (cluster-level) → required n for P1 / P2 / C1′; H2-N simulated power; expand the bank if needed (§11).
-  - **H2-N pilot (196/300 blocks, 0.5B, MR; identity checks all pass) — STRONGLY SUPPORTS M2 (coordination):**
-    - dep: total T = +1.07 [0.52, 1.61]; **N main = +0.69 [0.29, 1.10]**; O ≈ 0; F ≈ 0; **N share 0.65 (Möbius) / 0.93 (Shapley)**; N − 0.20·T = +0.48 [0.13, 0.84].
-    - coh: T = +1.74; **N = +1.22 [0.80, 1.65]**; N share 0.70 / 0.89; contrast +0.87 [0.50, 1.25].
+  - **H2-N pilot (300/300 blocks, 0.5B, MR; identity checks all pass) — STRONGLY SUPPORTS M2 (coordination):**
+    - dep: total T = +0.95 [0.50, 1.40]; **N main = +0.70 [0.40, 1.02]**; O ≈ 0; F ≈ 0; **N share 0.74 (Möbius) / 1.02 (Shapley)**; N − 0.20·T = +0.51 [0.25, 0.78].
+    - coh: T = +1.71; **N = +1.19 [0.88, 1.52]**; N share 0.70 / 0.93; contrast +0.85 [0.56, 1.14].
+    - (The 196-block interim gave the same picture.)
     - → SC's coherence benefit is carried almost entirely by positions **reading neighbours' fed-back predictions**; own feedback and the state route ≈ 0 (contrary to the stated prior).
-    - Still needed: confirmation split; 7B replication; G1 relevance; Mistral judge. (`src/analyze_h2n.py`)
+  - **H2-N 7B replication (100/100 blocks, MR; the 99-block numbers below are unchanged to 2 d.p. except where noted in `src/analyze_h2n.py` output):**
+    - **coh:** T = +2.56 [1.63, 3.53]; **N = +1.42 [0.77, 2.09]**; N share 0.55 (Möbius) / 0.80 (Shapley); **O share 0.19 [0.02, 0.32] (small but real at 7B)**; F ≈ 0; **N×F synergy +1.45 [0.49, 2.47]**; contrast +0.91 [0.36, 1.47] ✓.
+    - **dep:** the total effect is not resolved at 7B (T = +0.49 [−0.53, 1.46]); N +0.64 [0.00, 1.35]; contrast +0.55 [−0.04, 1.16] (borderline).
+    - → Coordination replicates in direction and dominance at 7B, with a modest own-feedback share and an N×F synergy (iterative mutual agreement).
+    - Still needed: confirmation split; G1 relevance; Mistral judge (P2 pilot queued: `src/jobs_p2.py`). (`src/analyze_h2n.py`)
 
 **7.4 Gates**
 - [ ] **K11 (scale):** 7B on exploration (CARC). **Hybrid part DONE (400 prompts, same prompts as 0.5B):**

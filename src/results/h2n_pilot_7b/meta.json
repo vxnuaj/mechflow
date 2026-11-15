@@ -1,0 +1,13 @@
+{
+ "code_sha256": "7cfef473a86a2cf24b42bc2817d4f3f37047b4e6b052ec54fe9a686f7240a2b3",
+ "host": "b11-09.hpc.usc.edu",
+ "python": "3.12.15",
+ "torch": "2.10.0+cu128",
+ "time_utc": "2026-11-15T07:49:14.788492Z",
+ "model": "lafa-hf/lafa-0.5B@18deca3522f7884898a58d0fb2d2afb3fc91f87e",
+ "tasks": "tasks_h2n_expl_100.jsonl",
+ "job": "jobs_h2n:h2n_task",
+ "out": "results/h2n_pilot_7b",
+ "workers_per_gpu": 2,
+ "dtype": "bf16"
+}
