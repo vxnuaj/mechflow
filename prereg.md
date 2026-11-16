@@ -299,6 +299,12 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | **GO** (user decision, 2026-11-16), reframed around the coordination mechanism (`phase8_memo.md`). Primary = {P1, P2, H2-N}, Holm over 3 | 2026-11-16 |
 
 ## 12. Deviations / Change Log
+- **2026-11-16 (during confirmation; no outcome inspected): memory-only fix to AR scoring.**
+  - **The problem:** `ar_logprob` / `sample_prefixes` (`jobs_h2n.py`, also used by P2 and S3/S4) materialized full [16 × length × 152k] logits. Confirmation documents reach 2,855 tokens (exploration max 882), so workers ran out of GPU memory and their shards stalled.
+  - **The fix:** the same forward path (embed → t = 1 → backbone), with `lm_head` applied only at the needed position.
+  - **Verified on a CARC A40 (bf16):** sampled predecessor sequences identical 12/12; max |Δ log-prob| = 0.0 (bitwise equal).
+  - Results generated before the fix are kept, since the computation is identical. New code sha256 = `ab8345e9f5384a60469b522b79f9bc311a0cba60f2fa56f07d40fc4f3a99e428` (the frozen hash `83822b81…` covers the earlier results).
+  - No analysis rule, n or estimand changed.
 - **2026-11-16 (before any confirmation data): secondary-family scope and provenance fix.**
   - **Removed from the BH family:**
     - **S5, S9** (need the C1′ machinery and LEACE, which are moot after K12);

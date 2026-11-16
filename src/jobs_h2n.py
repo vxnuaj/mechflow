@@ -24,11 +24,20 @@ S_SAMPLES = 16
 
 
 @torch.no_grad()
+def _ar_logits_at(model, x, pos):
+    """AR logits at one position, without materializing [batch, length, vocab] (memory fix, 2026-11-16).
+    Same path as model(input_ids=x) (embed -> t = 1 -> backbone), with lm_head applied to one row only."""
+    emb = model.embed_tokens(x)
+    t_bn = model._compute_t_bn(torch.ones(x.shape, device=emb.device, dtype=emb.dtype))
+    _, _, h = model._forward_backbone(emb, t_bn, None, compute_logits=False)
+    return model.lm_head(h[:, pos])
+
+
+@torch.no_grad()
 def ar_logprob(model, seqs, pos):
     """log p_AR(seq[pos] | seq[:pos]) for a batch of equal-length sequences."""
     x = torch.tensor(seqs, device=model.embed_tokens.weight.device)
-    lg = model(input_ids=x).logits.float()
-    lp = torch.log_softmax(lg[:, pos - 1], -1)
+    lp = torch.log_softmax(_ar_logits_at(model, x, pos - 1).float(), -1)
     return lp.gather(1, x[:, pos:pos + 1])[:, 0].cpu()
 
 
@@ -37,7 +46,7 @@ def sample_prefixes(model, prefix, n_tokens, S, gen):
     seqs = [list(prefix) for _ in range(S)]
     for _ in range(n_tokens):
         x = torch.tensor(seqs, device=model.embed_tokens.weight.device)
-        p = torch.softmax(model(input_ids=x).logits[:, -1].float(), -1)
+        p = torch.softmax(_ar_logits_at(model, x, x.shape[1] - 1).float(), -1)
         nxt = torch.multinomial(p.cpu(), 1, generator=gen)[:, 0].tolist()
         for s, t in zip(seqs, nxt):
             s.append(t)
