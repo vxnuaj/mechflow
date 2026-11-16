@@ -255,10 +255,31 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [ ] Start drafting the paper in parallel (intro, related work, method) while the GPUs run.
 - [ ] Brief the co-author with `README.md` + the pilot numbers.
 
-### Phase 8 — Decision gate
+### Phase 8 — Decision gate ✅ (2026-11-16) → `mechflow/phase8_memo.md`
 - [x] Write a one-page pilot memo (`mechflow/phase8_memo.md`, 2026-11-15): recommendation **GO**, reframed around the coordination mechanism.
-- [ ] Update `mechflow/mechflow.md` (framing, experiments, primary step-count regime).
-- [ ] **YOU:** decide **go** / **reframe** / **kill** (memo recommends GO), plus: add the guidance-on 2 × 2 × 2 before confirmation (recommended)?, and spot-check ~20 classifier-audit labels.
-- [ ] **Localization decision** (`interp_methods.md` §3 Tier 2): if C1′ or H2-N looks real in the pilot, commit to head-level q-path vs. x-path path patching → EAP-IG (PEAP, MIB metrics) → mediation → DAS / causal-scrubbing validation, on the circuit-validation split. To make it **confirmatory**, add its estimands to prereg §12 and push **before** any confirmation data. Also consider the Tier 3 methods contribution: path patching through the recurrent feedback edge.
-- [ ] **(partly done 2026-11-13: prereg v1.4 is anchored by public GitHub commit `6acca33`; still to do: push each §11 entry before confirmation data)** **YOU (required before any confirmation run): anchor the prereg hash externally.** Post the latest SHA-256 from `mechflow/prereg_hashes.log` to OSF (preferred), a public gist, or an email to an advisor/co-author. Then record the URL or message in `prereg_hashes.log`. Repeat for each §11 entry before confirmation data exists.
-- [ ] If go: freeze the pre-registration and start.
+- [ ] Update `mechflow/mechflow.md` (framing, experiments, primary step-count regime). *(moved to the writing phase)*
+- [x] **Decision: GO** (user, 2026-11-16). Guidance-on 2 × 2 × 2 added as S12 (pilot: coordination holds at deployed settings). Classifier audit passed (the user's spot-check is optional).
+- [x] **Localization decision:** committed. L1/L2 were pre-registered in prereg §2.4 before any confirmation data; the per-head tool is built. Runs in Phase 10.
+- [x] Prereg hash anchored externally: each §11 entry was pushed to the public GitHub repo before any confirmation data (final freeze sha256 `90ea6df0…`, 2026-11-16).
+- [x] Freeze: §11 complete (n, code hash, snapshots, BH family = {S1, S3, S4, S11, S12}); scope deviations logged in §12 before data.
+
+### Phase 9 — Confirmatory runs (confirmation split; circuit-validation untouched)
+- [ ] **P1** (0.5B, PR): 9,632 prompts / 602 pairs → `results/conf_p1` (also gives S11).
+- [ ] **P2** (0.5B, PR, + Mistral judge): 7,100 documents → `results/conf_p2`.
+- [ ] **S3 / S4** arms (g = 1 at noise 0.1 and 4.0): first 2,000 P2 documents → `results/conf_p2x`.
+- [ ] **H2-N** (0.5B, MR, 2 × 2 × 2): 2,000 documents → `results/conf_h2n`.
+- [ ] **S12** (0.5B, PR, 2 × 2 × 2 with CFG): 750 documents → `results/conf_s12`.
+- [ ] **S1** (7B P1): 2,400 prompts / 150 pairs → `results/conf_s1_7b`.
+- [ ] Analysis exactly as pre-registered:
+  - primary: Holm over {P1, P2, H2-N}, cluster bootstrap with 20,000 resamples;
+  - secondary: BH q = 0.10 over the 5 tests;
+  - report the §7 interpretation; commit and push.
+
+### Phase 10 — Localization (circuit-validation only after k, H* are frozen)
+- [ ] Layer sweep → head screen on exploration/confirmation docs → freeze k and H\* in §11 and push → L1/L2 test on circuit-validation.
+
+### Phase 11 — Extensions and paper
+- [ ] ELF second model (unofficial port validated against JAX).
+- [ ] Better-sampler upside (exploratory).
+- [ ] Read 2610.19628 App. D.5.2; re-check papers citing Lafa.
+- [ ] Draft the paper (`academic-writing` + `icml` guidance); brief the co-author.

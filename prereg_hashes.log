@@ -14,3 +14,4 @@
 2026-11-16T06:23:16Z prereg.md §11 G1 passed sha256=488f46fadf486757f86d6b42c57a9ba3ace743115a5cc4876d3b65977b80ab0d
 2026-11-16T07:24:57Z prereg.md §12 classifier audit/fix sha256=7d9f2218741d82dfb7547773f2a18cf742300daec701ec43a889e92218c7996d
 2026-11-16T11:10:50Z prereg.md + S12 (H2-N at PR) pre-confirmation sha256=0b26c807708e0fd3a2d6517dde1e8a7b58b121511d72ef39a9604129a84d2a9c
+2026-11-16T11:20:42Z prereg.md FROZEN for confirmation (GO; §11 complete; BH family 5) sha256=90ea6df0bd243b60edaeadc423a0383f15937261f62fb79af73f678b65a2a8ba

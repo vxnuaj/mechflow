@@ -239,7 +239,8 @@ def run_meta(cfg: BlockCfg | None = None, extra: dict | None = None) -> dict:
         h.update(open(f, "rb").read())
     meta = {"code_sha256": h.hexdigest(), "host": socket.gethostname(), "python": platform.python_version(),
             "torch": torch.__version__, "time_utc": datetime.datetime.utcnow().isoformat() + "Z",
-            "model": "lafa-hf/lafa-0.5B@18deca3522f7884898a58d0fb2d2afb3fc91f87e"}
+            "model": f"{os.environ.get('LAFA_REPO', 'lafa-hf/lafa-0.5B')}@{os.environ.get('LAFA_REV', '18deca3522f7884898a58d0fb2d2afb3fc91f87e')}",
+            "h2n_regime": os.environ.get("H2N_REGIME"), "p2_regime": os.environ.get("P2_REGIME")}
     if cfg is not None:
         meta["cfg"] = cfg.__dict__
     if extra:
