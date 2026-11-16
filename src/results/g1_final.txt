@@ -1,0 +1,4 @@
+gsm8k_cot            n= 330  SC 0.088  noSC 0.045  gain +0.042 [+0.006,+0.079]
+ifeval               n= 135  SC 0.400  noSC 0.304  gain +0.096 [+0.007,+0.185]
+humaneval_instruct   n=  41  SC 0.098  noSC 0.073  gain +0.024 [-0.049,+0.122]
+G1 end-task: mean gain over 3 benchmarks = +0.0544  95% CI [+0.0127, +0.0974]  -> PASS (needs LB > 0.01)

@@ -303,3 +303,102 @@ def run_block_two_pass(S: "Sampler", cache, block_start: int, cfg: BlockCfg, fbA
     finally:
         m.noise_scale_mult, m.enable_self_cond = saved_noise, saved_sc
         m.backbone.config._attn_implementation = orig_attn
+
+
+class PerLayerMasks:
+    """Context manager: replace the attention mask passed to specific layers' self-attention.
+
+    masks: {layer_idx: tensor [1, H or 1, q, k]} (additive, 0 = allowed, -inf = blocked).
+    Uses forward pre-hooks (with_kwargs) on layer.self_attn, so Lafa's patched layer code is untouched.
+    """
+
+    def __init__(self, model, masks):
+        self.layers = model.backbone.model.layers
+        self.masks = masks
+        self.handles = []
+
+    def __enter__(self):
+        for li, m in self.masks.items():
+            def hook(mod, args, kwargs, m=m):
+                kwargs = dict(kwargs)
+                kwargs["attention_mask"] = m
+                return args, kwargs
+            self.handles.append(self.layers[li].self_attn.register_forward_pre_hook(hook, with_kwargs=True))
+        return self
+
+    def __exit__(self, *a):
+        for h in self.handles:
+            h.remove()
+
+
+@torch.no_grad()
+def run_block_headcut(S: "Sampler", cache, block_start: int, cfg: BlockCfg, j: int, cut: dict, reroute: bool = False):
+    """Head-resolved N cut for target j (MR, cfg_scale must be 1), all three factors on otherwise.
+
+    Each step: pass B = neighbours without SC (j keeps SC); pass A = everyone with SC (normal);
+    pass A' = like A, but at layer l, head h in cut[l], query j reads the neighbours' K/V from pass B.
+    Outputs: j from A'; neighbours from A (so neighbours evolve normally). cut = {} reproduces normal SC.
+    reroute=True runs the B + A' path even with an empty cut: the bf16-matched baseline for comparisons (Phase 6 rule).
+    """
+    m, E, bd, dt, dev = S.m, S.E, S.bd, S.dtype, S.dev
+    assert abs(cfg.cfg_scale - 1.0) < 1e-6
+    saved_noise = m.noise_scale_mult
+    m.noise_scale_mult = float(cfg.noise)
+    orig_attn = getattr(m.backbone.config, "_attn_implementation", None)
+    m.backbone.config._attn_implementation = "eager"
+    H = m.backbone.config.num_attention_heads
+    nb = [p for p in range(bd) if p != j]
+    try:
+        torch.manual_seed(cfg.seed)
+        grid = m._get_generation_time_grid(cfg.num_steps, dev, grid_mode=cfg.grid_mode, t_max=0.2)
+        K = grid.shape[-1] - 1
+        pos_ids = torch.arange(block_start, block_start + bd, device=dev).unsqueeze(0)
+        cl = cache.get_seq_length()
+        base_mask = torch.zeros(1, 1, bd, cl + bd, dtype=dt, device=dev)
+        e_t = torch.randn(1, bd, m._d_model, device=dev, dtype=dt) * m._noise_sigma * m.noise_scale_mult
+        tb0 = m._compute_t_bn(grid[:, 0].to(dt)[None, :])
+        lg0, _, _ = S._fwd(e_t, tb0, base_mask, cache, pos_ids)
+        esc = (F.softmax(lg0, -1).to(dt) @ E).unsqueeze(0)
+        neg = float("-inf")
+        # masks over [prefix | B-block | A'-block]
+        default = torch.zeros(1, 1, bd, cl + 2 * bd, dtype=dt, device=dev)
+        default[..., cl:cl + bd] = neg                       # nobody reads B by default
+        layer_masks = {}
+        for li, heads in cut.items():
+            mk = default.expand(1, H, bd, cl + 2 * bd).clone()
+            for h in heads:
+                for p in nb:
+                    mk[0, h, j, cl + p] = 0.0                # j reads neighbour p from B ...
+                    mk[0, h, j, cl + bd + p] = neg           # ... instead of from A'
+            layer_masks[li] = mk
+        last = None
+        for step in range(K):
+            t_fwd, t_out = grid[:, step], grid[:, step + 1]
+            z = e_t
+            tb = m._compute_t_bn(t_fwd.to(dt)[None, :])
+            full = m._apply_self_cond(z, esc)
+            eB = z.clone(); eB[:, [j], :] = full[:, [j], :]
+            lgA, _, _ = S._fwd(full, tb, base_mask, cache, pos_ids)          # pass A (normal)
+            if cut or reroute:
+                lgB, _, _ = m._forward_backbone(eB, tb, base_mask, past_key_values=cache, use_cache=False,
+                                                position_ids=pos_ids)        # appends B K/V
+                with PerLayerMasks(m, layer_masks):
+                    lgA2, _, _ = m._forward_backbone(full, tb, default, past_key_values=cache, use_cache=False,
+                                                     position_ids=pos_ids)
+                S._trim(cache, cache.get_seq_length() - cl)
+                lg_j = lgA2[0].float()[j]
+            else:
+                lg_j = lgA[j]
+            lg = lgA.clone(); lg[j] = lg_j
+            probs = F.softmax(lg, dim=-1).to(dt)
+            e_den = (probs @ E).unsqueeze(0)
+            esc = e_den.detach()
+            last = lg
+            if step == K - 1:
+                break
+            tf, to = t_fwd[None, :, None].float(), t_out[None, :, None].float()
+            e_t = (z.float() + (to - tf) * (e_den.float() - z.float()) / (1.0 - tf).clamp(min=1e-6)).to(dt)
+        return last.argmax(-1).tolist(), last.cpu()
+    finally:
+        m.noise_scale_mult = saved_noise
+        m.backbone.config._attn_implementation = orig_attn
