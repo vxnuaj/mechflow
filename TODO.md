@@ -179,7 +179,11 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [x] *(not executable as specified: SVAMP has no solution text → GSM8K-train conservatively excluded; recorded in §11)* GSM8K-train contamination check (exploration): own-AR coherence vs. SVAMP ≤ +0.25 nats/block → keep or drop GSM8K-train (§11).
 
 **7.2 Phenomenon and measures (exploration)**
-- [ ] Token-aligned hybrid classifier (`phase4.md` §2.3) + **audit of ≥ 150 labels** (≥ 90% overall, ≥ 85% on hybrids). *Claude does a first-pass label review; the PI spot-checks a sample.*
+- [x] Token-aligned hybrid classifier + **audit of 150 labels** (2026-11-15; stratified 45 hybrid / 55 other / 50 mode; `src/results/classifier_audit_sample.json`):
+  - **148/150 = 98.7% agreement; hybrids 45/45** → PASS (≥ 90% / ≥ 85%).
+  - The 2 errors were "valid answer + extra word" → fixed in `classify_text.py` (logged in prereg §12).
+  - Note: ~27% of "other" are messy cross-answer mixes outside the strict prefix + suffix definition (e.g. "Janeeyall", "Tyels Brahe") → the pre-registered hybrid rate is a conservative undercount; report descriptively.
+  - [ ] **YOU: spot-check ~20 rows** of the audit file (optional).
 - [x] P1 point estimate on **non-smoke** exploration prompts (0.5B, PR, 1,436 prompts; text-level token-boundary classifier `src/classify_text.py`, **not yet audited**):
   - **Hybrid: flow(SC) − AR = 7.5 pp [5.5, 9.7] → below the 10 pp go/no-go bar.**
   - Non-valid (hybrid + garble/truncation): 20.3 pp [16.9, 24.0].
@@ -236,6 +240,14 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [x] **Localization tool built (2026-11-15):** `PerLayerMasks` (per-layer, per-head attention masks via forward pre-hooks) + `run_block_headcut` (head-resolved N cut for target j). Tests: no cut = normal decoding (exact, 0.0); all-heads cut = the 2 × 2 × 2 cell (O1, N0, F1) (identical tokens; ≤ 0.4 logit bf16 re-routing noise) → the baseline uses `reroute=True` (same code path).
 - [ ] Localization discovery (exploration, after Phase 8): layer-level sweep (24 layers) → head-level within the top layers → k, H* frozen in §11 → test L1/L2 on circuit-validation.
 - [ ] **Mechanism → better sampler (upside):** strengthen only the cross-position feedback reads (or feed fresher neighbour predictions) and test for fewer garbles at 4–8 steps / higher speculative acceptance.
+- [ ] **Targeted novelty check for the NEW headline** ("SC's benefit comes mainly from positions reading each other's fed-back predictions; grows with scale"):
+  - full read of CANDI (2510.22510; SC as anchors for conditional dependencies, the closest idea);
+  - DiffusionGemma transparency (2606.20560, "token smearing");
+  - anything since 2026-11-13 from the Lafa group or citing Lafa;
+  - prior claims about SC benefit vs. model scale;
+  - framing related work (parallel-decoding consensus/commitment).
+  
+  Update the `phase3.md` ledger + differentiation statement. Do BEFORE confirmation and writing.
 - [ ] Start drafting the paper in parallel (intro, related work, method) while the GPUs run.
 - [ ] Brief the co-author with `README.md` + the pilot numbers.
 

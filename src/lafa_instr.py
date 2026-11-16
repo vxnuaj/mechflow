@@ -402,3 +402,64 @@ def run_block_headcut(S: "Sampler", cache, block_start: int, cfg: BlockCfg, j: i
     finally:
         m.noise_scale_mult = saved_noise
         m.backbone.config._attn_implementation = orig_attn
+
+
+@torch.no_grad()
+def run_block_two_pass_cfg(S: "Sampler", cache, block_start: int, cfg: BlockCfg, fbA: set, fbB: set, take: list):
+    """2x2x2 primitive WITH prefix guidance (paper regime). Mirrors _euler_denoise_block with CFG:
+    conditional branch (prefix visible) and prefix-free branch (prefix keys masked) each keep their own
+    feedback state; in EACH branch, passes A/B apply SC at fbA/fbB and position p takes its output from
+    pass take[p]. Guided prediction e = e_u + g (e_c - e_u); next-step feedback = the (mixed) unguided
+    predictions of each branch, as in the reference. Readout = argmax of mixed conditional logits.
+    Identities: fbA=all, take=all A -> normal SC decoding with CFG; take=all B with fbB=empty -> SC off."""
+    m, E, bd, dt, dev = S.m, S.E, S.bd, S.dtype, S.dev
+    g = cfg.cfg_scale
+    saved_noise = m.noise_scale_mult
+    m.noise_scale_mult = float(cfg.noise)
+    orig_attn = getattr(m.backbone.config, "_attn_implementation", None)
+    m.backbone.config._attn_implementation = "eager"
+    try:
+        torch.manual_seed(cfg.seed)
+        grid = m._get_generation_time_grid(cfg.num_steps, dev, grid_mode=cfg.grid_mode, t_max=0.2)
+        K = grid.shape[-1] - 1
+        pos_ids = torch.arange(block_start, block_start + bd, device=dev).unsqueeze(0)
+        cl = cache.get_seq_length()
+        cmask = torch.zeros(1, 1, bd, cl + bd, dtype=dt, device=dev)
+        umask = cmask.clone(); umask[..., :cl] = float("-inf")
+        masks = {"c": cmask, "u": umask}
+        e_t = torch.randn(1, bd, m._d_model, device=dev, dtype=dt) * m._noise_sigma * m.noise_scale_mult
+        tb0 = m._compute_t_bn(grid[:, 0].to(dt)[None, :])
+        esc = {}
+        for br in ("c", "u"):
+            lg0, _, _ = S._fwd(e_t, tb0, masks[br], cache, pos_ids)
+            esc[br] = (F.softmax(lg0, -1).to(dt) @ E).unsqueeze(0)
+        idxA, idxB = sorted(fbA), sorted(fbB)
+        last = None
+        for step in range(K):
+            t_fwd, t_out = grid[:, step], grid[:, step + 1]
+            z = e_t
+            tb = m._compute_t_bn(t_fwd.to(dt)[None, :])
+            mixed = {}
+            for br in ("c", "u"):
+                full = m._apply_self_cond(z, esc[br])
+                outs = {}
+                for name, idx in (("A", idxA), ("B", idxB)):
+                    e_in = z.clone()
+                    if idx:
+                        e_in[:, idx, :] = full[:, idx, :]
+                    lg, _, _ = S._fwd(e_in, tb, masks[br], cache, pos_ids)
+                    outs[name] = lg
+                mixed[br] = torch.stack([outs[take[p]][p] for p in range(bd)], 0)
+            pc = F.softmax(mixed["c"], -1).to(dt); pu = F.softmax(mixed["u"], -1).to(dt)
+            ec, eu = (pc @ E).unsqueeze(0), (pu @ E).unsqueeze(0)
+            e_den = eu + g * (ec - eu)
+            esc = {"c": ec.detach(), "u": eu.detach()}
+            last = mixed["c"]
+            if step == K - 1:
+                break
+            tf, to = t_fwd[None, :, None].float(), t_out[None, :, None].float()
+            e_t = (z.float() + (to - tf) * (e_den.float() - z.float()) / (1.0 - tf).clamp(min=1e-6)).to(dt)
+        return last.argmax(-1).tolist(), last.cpu()
+    finally:
+        m.noise_scale_mult = saved_noise
+        m.backbone.config._attn_implementation = orig_attn

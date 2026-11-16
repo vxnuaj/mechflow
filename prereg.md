@@ -298,6 +298,7 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | — | — |
 
 ## 12. Deviations / Change Log
+- **2026-11-15 (before confirmation data): classifier audit + one implementation fix.** Audit of 150 stratified labels against the §2.3 definition: 98.7% agreement, hybrids 100%. Fix: a complete valid answer followed by extra words (e.g. "Gregor Mendel would") is labelled as that mode (it was 'other'). The hybrid definition (prefix of one mode + suffix of the other, at token boundaries) is **unchanged**; messier multi-way mixes remain 'other' (a conservative undercount, reported descriptively).
 - **2026-11-15 (before any confirmation data): localization family added (§2.4).** Head-level discovery on exploration; test on the circuit-validation split; L1 (necessity/specificity vs. random size-matched heads, share contrast > 0.30) and L2 (behavioural, > 3 pp); Holm over {L1, L2}. Motivation: the exploration H2-N pilot (N share 0.7–0.9 at 0.5B) makes component-level localization a planned, confirmatory question rather than a post-hoc one.
 - **2026-11-14 (Phase 7, exploration only): K12 probe implementation.**
   - **First implementation:** a single logistic probe on raw x/q vectors predicting "mode A vs. B" across pairs. It was **invalid**: "A" is a different token in every pair, so no single direction generalizes across pairs. Diagnostic: acc_q was only 0.64 at the final step, where q *is* the readout. It was discarded without being used for any decision.

@@ -14,9 +14,12 @@ import torch
 import torch.nn.functional as F
 
 import load
-from lafa_instr import BlockCfg, run_block_two_pass
+import os
+from lafa_instr import BlockCfg, run_block_two_pass, run_block_two_pass_cfg
 
-CFG = BlockCfg(32, 1.0, 4.0, True, seed=1)
+REGIME = os.environ.get("H2N_REGIME", "MR")   # MR: g=1, noise 4.0 (default); PR: g=8, noise 0.1 (with CFG)
+CFG = BlockCfg(32, 1.0, 4.0, True, seed=1) if REGIME == "MR" else BlockCfg(32, 8.0, 0.1, True, seed=1)
+TWO = run_block_two_pass if REGIME == "MR" else run_block_two_pass_cfg
 S_SAMPLES = 16
 
 
@@ -52,10 +55,10 @@ def h2n_task(task, ctx):
     allp = {0, 1, 2, 3}
     out = {"cut": cut, "cells": {}}
     # identity checks
-    y_on, _ = run_block_two_pass(S, cache, L, CFG, fbA=allp, fbB=set(), take=["A"] * 4)
+    y_on, _ = TWO(S, cache, L, CFG, fbA=allp, fbB=set(), take=["A"] * 4)
     ref_on = S.run_block(cache, L, CFG).tokens
-    y_off, _ = run_block_two_pass(S, cache, L, CFG, fbA=allp, fbB=set(), take=["B"] * 4)
-    ref_off = S.run_block(cache, L, BlockCfg(32, 1.0, 4.0, False, seed=CFG.seed)).tokens
+    y_off, _ = TWO(S, cache, L, CFG, fbA=allp, fbB=set(), take=["B"] * 4)
+    ref_off = S.run_block(cache, L, BlockCfg(32, CFG.cfg_scale, CFG.noise, False, seed=CFG.seed)).tokens
     out["identity_on"] = y_on == ref_on
     out["identity_off"] = y_off == ref_off
     gen = torch.Generator().manual_seed(task["task_id"])
@@ -67,7 +70,7 @@ def h2n_task(task, ctx):
             fbB = {j} if O else set()
             take = ["A" if Fc else "B"] * 4
             take[j] = "A" if N else "B"
-            y, _ = run_block_two_pass(S, cache, L, CFG, fbA=fbA, fbB=fbB, take=take)
+            y, _ = TWO(S, cache, L, CFG, fbA=fbA, fbB=fbB, take=take)
             coh = float(ar_logprob(model, [prefix + y[:j + 1]], L + j)[0])
             alt = ar_logprob(model, [s + [y[j]] for s in samp], L + j)
             marg = float(torch.logsumexp(alt, 0) - torch.log(torch.tensor(float(S_SAMPLES))))

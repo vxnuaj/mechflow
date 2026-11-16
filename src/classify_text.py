@@ -23,6 +23,10 @@ def classify_text(tok, out_text, a_name, b_name, tok_a, tok_b):
         return "mode_a"
     if o.lower() == b_name.lower():
         return "mode_b"
+    # a complete valid answer followed by extra words (e.g. "Gregor Mendel would") counts as that mode
+    for nm, lab in ((a_name, "mode_a"), (b_name, "mode_b")):
+        if o.lower().startswith(nm.lower() + " ") and not o.lower().startswith(nm.lower() + " " + nm.split()[-1].lower()):
+            return lab
     pa, sa = pieces(tok, tok_a)
     pb, sb = pieces(tok, tok_b)
     cands = set()
