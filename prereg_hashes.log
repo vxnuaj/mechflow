@@ -15,3 +15,4 @@
 2026-11-16T07:24:57Z prereg.md §12 classifier audit/fix sha256=7d9f2218741d82dfb7547773f2a18cf742300daec701ec43a889e92218c7996d
 2026-11-16T11:10:50Z prereg.md + S12 (H2-N at PR) pre-confirmation sha256=0b26c807708e0fd3a2d6517dde1e8a7b58b121511d72ef39a9604129a84d2a9c
 2026-11-16T11:20:42Z prereg.md FROZEN for confirmation (GO; §11 complete; BH family 5) sha256=90ea6df0bd243b60edaeadc423a0383f15937261f62fb79af73f678b65a2a8ba
+2026-11-16T11:24:45Z analysis/confirm.py (confirmatory analysis, before any confirmation data) sha256=8eda277aeb44e15fc5f95cd299db80f4a92963c0f2e8549e2bbf5f334b1fff63
