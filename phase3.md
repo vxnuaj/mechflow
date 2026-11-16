@@ -202,3 +202,38 @@ Several authoritative sources state that why self-conditioning works for languag
 - read 2610.19628 App. D.5.2;
 - re-check papers citing Lafa (the Semantic Scholar rate limit blocked it) and the arXiv listings for 14–15 Nov;
 - skim TDLM 2610.36940, Simplex Diffusion 2609.35553, CoDD 2603.00045, DAPD 2603.12996, CADD 2510.01329.
+
+### 8.1 Merged with an independent GPT review (2026-11-16; all IDs below verified to exist)
+
+Same verdict: the decomposition and the dominance of neighbour-reading are **apparently novel**; the cross-position intuition is partly known (CANDI).
+
+**Wording constraints that change the paper:**
+- Do **not** claim the "first causal intervention on SC": **Zhang et al. 2607.00588** (an SC direction drives repetition; a causal steering intervention, which transfers from ELF-B to ELF-M/L, App. F.2). We claim the first **own vs. neighbour route decomposition**.
+- Do **not** claim the first scale study of feedback: **Loopholing (Jo et al. 2510.19304)**, which compares 169M vs. 424M (App. D.9) and latent vs. sampled-token feedback (App. D.11); also **SCMDM 2604.26985**. We claim a **controlled 0.5B → 7B comparison within one family**.
+- **State the scale ratio precisely:** the SC coherence gain is 4.2× (own-AR) / 1.9× (Mistral) at 7B vs. 0.5B; 38% of 7B no-SC answers are garbled. Name the metric for every ratio.
+
+**New must-cite:** **He, Welleck & Fried 2602.03769** (Reasoning with Latent Tokens): causal evidence that positions rely on joint reasoning about undecoded tokens. *We differ:* we isolate communication through the **temporally fed-back predicted embeddings**, not within-pass hidden states.
+
+**Must-cite set (final):**
+- Davis 2610.13834;
+- Yoo 2607.00714;
+- CANDI 2510.22510;
+- He et al. 2602.03769;
+- Zhang 2607.00588;
+- SCMDM 2604.26985 / Loopholing 2510.19304 (scale);
+- DiffusionGemma-transparency 2606.20560.
+
+**Related work (verified):**
+- Alpha-DLM 2609.38066 (marginal fitting → inconsistency; "factorization alone is not the problem");
+- DA-DLM 2609.15070;
+- Loopholing All the Way 2610.30068;
+- TDLM 2610.36940;
+- DStill 2610.27379 (token factorization error);
+- DLM-Scope 2602.05859 (ICML 2026; the PMLR page is unconfirmed);
+- TSF survey (Findings EMNLP 2026.findings-emnlp.1739; search window ends Mar 2026);
+- Nemotron-Labs-Sigma 2610.02665;
+- Async FMLM 2610.42018 (cites Lafa).
+
+**Do not cite:** PURL 2611.11551, which was **withdrawn** (v2, 10 Nov 2026).
+
+**Novelty statement (merged, for the intro):** "Prior work explains self-conditioning as iterative fixed-point refinement (Yoo et al.), correction of train/inference mismatch and token identifiability (Davis et al.), or avoidance of low-density regions (Shabalin et al.), and causal interventions on self-conditioning have so far targeted failure modes such as repetition (Zhang et al.). CANDI conjectures that previous predictions act as pseudo-clean anchors for other positions, and He et al. show causally that diffusion LMs reason jointly across undecoded positions. We isolate the routes through which fed-back predictions act (a position's own feedback, neighbours' feedback read through attention, and neighbour-state refinement) and find, in Lafa at 0.5B and 7B and in both the mechanism and deployed decoding regimes, that reading neighbours' feedback carries most of the benefit."
