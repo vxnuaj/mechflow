@@ -168,3 +168,37 @@ Several authoritative sources state that why self-conditioning works for languag
 | **M5 (new)** | Shabalin et al.'s cross-step density account | **First-class rival** to M2. |
 
 **Gate:** M2 is **not** already shown → no reframe needed beyond the decomposition framing. **Proceed to Phase 4.**
+
+---
+
+## 8. Update (2026-11-15): novelty of the NEW headline (after the Phase 7 pilots)
+
+**Claim checked:** "SC works mainly through positions reading each other's fed-back predictions (N share 0.7–0.9 at 0.5B, 0.55–0.8 at 7B; own feedback and the state route small); the SC repair grows with scale." Full reads unless noted.
+
+| Paper | What it says | Verdict |
+|---|---|---|
+| **CANDI** (Pynadath, Shi, Zhang; 2510.22510) | App. B.3.2 speculates that SC works as "pseudo-clean anchors" (confident positions help denoise *others*); untested | **Partial: the closest prior statement.** We turn it into a causal measurement |
+| **How Transparent is DiffusionGemma?** (Engels…Nanda; 2606.20560) | The SC matrix = softmax·W_E; top-8 truncation matches baseline; token smearing; **per-position SC patching listed as future work (§7.2)** | Partial (framing). We do the experiment they list as open |
+| Yoo et al. (2607.00714) | SC = sequence-level fixed point; mechanism "poorly understood" | Partial (competing explanation) |
+| Shabalin et al. (2604.02028) | SC avoids low-density regions (temporal, per trajectory); toy scale | Partial |
+| Davis et al. (2610.13834) | SC = mismatch + identifiability (per position); no size ablation | Partial (main competing explanation) |
+| Li & Xu (2608.22244) | Solver redundancy / mismatch; no attention analysis | Irrelevant to the mechanism (cite for failure modes) |
+| **SCMDM** (Cardei et al.; 2604.26985) | "Benefit of full SC grows as the pretrained backbone becomes more capable" (cross-backbone) | **Partial for the scale finding.** Ours is a controlled 0.5B-vs-7B comparison within one family |
+| SC enables deep sequential reasoning (2610.19628) | SC as a scratchpad (depth); attention share to SC overall, no own/other split; **App. D.5.2 not read** | Partial. **Read D.5.2 before submission** |
+| Async FMLM (2610.42018) | "Tokens that denoise earlier inform others"; no SC | Partial (coordination framing) |
+| Loopholing All the Way (2610.30068), Posterior Refinement (2606.24773) | No SC mechanism | Irrelevant / related |
+| CoCommit (2607.04469), DiffusionGemma commitment (2606.14620), ParallelBench (2510.04767), Mean-Field Parallel Decoding (2606.15805), Measured Coupling (2611.08307) | Cross-position coordination / factorization error in parallel decoding | Framing (related work) |
+
+**Bottom line**
+- **Novel:** the causal own / neighbour-read / neighbour-state decomposition of SC, and the result that neighbour-reading dominates (no prior split; DiffusionGemma-transparency lists per-position SC patching as open).
+- **Partly known:** the scale trend (SCMDM, cross-backbone).
+- **Partly anticipated:** the cross-position intuition (CANDI's untested remark).
+
+**Draft differentiation statement (intro):** "Prior explanations of self-conditioning are per-position or temporal: correcting a train/inference mismatch or token identifiability (Davis et al., 2026), implementing fixed-point refinement (Yoo et al., 2026), or avoiding low-density regions (Shabalin et al., 2026); CANDI (Pynadath et al., 2025) speculates, without testing, that previous predictions act as cross-position anchors. We give the first causal decomposition of self-conditioning's benefit into own-feedback, neighbour-reading, and neighbour-state routes, and show in a blockwise flow LM at 0.5B and 7B that neighbour-reading dominates: self-conditioning is primarily a cross-position coordination channel."
+
+**Must-cite:** Davis et al.; Yoo et al.; CANDI (+ SCMDM for scale).
+
+**To do before submission:**
+- read 2610.19628 App. D.5.2;
+- re-check papers citing Lafa (the Semantic Scholar rate limit blocked it) and the arXiv listings for 14–15 Nov;
+- skim TDLM 2610.36940, Simplex Diffusion 2609.35553, CoDD 2603.00045, DAPD 2603.12996, CADD 2510.01329.

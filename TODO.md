@@ -230,17 +230,21 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
   - [ ] T1b: cross-position Jacobian (q-path vs. x-path) over steps;
   - [ ] T1c: interpretable-bottleneck test (top-1 feedback);
   - [ ] T1d: contrastive "which answer" q-direction + dose–response steering.
-- [ ] Add to the literature ledger (`phase3.md` §6): DiffusionGemma transparency (2606.20560, "token smearing" — must differentiate), DiffusionGemma commitment (2606.14620), CANDI (2510.22510), DifFRACT (2606.15796), PEAP (2502.04577), MIB (2504.13151).
+- [x] *(covered in `phase3.md` §8)* Add to the literature ledger (`phase3.md` §6): DiffusionGemma transparency (2606.20560, "token smearing" — must differentiate), DiffusionGemma commitment (2606.14620), CANDI (2510.22510), DifFRACT (2606.15796), PEAP (2502.04577), MIB (2504.13151).
 
 - [x] *(answered by the Phase 3.5 smoke test)* SC gap at g = 1 vs. g = 8 (≈ equal); hybrid rate at 1 step (positive control: hybrids present); seed diversity at noise 0.1 (seeds barely matter → minimal-pair donors); feedback-off vs. full on natural blocks (coherence drop at positions 2–3).
 
 ### Phase 7.5 — Strengthening additions (decided 2026-11-15)
 - [x] **Pre-register head-level localization as confirmatory** (*done 2026-11-15: prereg §2.4 L1/L2 + §12; pushed*) (prereg §12 amendment + push, BEFORE any confirmation data): per-head q-path vs. x-path path patching → named "feedback-reader" heads; minimal circuit with MIB CPR/CMD faithfulness; behavioural prediction (knocking out the heads lowers SC's coherence gain / raises garbles). Circuit-validation split. (`interp_methods.md` §3 Tier 2)
 - [ ] **Second model family:** *Feasibility (2026-11-15): official ELF code is JAX (github.com/lillian039/ELF); torch checkpoints exist on HF (`*-torch`), but the official torch code isn't released → needs an unofficial port (Ugness/elf-torch, sslnon/elf-s2t) validated against JAX; ELF is unconditional, uses SC as a CFG token, and works in a contextual T5 latent space. Estimate 1–2 days → do AFTER Lafa confirmation + localization.* ELF (`embedded-language-flows/ELF-B/M/L-owt`, torch versions; whole-sequence flow with self-conditioning). Feasibility check (load + one 2×2×2 block), then replicate H2-N (+ scale via B/M/L). Backups: LangFlow (`Continuous-Rivals-Discrete/langflow-owt`), self-conditioned FMLM (`wonjKim/self-conditioned-fmlm`).
+- [x] **Guidance-on (paper-regime) 2 × 2 × 2 (2026-11-16):** `run_block_two_pass_cfg` (exact identities). Exploration pilot, 286 blocks, PR:
+  - **dep: N share 0.90, contrast +0.39 [0.16, 0.65]; coh: N share 0.70, contrast +0.44 [0.24, 0.65]**; O ≈ 0; F ≈ 0; N × F synergy +0.44 / +0.50.
+  - → **The coordination mechanism holds at the deployed settings.**
+  - Pre-registered as secondary S12 (prereg §2.2, §12).
 - [x] **Localization tool built (2026-11-15):** `PerLayerMasks` (per-layer, per-head attention masks via forward pre-hooks) + `run_block_headcut` (head-resolved N cut for target j). Tests: no cut = normal decoding (exact, 0.0); all-heads cut = the 2 × 2 × 2 cell (O1, N0, F1) (identical tokens; ≤ 0.4 logit bf16 re-routing noise) → the baseline uses `reroute=True` (same code path).
 - [ ] Localization discovery (exploration, after Phase 8): layer-level sweep (24 layers) → head-level within the top layers → k, H* frozen in §11 → test L1/L2 on circuit-validation.
 - [ ] **Mechanism → better sampler (upside):** strengthen only the cross-position feedback reads (or feed fresher neighbour predictions) and test for fewer garbles at 4–8 steps / higher speculative acceptance.
-- [ ] **Targeted novelty check for the NEW headline** ("SC's benefit comes mainly from positions reading each other's fed-back predictions; grows with scale"):
+- [x] **Targeted novelty check for the NEW headline** (*done 2026-11-15 → `phase3.md` §8: decomposition + neighbour-reading result NOVEL; scale trend partly known (SCMDM); cross-position intuition anticipated by CANDI (untested). To do: read 2610.19628 App. D.5.2; re-check papers citing Lafa*) ("SC's benefit comes mainly from positions reading each other's fed-back predictions; grows with scale"):
   - full read of CANDI (2510.22510; SC as anchors for conditional dependencies, the closest idea);
   - DiffusionGemma transparency (2606.20560, "token smearing");
   - anything since 2026-11-13 from the Lafa group or citing Lafa;

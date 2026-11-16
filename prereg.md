@@ -97,6 +97,7 @@ All primary tests are **one-sided** against a margin m: H0: θ ≤ m vs. H1: θ 
 | S10a | End task, PR: SC gain on the mean of GSM8K / HumanEval / IFEval > 0 (on the 75% not reserved for G1) | Bootstrap p over problems |
 | S10b | End task, MR: same, > 1 pp (on the 75% of each benchmark not reserved for G1) | Bootstrap p over problems |
 | S11 | Hybrid ladder: (upward − downward) paired class transitions > 0 | Bootstrap p |
+| S12 | **H2-N in the paper regime** (PR: K = 32, g = 8, noise 0.1; 2 × 2 × 2 with CFG, both branches; `run_block_two_pass_cfg`): linear contrast N − 0.20·T on dep_{2,3} > 0, 0.5B, confirmation natural-text documents | Bootstrap p |
 
 - **Descriptive only (no test):** S7 (the F and O shares, with CIs).
 - **Under K3:** S5, S8 and S9 rely on knockouts or channel cuts. They are marked invalid and removed from the BH family.
@@ -298,6 +299,7 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | — | — |
 
 ## 12. Deviations / Change Log
+- **2026-11-16 (before any confirmation data): S12 added** to the secondary family: the H2-N contrast in the paper regime (guidance on). Exploration pilot (286 blocks): dep N share 0.90 (Möbius), contrast +0.39 [0.16, 0.65]; coh N share 0.70, contrast +0.44 [0.24, 0.65]. The BH family size becomes 12 (if no gate removes tests).
 - **2026-11-15 (before confirmation data): classifier audit + one implementation fix.** Audit of 150 stratified labels against the §2.3 definition: 98.7% agreement, hybrids 100%. Fix: a complete valid answer followed by extra words (e.g. "Gregor Mendel would") is labelled as that mode (it was 'other'). The hybrid definition (prefix of one mode + suffix of the other, at token boundaries) is **unchanged**; messier multi-way mixes remain 'other' (a conservative undercount, reported descriptively).
 - **2026-11-15 (before any confirmation data): localization family added (§2.4).** Head-level discovery on exploration; test on the circuit-validation split; L1 (necessity/specificity vs. random size-matched heads, share contrast > 0.30) and L2 (behavioural, > 3 pp); Holm over {L1, L2}. Motivation: the exploration H2-N pilot (N share 0.7–0.9 at 0.5B) makes component-level localization a planned, confirmatory question rather than a post-hoc one.
 - **2026-11-14 (Phase 7, exploration only): K12 probe implementation.**
