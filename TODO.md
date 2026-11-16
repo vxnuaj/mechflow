@@ -240,9 +240,9 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [ ] Brief the co-author with `README.md` + the pilot numbers.
 
 ### Phase 8 — Decision gate
-- [ ] Write a one-page pilot memo: what Phase 7 showed, which hypotheses survived, and what changed.
+- [x] Write a one-page pilot memo (`mechflow/phase8_memo.md`, 2026-11-15): recommendation **GO**, reframed around the coordination mechanism.
 - [ ] Update `mechflow/mechflow.md` (framing, experiments, primary step-count regime).
-- [ ] Decide: **go** (run confirmatory Experiment 1 on the confirmation split) / **reframe** / **kill**.
+- [ ] **YOU:** decide **go** / **reframe** / **kill** (memo recommends GO), plus: add the guidance-on 2 × 2 × 2 before confirmation (recommended)?, and spot-check ~20 classifier-audit labels.
 - [ ] **Localization decision** (`interp_methods.md` §3 Tier 2): if C1′ or H2-N looks real in the pilot, commit to head-level q-path vs. x-path path patching → EAP-IG (PEAP, MIB metrics) → mediation → DAS / causal-scrubbing validation, on the circuit-validation split. To make it **confirmatory**, add its estimands to prereg §12 and push **before** any confirmation data. Also consider the Tier 3 methods contribution: path patching through the recurrent feedback edge.
 - [ ] **(partly done 2026-11-13: prereg v1.4 is anchored by public GitHub commit `6acca33`; still to do: push each §11 entry before confirmation data)** **YOU (required before any confirmation run): anchor the prereg hash externally.** Post the latest SHA-256 from `mechflow/prereg_hashes.log` to OSF (preferred), a public gist, or an email to an advisor/co-author. Then record the URL or message in `prereg_hashes.log`. Repeat for each §11 entry before confirmation data exists.
 - [ ] If go: freeze the pre-registration and start.
