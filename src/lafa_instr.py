@@ -333,13 +333,16 @@ class PerLayerMasks:
 
 
 @torch.no_grad()
-def run_block_headcut(S: "Sampler", cache, block_start: int, cfg: BlockCfg, j: int, cut: dict, reroute: bool = False):
+def run_block_headcut(S: "Sampler", cache, block_start: int, cfg: BlockCfg, j: int, cut: dict, reroute: bool = False,
+                      steps=None):
     """Head-resolved N cut for target j (MR, cfg_scale must be 1), all three factors on otherwise.
 
     Each step: pass B = neighbours without SC (j keeps SC); pass A = everyone with SC (normal);
     pass A' = like A, but at layer l, head h in cut[l], query j reads the neighbours' K/V from pass B.
     Outputs: j from A'; neighbours from A (so neighbours evolve normally). cut = {} reproduces normal SC.
     reroute=True runs the B + A' path even with an empty cut: the bf16-matched baseline for comparisons (Phase 6 rule).
+    steps: optional set of step indices where the cut applies; at other steps the same B + A' path runs with
+    no cut (so every condition shares one code path). None = all steps.
     """
     m, E, bd, dt, dev = S.m, S.E, S.bd, S.dtype, S.dev
     assert abs(cfg.cfg_scale - 1.0) < 1e-6
@@ -383,7 +386,7 @@ def run_block_headcut(S: "Sampler", cache, block_start: int, cfg: BlockCfg, j: i
             if cut or reroute:
                 lgB, _, _ = m._forward_backbone(eB, tb, base_mask, past_key_values=cache, use_cache=False,
                                                 position_ids=pos_ids)        # appends B K/V
-                with PerLayerMasks(m, layer_masks):
+                with PerLayerMasks(m, layer_masks if (steps is None or step in steps) else {}):
                     lgA2, _, _ = m._forward_backbone(full, tb, default, past_key_values=cache, use_cache=False,
                                                      position_ids=pos_ids)
                 S._trim(cache, cache.get_seq_length() - cl)

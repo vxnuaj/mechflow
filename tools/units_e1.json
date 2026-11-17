@@ -1,0 +1,24 @@
+[
+ [
+  "mf_e1_0",
+  "tasks_h2n_expl_300.jsonl",
+  "jobs_e1:e1_task",
+  "results/e1_map",
+  4,
+  0,
+  2,
+  "PYTORCH_ALLOC_CONF=expandable_segments:True",
+  []
+ ],
+ [
+  "mf_e1_1",
+  "tasks_h2n_expl_300.jsonl",
+  "jobs_e1:e1_task",
+  "results/e1_map",
+  4,
+  1,
+  2,
+  "PYTORCH_ALLOC_CONF=expandable_segments:True",
+  []
+ ]
+]

@@ -24,6 +24,8 @@ U = [  # name, tasks, job, out, wpg, arr, count, extra exports, skip-if-any-of-t
     ("mf_p2x_0", "tasks_conf_p2x.jsonl", "jobs_p2x:p2x_task", "results/conf_p2x", 4, 0, 2, "PYTORCH_ALLOC_CONF=expandable_segments:True", ["mf_cp2x"]),
     ("mf_p2x_1", "tasks_conf_p2x.jsonl", "jobs_p2x:p2x_task", "results/conf_p2x", 4, 1, 2, "PYTORCH_ALLOC_CONF=expandable_segments:True", ["mf_cp2x"]),
 ]
+if len(sys.argv) > 1:   # optional: units from a JSON file (list of [name, tasks, job, out, wpg, arr, count, extra, skip])
+    U = [tuple(u) for u in json.load(open(sys.argv[1]))]
 
 STATUS = r'''
 import json, os, sys
