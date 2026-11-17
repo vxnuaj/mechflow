@@ -106,3 +106,24 @@ The review independently converged on the same framing: **self-conditioning = be
 | 5 | **Toy factor-graph model vs. exact BP** (E7) | Theory anchor; the mechanism as a property of the algorithm; partial answer to "one model family" |
 
 **Framing (candidate headline):** *Self-conditioning turns a factorized parallel decoder into belief propagation unrolled over denoising time. Each position broadcasts its current belief, and neighbours read it through attention (layer-0 KV heads are tuned to this channel). Without it, positions break symmetry independently, producing both symptoms of the NAT multimodality problem: mixed answers and duplicated tokens.*
+
+---
+
+## 6. E1 interim (152 / 300 exploration docs, 2026-11-17): the step × layer map
+
+Measure: cut j's reads of neighbours' SC-carrying K/V. Share = effect / effect of cutting everything (dep_{2,3}; coh similar).
+
+- **When (steps):**
+  - last quarter (steps 24–31) **0.90** [0.72, 1.13];
+  - steps 16–23: 0.05;
+  - steps 8–15: 0.09;
+  - steps 0–7: 0.02.
+  - **The reading is a late-stage process.** This refutes Account B (early warning) and Account A2 (flat over steps).
+- **Where (layers):**
+  - distributed;
+  - largest at L8–11 (0.25), then L12–15 (0.18), L16–19 (0.16), L0–3 (0.14), L4–7 (0.06), L20–23 (0.03);
+  - **L0 alone ≈ 0.01**, so the E5 weight prior was wrong.
+  - The bands add up to ≈ 0.8, so the effect is roughly additive across layers.
+- **Peak cell:** steps 24–31 × L8–15 = 0.36.
+- **Caveat to resolve (E1b, running):** late cuts act directly on the final readout, while earlier cuts may be repaired by later steps. E1b splits the last step from steps 24–30, and cuts each layer singly (100 docs, smooth drop metric).
+- **Emerging picture:** not a depth shortcut and not early symmetry breaking. Positions check neighbours' fed-back beliefs during the **final commitment phase**, through mid-layer attention spread across many layers. *If confirmed:* the "distributed" branch of L1 becomes more likely, and the head search should screen mid layers (4–19) at late steps.
