@@ -241,6 +241,15 @@ def run_meta(cfg: BlockCfg | None = None, extra: dict | None = None) -> dict:
             "torch": torch.__version__, "time_utc": datetime.datetime.utcnow().isoformat() + "Z",
             "model": f"{os.environ.get('LAFA_REPO', 'lafa-hf/lafa-0.5B')}@{os.environ.get('LAFA_REV', '18deca3522f7884898a58d0fb2d2afb3fc91f87e')}",
             "h2n_regime": os.environ.get("H2N_REGIME"), "p2_regime": os.environ.get("P2_REGIME")}
+    if torch.cuda.is_available():
+        meta["gpu"] = torch.cuda.get_device_name(0)
+        meta["cuda"] = torch.version.cuda
+        meta["driver"] = os.popen("nvidia-smi --query-gpu=driver_version --format=csv,noheader").read().strip()
+    elif torch.backends.mps.is_available():
+        meta["gpu"] = "apple-mps"
+    meta["platform"] = os.environ.get("MF_PLATFORM", "carc" if os.path.isdir("/scratch1") else "local")
+    meta["git_commit"] = os.popen(f"git -C {here} rev-parse HEAD 2>/dev/null").read().strip() or os.environ.get("MF_COMMIT")
+    meta["cuts"] = os.environ.get("CUTS"); meta["grid"] = os.environ.get("GRID")
     if cfg is not None:
         meta["cfg"] = cfg.__dict__
     if extra:
@@ -466,6 +475,86 @@ def run_block_two_pass_cfg(S: "Sampler", cache, block_start: int, cfg: BlockCfg,
             tf, to = t_fwd[None, :, None].float(), t_out[None, :, None].float()
             e_t = (z.float() + (to - tf) * (e_den.float() - z.float()) / (1.0 - tf).clamp(min=1e-6)).to(dt)
         return last.argmax(-1).tolist(), last.cpu()
+    finally:
+        m.noise_scale_mult = saved_noise
+        m.backbone.config._attn_implementation = orig_attn
+
+
+@torch.no_grad()
+def prefill_batched(S: "Sampler", prompt_ids: list, B: int):
+    """Prefix KV cache replicated over a batch of B (one batched forward)."""
+    ids = torch.tensor([prompt_ids] * B, device=S.dev)
+    emb = S.m.embed_tokens(ids)
+    t_bn = S.m._compute_t_bn(torch.ones(B, ids.shape[1], device=S.dev, dtype=S.dtype))
+    _, cache, _ = S.m._forward_backbone(emb, t_bn, attn_mask=None, use_cache=True)
+    return cache, ids.shape[1]
+
+
+@torch.no_grad()
+def run_block_headcut_batched(S: "Sampler", cache_B, block_start: int, cfg: BlockCfg, j: int, conds: list):
+    """Batched version of run_block_headcut(..., reroute=True): B = len(conds) conditions in one batch.
+    conds: list of (cut: {layer: [heads]}, steps: set or None). cache_B: prefix cache with batch B
+    (prefill_batched). Same initial noise for every condition, as in the unbatched runs (same seed).
+    Returns [(tokens, logits [bd, V] cpu)] per condition."""
+    m, E, bd, dt, dev = S.m, S.E, S.bd, S.dtype, S.dev
+    B = len(conds)
+    assert abs(cfg.cfg_scale - 1.0) < 1e-6
+    saved_noise = m.noise_scale_mult
+    m.noise_scale_mult = float(cfg.noise)
+    orig_attn = getattr(m.backbone.config, "_attn_implementation", None)
+    m.backbone.config._attn_implementation = "eager"
+    H = m.backbone.config.num_attention_heads
+    nb = [p for p in range(bd) if p != j]
+    neg = float("-inf")
+    try:
+        torch.manual_seed(cfg.seed)
+        grid = m._get_generation_time_grid(cfg.num_steps, dev, grid_mode=cfg.grid_mode, t_max=0.2)
+        if grid.dim() == 1:
+            grid = grid[None].expand(bd, -1)
+        K = grid.shape[-1] - 1
+        pos_ids = torch.arange(block_start, block_start + bd, device=dev).unsqueeze(0).expand(B, -1)
+        cl = cache_B.get_seq_length()
+        base_mask = torch.zeros(B, 1, bd, cl + bd, dtype=dt, device=dev)
+        e_t = (torch.randn(1, bd, m._d_model, device=dev, dtype=dt) * m._noise_sigma * m.noise_scale_mult).expand(B, -1, -1).contiguous()
+        tb0 = m._compute_t_bn(grid[:, 0].to(dt)[None, :].expand(B, -1))
+        lg0, _, _ = m._forward_backbone(e_t, tb0, base_mask, past_key_values=cache_B, use_cache=False, position_ids=pos_ids)
+        S._trim(cache_B, cache_B.get_seq_length() - cl)
+        esc = F.softmax(lg0.float(), -1).to(dt) @ E
+        default = torch.zeros(B, 1, bd, cl + 2 * bd, dtype=dt, device=dev)
+        default[..., cl:cl + bd] = neg
+        layers = sorted({l for c, _ in conds for l in c})
+        last = None
+        for step in range(K):
+            masks = {}
+            for li in layers:
+                mk = default.expand(B, H, bd, cl + 2 * bd).clone()
+                for b, (c, steps) in enumerate(conds):
+                    if li in c and (steps is None or step in steps):
+                        for h in c[li]:
+                            for p in nb:
+                                mk[b, h, j, cl + p] = 0.0
+                                mk[b, h, j, cl + bd + p] = neg
+                masks[li] = mk
+            t_fwd, t_out = grid[:, step], grid[:, step + 1]
+            z = e_t
+            tb = m._compute_t_bn(t_fwd.to(dt)[None, :].expand(B, -1))
+            full = m._apply_self_cond(z, esc)
+            eB = z.clone(); eB[:, j, :] = full[:, j, :]
+            lgA, _, _ = m._forward_backbone(full, tb, base_mask, past_key_values=cache_B, use_cache=False, position_ids=pos_ids)
+            S._trim(cache_B, cache_B.get_seq_length() - cl)
+            m._forward_backbone(eB, tb, base_mask, past_key_values=cache_B, use_cache=False, position_ids=pos_ids)
+            with PerLayerMasks(m, masks):
+                lgA2, _, _ = m._forward_backbone(full, tb, default, past_key_values=cache_B, use_cache=False, position_ids=pos_ids)
+            S._trim(cache_B, cache_B.get_seq_length() - cl)
+            lg = lgA.float().clone(); lg[:, j] = lgA2[:, j].float()
+            e_den = F.softmax(lg, dim=-1).to(dt) @ E
+            esc = e_den.detach()
+            last = lg
+            if step == K - 1:
+                break
+            tf, to = t_fwd[None, :, None].float(), t_out[None, :, None].float()
+            e_t = (z.float() + (to - tf) * (e_den.float() - z.float()) / (1.0 - tf).clamp(min=1e-6)).to(dt)
+        return [(last[b].argmax(-1).tolist(), last[b].cpu()) for b in range(B)]
     finally:
         m.noise_scale_mult = saved_noise
         m.backbone.config._attn_implementation = orig_attn
