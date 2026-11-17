@@ -275,6 +275,18 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
   - secondary: BH q = 0.10 over the 5 tests;
   - report the §7 interpretation; commit and push.
 
+### Phase 9.5 — Insight experiments (exploratory; exploration split) → `mechflow/insights.md`
+- [x] Zero-GPU checks on the confirmation 2 × 2 × 2 outputs (2026-11-17):
+  - N is not subword stitching (word-start +0.71 ≈ continuation +0.66);
+  - **N prevents within-block duplication** (2.9% → 1.1–1.3%) → fixes both NAT multimodality symptoms;
+  - layer-0 KV heads are tuned to the SC channel (1.3–1.5× gain).
+- [ ] E1 step × layer map of N (critical window vs. depth shortcut).
+- [ ] Symmetry-breaking coupling: cross-position A−B Jacobian; forward–backward joint switching with vs. without N.
+- [ ] E4 message steering / answer-ID vector (binding IDs).
+- [ ] E2 source-resolved N (left vs. right neighbours) + reader-head offset classification + base-Qwen comparison.
+- [ ] E7 toy factor-graph flow model vs. exact BP marginals.
+- [ ] Verify all citations from the 2026-11-17 interp review (abstract-only) before use.
+
 ### Phase 10 — Localization (circuit-validation only after k, H* are frozen)
 - [ ] Layer sweep → head screen on exploration/confirmation docs → freeze k and H\* in §11 and push → L1/L2 test on circuit-validation.
 
