@@ -59,12 +59,13 @@ def main():
             st = json.loads(subprocess.run(["ssh", "-o", "BatchMode=yes", "carc", "python3 - " + shlex.quote(arg)], input=STATUS,
                                            capture_output=True, text=True, timeout=300).stdout)
             q = ssh("squeue -u $USER -h -o %j").split()
+            qd = ssh("squeue -u $USER -h -p debug -o %j").split()   # only debug jobs count toward MAX_SUB
         except Exception as e:
             print(time.strftime("%H:%M"), "status error", e, flush=True); time.sleep(120); continue
         todo = [u for u in U if st[u[0]][0] < st[u[0]][1]]
         if not todo:
             print(time.strftime("%H:%M"), "ALL DEBUG UNITS COMPLETE", flush=True); return
-        sub = sum(1 for u in U if u[0] in q)
+        sub = len(qd)
         line = " ".join(f"{u[0][3:]}:{st[u[0]][0]}/{st[u[0]][1]}" for u in U if st[u[0]][0] < st[u[0]][1])
         for u in todo:
             name, tasks, job, out, wpg, arr, count, extra, skip = u
