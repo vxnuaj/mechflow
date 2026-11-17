@@ -263,17 +263,14 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [x] Prereg hash anchored externally: each §11 entry was pushed to the public GitHub repo before any confirmation data (final freeze sha256 `90ea6df0…`, 2026-11-16).
 - [x] Freeze: §11 complete (n, code hash, snapshots, BH family = {S1, S3, S4, S11, S12}); scope deviations logged in §12 before data.
 
-### Phase 9 — Confirmatory runs (confirmation split; circuit-validation untouched)
-- [ ] **P1** (0.5B, PR): 9,632 prompts / 602 pairs → `results/conf_p1` (also gives S11).
-- [ ] **P2** (0.5B, PR, + Mistral judge): 7,100 documents → `results/conf_p2`.
-- [ ] **S3 / S4** arms (g = 1 at noise 0.1 and 4.0): first 2,000 P2 documents → `results/conf_p2x`.
-- [ ] **H2-N** (0.5B, MR, 2 × 2 × 2): 2,000 documents → `results/conf_h2n`.
-- [ ] **S12** (0.5B, PR, 2 × 2 × 2 with CFG): 750 documents → `results/conf_s12`.
-- [ ] **S1** (7B P1): 2,400 prompts / 150 pairs → `results/conf_s1_7b`.
-- [ ] Analysis exactly as pre-registered:
-  - primary: Holm over {P1, P2, H2-N}, cluster bootstrap with 20,000 resamples;
-  - secondary: BH q = 0.10 over the 5 tests;
-  - report the §7 interpretation; commit and push.
+### Phase 9 — Confirmatory runs ✅ (2026-11-17) → `mechflow/confirmation_results.md`
+- [x] P1 (0.5B, PR; Mac MPS): 9,632 prompts / 602 pairs: **+6.97 pp [6.09, 7.95] ✓**.
+- [x] P2 (0.5B, PR, + Mistral): 7,100 docs: **+0.540 [0.477, 0.604] ✓**, co-requirement met.
+- [x] S3 / S4 arms: 2,000 docs: S3 equivalent ✓, S4 non-inferior ✓.
+- [x] H2-N (0.5B, MR): 2,000 docs: **contrast +0.515 [0.409, 0.624] ✓**, Shapley N share 1.14.
+- [x] S12 (PR, guidance on): 750 docs: **+0.440 ✓**, N share 0.73.
+- [x] S1 (7B P1): 2,400 prompts / 150 pairs: +0.25 pp ✗ (mixing ≈ 0 at 7B).
+- [x] Analysis exactly as pre-registered: **primary 3 / 3 supported (Holm); secondary 4 / 5 (BH)**; §7 row = phenomenon + feedback-channel mechanism.
 
 ### Phase 9.5 — Insight experiments (exploratory; exploration split) → `mechflow/insights.md`
 - [x] Zero-GPU checks on the confirmation 2 × 2 × 2 outputs (2026-11-17):
