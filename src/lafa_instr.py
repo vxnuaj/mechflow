@@ -355,6 +355,8 @@ def run_block_headcut(S: "Sampler", cache, block_start: int, cfg: BlockCfg, j: i
     try:
         torch.manual_seed(cfg.seed)
         grid = m._get_generation_time_grid(cfg.num_steps, dev, grid_mode=cfg.grid_mode, t_max=0.2)
+        if grid.dim() == 1:                                   # uniform grids: same times for every position
+            grid = grid[None].expand(bd, -1)
         K = grid.shape[-1] - 1
         pos_ids = torch.arange(block_start, block_start + bd, device=dev).unsqueeze(0)
         cl = cache.get_seq_length()

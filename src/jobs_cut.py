@@ -12,7 +12,7 @@ import load
 from lafa_instr import BlockCfg, run_block_headcut
 from jobs_h2n import ar_logprob, sample_prefixes
 
-CFG = BlockCfg(32, 1.0, 4.0, True, seed=1)
+CFG = BlockCfg(32, 1.0, 4.0, True, seed=1, grid_mode=os.environ.get("GRID", "warp"))
 S_SAMPLES = 16
 _CUTS = None
 

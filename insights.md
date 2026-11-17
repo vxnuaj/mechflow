@@ -127,3 +127,35 @@ Measure: cut j's reads of neighbours' SC-carrying K/V. Share = effect / effect o
 - **Peak cell:** steps 24–31 × L8–15 = 0.36.
 - **Caveat to resolve (E1b, running):** late cuts act directly on the final readout, while earlier cuts may be repaired by later steps. E1b splits the last step from steps 24–30, and cuts each layer singly (100 docs, smooth drop metric).
 - **Emerging picture:** not a depth shortcut and not early symmetry breaking. Positions check neighbours' fed-back beliefs during the **final commitment phase**, through mid-layer attention spread across many layers. *If confirmed:* the "distributed" branch of L1 becomes more likely, and the head search should screen mid layers (4–19) at late steps.
+
+---
+
+## 7. E1c: discriminating WHY the neighbour reading is late (predictions committed before data, 2026-11-17)
+
+**Fact:**
+- With the default `warp` grid, t rises only 0 → 0.44 over steps 0–30 (each step moves the state 1–9% toward the prediction).
+- Step 31 then jumps to t = 1.
+- The output is always the final step's argmax prediction.
+
+**Hypotheses:**
+- **H-readout:** coordination is needed where the output is read, i.e. at the final prediction(s), whatever the noise level. Earlier cuts are repaired by later re-reading.
+- **H-gate:** the network gates neighbour-feedback reading on the noise level t (learned through time conditioning). Reading switches on above some t\*.
+- **H-clean:** feedback is read because the states are uninformative. Already strained: at PR (noise 0.1, informative states) neighbour reading still carries 73% (S12).
+
+**Manipulation:** rerun the step-window map (base, all, s0-7, s8-15, s16-23, s24-31, s24-30, s31) under two more grids, on the same 100 exploration docs. In both, the final prediction is at the last step:
+- `uniform_range` (t: 0 → 0.2, never high);
+- `uniform` (t: 0 → 1; 0.44 is reached at step ≈ 14).
+
+**Predictions:**
+
+| | `uniform_range` (t ≤ 0.2) | `uniform` (t → 1) |
+|---|---|---|
+| H-readout | Late windows still carry most of the effect (s24-31 ≫ early) | Late windows still carry most of the effect |
+| H-gate | Total N effect small (t never reaches the gate) | The effect shifts **earlier**, to wherever t > t\* (≈ steps ≥ 10–14), spread over the steps after that point |
+| H-clean | Large effect, late | The effect shrinks late, as the states become informative |
+
+**Decision rule:** whichever hypothesis predicts the observed pattern in **both** grids. If none does, report "unresolved" and say so.
+
+**Measure (fixed before data):** the decision uses **dep_{2,3}** (and coh) of the generated tokens, n = 300 exploration docs per grid.
+- The smooth "drop" metric saturates under `uniform`: at the final step, t ≈ 0.97 and the prediction is near-certain whatever happened earlier.
+- **Implementation check:** Lafa's reference sampler treats a 1-D grid as the same t for every position. `run_block_headcut` now broadcasts 1-D grids identically.
