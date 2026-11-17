@@ -299,6 +299,7 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | **GO** (user decision, 2026-11-16), reframed around the coordination mechanism (`phase8_memo.md`). Primary = {P1, P2, H2-N}, Holm over 3 | 2026-11-16 |
 
 ## 12. Deviations / Change Log
+- **2026-11-16 (during confirmation; no outcome inspected): P1 (0.5B) runs on Apple MPS, not CARC.** CARC was congested, so the full P1 set (9,632 prompts; same code, task file, 8-shard layout, bf16) runs on the user's Mac (MPS), as G1 did. All three conditions of each prompt run on the same device, so the paired contrast is unaffected. Bit-level outputs can differ from CUDA; the device is recorded.
 - **2026-11-16 (during confirmation; no outcome inspected): memory-only fix to AR scoring.**
   - **The problem:** `ar_logprob` / `sample_prefixes` (`jobs_h2n.py`, also used by P2 and S3/S4) materialized full [16 × length × 152k] logits. Confirmation documents reach 2,855 tokens (exploration max 882), so workers ran out of GPU memory and their shards stalled.
   - **The fix:** the same forward path (embed → t = 1 → backbone), with `lm_head` applied only at the needed position.

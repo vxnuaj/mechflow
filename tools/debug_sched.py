@@ -19,7 +19,6 @@ U = [  # name, tasks, job, out, wpg, arr, count, extra exports, skip-if-any-of-t
     ("mf_p2_5", "tasks_conf_p2.jsonl", "jobs_p2:p2_task", "results/conf_p2", 1, 5, 8, "P2_REGIME=PR,PYTORCH_ALLOC_CONF=expandable_segments:True", ["mf_dp2_1", "mf_dp2_2", "mf_dp2_3", "mf_cp2"]),
     ("mf_p2_6", "tasks_conf_p2.jsonl", "jobs_p2:p2_task", "results/conf_p2", 1, 6, 8, "P2_REGIME=PR,PYTORCH_ALLOC_CONF=expandable_segments:True", ["mf_dp2_1", "mf_dp2_2", "mf_dp2_3", "mf_cp2"]),
     ("mf_p2_7", "tasks_conf_p2.jsonl", "jobs_p2:p2_task", "results/conf_p2", 1, 7, 8, "P2_REGIME=PR,PYTORCH_ALLOC_CONF=expandable_segments:True", ["mf_dp2_1", "mf_dp2_2", "mf_dp2_3", "mf_cp2"]),
-    ("mf_dp1", "tasks_conf_p1.jsonl", "jobs_p1:p1_task", "results/conf_p1", 8, 0, 1, "PYTORCH_ALLOC_CONF=expandable_segments:True", []),
     ("mf_s12_0", "tasks_conf_s12.jsonl", "jobs_h2n:h2n_task", "results/conf_s12", 4, 0, 2, "H2N_REGIME=PR,PYTORCH_ALLOC_CONF=expandable_segments:True", ["mf_cs12"]),
     ("mf_s12_1", "tasks_conf_s12.jsonl", "jobs_h2n:h2n_task", "results/conf_s12", 4, 1, 2, "H2N_REGIME=PR,PYTORCH_ALLOC_CONF=expandable_segments:True", ["mf_cs12"]),
     ("mf_p2x_0", "tasks_conf_p2x.jsonl", "jobs_p2x:p2x_task", "results/conf_p2x", 4, 0, 2, "PYTORCH_ALLOC_CONF=expandable_segments:True", ["mf_cp2x"]),
