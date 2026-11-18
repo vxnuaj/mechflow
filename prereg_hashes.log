@@ -19,3 +19,4 @@
 2026-11-16T21:09:53Z prereg.md §12 memory-only AR-scoring fix (bitwise-equivalent) sha256=a04717794dd4a570aa62a6837f8c4f8b15b4170026d4814f65eb940095cd08c7
 2026-11-17T05:11:46Z prereg.md §12 P1 on MPS sha256=b1c2e3aa4cd58256d229588ff6eb8e363093f1b3c8d58c9c678aab54b6b97c89
 2026-11-17T12:24:37Z confirmation_results.md sha256=1525ffb64dba5d31fc5822bd8636d79043596a617bd81a2b425eed2a5eac7db5; confirm_final.txt sha256=1e9ba225529e7d3960afbf81e0e7bce7fbd91ceec2e6e641867219b1d6fc5202
+2026-11-18T04:24:05Z prereg.md §11 k/H* + §12 localization details (before circuit-validation data) sha256=fdd9f18d7db5096a92e46a47b65ff3a98e21835452356f2c0049ec96fa48a30d; analysis/l1.py sha256=f615c48dce9f4467996ccc5bcf220aeec9e22b0f77fc508606ff816681312c8b
