@@ -4,7 +4,8 @@ import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from huggingface_hub import snapshot_download
 texts = json.load(open(sys.argv[1]))
-jp = snapshot_download("mistralai/Mistral-7B-Instruct-v0.3", revision="c170c708c41dac9275d15a8fff4eca08d52bab71")
+import os, glob as _g
+jp = os.environ.get("JUDGE_PATH") or snapshot_download("mistralai/Mistral-7B-Instruct-v0.3", revision="c170c708c41dac9275d15a8fff4eca08d52bab71")
 jt = AutoTokenizer.from_pretrained(jp); jm = AutoModelForCausalLM.from_pretrained(jp, dtype=torch.bfloat16).to("cuda").eval()
 res = {}
 for sc, ts in texts.items():
