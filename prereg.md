@@ -154,6 +154,21 @@ All primary tests are **one-sided** against a margin m: H0: θ ≤ m vs. H1: θ 
 - R2 failing on its first part → feedback matters even with informative states (the account is wrong).
 - R1 failing → no redundancy (the channels are independent).
 
+
+### 2.6 Family S7: the mechanism at 7B (added 2026-11-18, before any of its data; exploratory basis: insights.md §19)
+**Data:** 500 confirmation documents never used before (`src/tasks_conf7b.jsonl`; shuffled confirmation order, excluding every document in any `tasks_conf_*` file and in `tasks_gc.jsonl`). lafa-7B @ 434c100d…, MR (g = 1, noise 4.0, K = 32), the 2 × 2 × 2 of §2.1 H2-N (`jobs_h2n:h2n_task`), j ∈ {2, 3}.
+
+**Primary outcome:** coh_{2,3} under the 7B's own AR head. dep is too noisy at 7B in exploration and is reported descriptively.
+
+**Tests** (Holm over 3, α = 0.05; one-sided cluster bootstrap by document, 20,000; `analysis/s7b.py`):
+- **S7-1:** mN − 0.2·T > 0.
+- **S7-2:** Shapley(N) − 0.5·T > 0 (neighbour reading carries at least half). Co-requirement: Mistral Shapley N share ≥ 0.5 (point estimate), else "judge-dependent".
+- **S7-3:** Shapley(O) > 0 (a position's own feedback contributes at 7B).
+
+**Interpretation:**
+- S7-1 ∧ S7-2 → neighbours dominate at 7B.
+- S7-3 → own feedback emerges with scale (it is ≈ 0 or negative at 0.5B, §11 / insights §16).
+
 ## 3. Metrics
 - **Primary:** dep_j (positions 2–3); the hybrid rate; μ_j.
 - **Co-requirement:** external-judge and own-AR coh_j.

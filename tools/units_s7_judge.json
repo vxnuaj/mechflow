@@ -1,0 +1,24 @@
+[
+ [
+  "mf_s7j_0",
+  "tasks_conf7b.jsonl",
+  "jobs_judge_h2n:judge_task",
+  "results/conf7b_judge",
+  1,
+  0,
+  2,
+  "PYTORCH_ALLOC_CONF=expandable_segments:True,JUDGE_SRC=conf7b_h2n",
+  []
+ ],
+ [
+  "mf_s7j_1",
+  "tasks_conf7b.jsonl",
+  "jobs_judge_h2n:judge_task",
+  "results/conf7b_judge",
+  1,
+  1,
+  2,
+  "PYTORCH_ALLOC_CONF=expandable_segments:True,JUDGE_SRC=conf7b_h2n",
+  []
+ ]
+]
