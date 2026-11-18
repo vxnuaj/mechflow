@@ -200,3 +200,22 @@ Measure: cut j's reads of neighbours' SC-carrying K/V. Share = effect / effect o
 - Layer bands: L8–11 **0.19** (largest), L0–3 0.13, L4–7 0.10, L12–15 0.09, L16–19 0.06, L20–23 0.02.
 - Peak cell: steps 24–31 × L8–15 = 0.26.
 - Consistent with E1b (L8 hotspot) and with E1c (late because the default schedule keeps states uninformative until the end).
+
+## 10. Head screen 1 (single-head cuts; 126 heads in L8, L19, L9, L15, L3, L5, L10, L12, L18; 100 docs; smooth drop metric)
+- **Top heads (share of the full cut):**
+  - L19h3 0.051 [0.009, 0.107];
+  - L9h13 0.043;
+  - L8h8 0.037;
+  - L8h7 0.033;
+  - L5h0 0.033;
+  - L10h2 0.032;
+  - L3h7 0.025;
+  - L12h8 0.020;
+  - the rest ≤ 0.015.
+- **Additive approximation** (sum of single-head shares): top 5 = 0.20, top 10 = 0.30, top 33 = 0.47. Below the prereg's 50% bar at the 33-head cap *if* the effects are additive.
+- **Within-layer synergy:** cutting the whole of L8 = 0.196, vs. 0.115 for the sum of its heads, so the joint cuts may exceed the additive sum. L19 and L9 are additive.
+- **Next (running):** joint top-k cuts (k = 1…33, ranking from these 100 docs), evaluated on **200 different exploration docs**, so the selection is not evaluated on its own data. k = the smallest k with joint share ≥ 0.50 on dep_{2,3} (the prereg estimand; drop also reported), capped at 33.
+- **Prereg note (to log in §12 before circuit-validation):**
+  - ranking used the smooth drop metric (dep is too noisy per head);
+  - the screen was restricted to the 9 layers selected by E1b;
+  - k is selected on a held-out exploration subset.
