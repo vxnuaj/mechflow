@@ -7,7 +7,7 @@ OUT = "results/steer/steer.jsonl"; os.makedirs("results/steer", exist_ok=True)
 done = {json.loads(l)["id"] for l in open(OUT)} if os.path.exists(OUT) else set()
 tok, m = load.load_model(); S = Sampler(m)
 bank = [json.loads(l) for l in open("../data/bank.jsonl") if json.loads(l)["split"] == "exploration"]
-bank = [b for b in bank if len(b["tok_a"]) >= 2 and len(b["tok_b"]) >= 2]
+bank = [b for b in bank if b.get("tok_a") and b.get("tok_b") and len(b["tok_a"]) >= 2 and len(b["tok_b"]) >= 2]
 W = {"all": None, "late": set(range(24, 32)), "early": set(range(0, 16))}
 n = len(done)
 with open(OUT, "a") as f:
