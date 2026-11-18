@@ -317,3 +317,10 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
 - (P-c) Flips should produce **hybrids** (recipient's X first word + Y's second token, e.g. "Key Jose"): the transplant writes the neighbour's *message*, not its state. A causal "San York" generator.
 
 **n:** up to 200 eligible exploration prompts (Mac, MPS).
+
+## 16. G-b RESULT: external-judge decomposition (Mistral-7B, 2,000 confirmation docs; exploratory re-analysis)
+- T (coh, full − all-off) = +1.97 [1.74, 2.20].
+- **N share:** Möbius 0.80 [0.72, 0.91]; Shapley **1.04** [0.95, 1.14].
+- **O share −0.09 [−0.17, −0.03]** (own feedback slightly harmful); F share 0.06 [−0.01, 0.12].
+- Contrast N − 0.2T = +1.19 [1.04, 1.35].
+- **Closes the circularity gap:** the neighbour-reading result does not depend on scoring with Lafa's own AR head.

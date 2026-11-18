@@ -289,7 +289,7 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
   - Substitution predicts: feedback-only cut ≈ 0, joint cut > 0.
   - "Nothing matters late" predicts: both ≈ 0.
   - Commit the predictions before data.
-- [ ] **G-b: external-judge decomposition.** Score the 2,000 confirmation H2-N cell outputs with Mistral (no new generation); report the N share under the external judge.
+- [x] *(2026-11-18: Mistral N share 0.80 Möbius / 1.04 Shapley; O −0.09; insights §16)* **G-b: external-judge decomposition.** Score the 2,000 confirmation H2-N cell outputs with Mistral (no new generation); report the N share under the external judge.
 - [ ] **G-c: pre-registered held-out replication of E1c** (both grids) on ~1,000 unused confirmation docs, with the decision rule from insights §7, pre-registered before running.
 - [ ] **G-d: 7B mechanism.** Larger exploratory H2-N (≥ 300 blocks, dep resolved) + the E1c grid test at 7B.
 - [x] *(toy done 2026-11-18: neighbour-only SC ≥ full, own-only ≈ none; insights §13)* **G-e: generality.** Toy factor-graph model (E7) + **ELF** second model (cached torch port: ELF-B/M-owt-torch on CARC); run H2-N there.
