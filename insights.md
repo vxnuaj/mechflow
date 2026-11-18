@@ -266,3 +266,26 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
 - **coh (reported):** H\* 0.463 vs random 0.035; θ = 0.427 [0.379, 0.475].
 - **Reading:** H\* is ~7× more important than random head sets of the same size and layer profile and carries ~44–46% of the N effect. The pre-registered margin is not established at the decision measure.
 - **Operations note:** 8 docs were computed twice when a crashed shard was resumed; the first copy was kept (dedupe by task_id; `l1_merged`).
+
+## 13. Toy model (gap G-e; `toy/toy_flow.py`; 3 seeds per variant; exploratory)
+**Setup:**
+- Lafa-style blockwise flow LM (4 layers, d = 128) trained from scratch.
+- Task: 64 prompts, each with two valid 4-token answers differing at every position.
+- SC routed **exactly** per variant with a three-stream construction (S: no feedback; F: feedback everywhere; O: the variant's output stream).
+- Variants are applied at **training and inference**.
+
+| Trained with | valid | hybrid |
+|---|---|---|
+| no SC | 0.26 | 0.72 |
+| **own-only** SC | **0.30** | 0.68 |
+| full SC | 0.53 | 0.44 |
+| **neighbour-only** SC | **0.72** (0.71–0.75) | **0.25** |
+
+**Reading:**
+1. Own feedback is ≈ useless even when trained for.
+2. Neighbour feedback carries the whole benefit. The mechanism is a property of the algorithm, not of Lafa.
+3. **New:** neighbour-only SC *beats* full SC (non-overlapping seeds), so own feedback may *hurt* coordination. Hypothesis: own feedback makes each position lock onto its independently preferred mode (self-reinforcement), resisting consensus.
+
+**Follow-ups:**
+- (a) Measure per-step commitment / mode flips under own vs. neighbour feedback.
+- (b) In Lafa, test inference-time "neighbour-only SC" (remove each position's own feedback) as a **sampler improvement**. If it lowers hybrids/garbles, it is the practical upside.

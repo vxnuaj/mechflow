@@ -169,4 +169,4 @@ if __name__ == "__main__":
             r0 = {x: c0.count(x) / len(c0) for x in ("valid", "hybrid", "other")}
             res[f"{variant}/{seed}"] = {"with_sc": r, "sc_off_at_inference": r0}
             print(f"{variant:5s} seed {seed}: SC {r} | SC off {r0} ({time.time()-t0:.0f}s)", flush=True)
-    json.dump(res, open("toy/results_toy.json", "w"), indent=1)
+    json.dump(res, open(__import__("os").path.join(__import__("os").path.dirname(__import__("os").path.abspath(__file__)), "results_toy.json"), "w"), indent=1)
