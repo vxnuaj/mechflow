@@ -318,6 +318,13 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | **GO** (user decision, 2026-11-16), reframed around the coordination mechanism (`phase8_memo.md`). Primary = {P1, P2, H2-N}, Holm over 3 | 2026-11-16 |
 
 ## 12. Deviations / Change Log
+- **2026-11-18 (before any L2 data): L2 implementation details.**
+  - **Data:** all 1,888 circuit-validation bimodal prompts (118 pairs; `src/tasks_cv_l2.jsonl`).
+  - **Generation:** paper regime (K = 32, g = 8, noise 0.1, seed 42), two blocks (8 tokens) as in P1.
+  - **Intervention:** at the heads of a set, every block query reads the other block positions' K/V from a no-feedback pass (`run_block_cutall_cfg_batched`; the batched no-cut baseline matches the reference sampler on tokens in 5/6 spot checks, with the differences due to bf16 batch rounding).
+  - **Conditions per prompt:** base, H\*, and 4 of the 20 L1 random sets (rotated by task_id).
+  - **Labels:** the audited text classifier; non-valid = hybrid + other.
+  - **Decision:** θ = mean non-valid(H\*) − mean non-valid(random), cluster bootstrap by pair, one-sided lower bound at α = 0.025 > 3 pp (`analysis/l2.py`).
 - **2026-11-18: L1 outcome (frozen analysis).** dep_{2,3}: θ = 0.377 [0.298, 0.454], one-sided LB 0.298 < 0.30 → **inconclusive**. coh: θ = 0.427 [0.379, 0.475]. H\* share 0.44 vs random 0.06. Operations: one worker ran out of memory on long documents; its shard was resumed (the 8 docs computed twice keep their first copy). L2 not run (tool pending).
 - **2026-11-17 (before any circuit-validation data): localization procedure details.**
   - **Discovery restricted to the 9 layers** with the largest single-layer effect in E1b (L8, L19, L9, L15, L3, L5, L10, L12, L18; 126 heads).

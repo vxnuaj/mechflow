@@ -573,3 +573,97 @@ def run_block_headcut_batched(S: "Sampler", cache_B, block_start: int, cfg: Bloc
     finally:
         m.noise_scale_mult = saved_noise
         m.backbone.config._attn_implementation = orig_attn
+
+
+@torch.no_grad()
+def run_block_cutall_cfg_batched(S: "Sampler", cache_B, block_start: int, cfg: BlockCfg, conds: list):
+    """Paper-regime (prefix guidance) block generation for B = len(conds) conditions in one batch, where at the
+    heads in cut = {layer: [heads]} EVERY query p reads every other block position q's K/V from a pass in which
+    nobody receives feedback (no-SC pass), instead of from the normal SC pass. Own-position reads are unchanged.
+    Conditional and prefix-free branches each keep their own feedback (as _euler_denoise_block). conds: list of cut
+    dicts ({} = bf16-matched baseline through the same path). Returns [(tokens, cond_logits)] per condition."""
+    m, E, bd, dt, dev = S.m, S.E, S.bd, S.dtype, S.dev
+    B = len(conds); g = cfg.cfg_scale
+    saved_noise = m.noise_scale_mult
+    m.noise_scale_mult = float(cfg.noise)
+    orig_attn = getattr(m.backbone.config, "_attn_implementation", None)
+    m.backbone.config._attn_implementation = "eager"
+    H = m.backbone.config.num_attention_heads
+    neg = float("-inf")
+    try:
+        torch.manual_seed(cfg.seed)
+        grid = m._get_generation_time_grid(cfg.num_steps, dev, grid_mode=cfg.grid_mode, t_max=0.2)
+        if grid.dim() == 1:
+            grid = grid[None].expand(bd, -1)
+        K = grid.shape[-1] - 1
+        pos_ids = torch.arange(block_start, block_start + bd, device=dev).unsqueeze(0).expand(B, -1)
+        cl = cache_B.get_seq_length()
+        cmask = torch.zeros(B, 1, bd, cl + bd, dtype=dt, device=dev)
+        umask = cmask.clone(); umask[..., :cl] = neg
+        e_t = (torch.randn(1, bd, m._d_model, device=dev, dtype=dt) * m._noise_sigma * m.noise_scale_mult).expand(B, -1, -1).contiguous()
+        tb0 = m._compute_t_bn(grid[:, 0].to(dt)[None, :].expand(B, -1))
+        esc = {}
+        for br, mk in (("c", cmask), ("u", umask)):
+            lg0, _, _ = m._forward_backbone(e_t, tb0, mk, past_key_values=cache_B, use_cache=False, position_ids=pos_ids)
+            S._trim(cache_B, cache_B.get_seq_length() - cl)
+            esc[br] = F.softmax(lg0.float(), -1).to(dt) @ E
+        layers = sorted({l for c in conds for l in c})
+        def build(prefix_visible):
+            d = torch.zeros(B, 1, bd, cl + 2 * bd, dtype=dt, device=dev)
+            if not prefix_visible:
+                d[..., :cl] = neg
+            d[..., cl:cl + bd] = neg                                    # by default nobody reads the no-SC pass
+            out = {}
+            for li in layers:
+                mk = d.expand(B, H, bd, cl + 2 * bd).clone()
+                for b, c in enumerate(conds):
+                    for h in c.get(li, []):
+                        for p in range(bd):
+                            for q in range(bd):
+                                if p != q:
+                                    mk[b, h, p, cl + q] = 0.0
+                                    mk[b, h, p, cl + bd + q] = neg
+                out[li] = mk
+            return d, out
+        dflt = {"c": build(True), "u": build(False)}
+        base = {"c": cmask, "u": umask}
+        last = None
+        for step in range(K):
+            t_fwd, t_out = grid[:, step], grid[:, step + 1]
+            z = e_t
+            tb = m._compute_t_bn(t_fwd.to(dt)[None, :].expand(B, -1))
+            lgs = {}
+            for br in ("c", "u"):
+                full = m._apply_self_cond(z, esc[br])
+                if layers:
+                    m._forward_backbone(z, tb, base[br], past_key_values=cache_B, use_cache=False, position_ids=pos_ids)
+                    d, masks = dflt[br]
+                    with PerLayerMasks(m, masks):
+                        lg, _, _ = m._forward_backbone(full, tb, d, past_key_values=cache_B, use_cache=False, position_ids=pos_ids)
+                else:
+                    lg, _, _ = m._forward_backbone(full, tb, base[br], past_key_values=cache_B, use_cache=False, position_ids=pos_ids)
+                S._trim(cache_B, cache_B.get_seq_length() - cl)
+                lgs[br] = lg.float()
+            pc = F.softmax(lgs["c"], -1).to(dt); pu = F.softmax(lgs["u"], -1).to(dt)
+            ec, eu = pc @ E, pu @ E
+            e_den = eu + g * (ec - eu)
+            esc = {"c": ec.detach(), "u": eu.detach()}
+            last = lgs["c"]
+            if step == K - 1:
+                break
+            tf, to = t_fwd[None, :, None].float(), t_out[None, :, None].float()
+            e_t = (z.float() + (to - tf) * (e_den.float() - z.float()) / (1.0 - tf).clamp(min=1e-6)).to(dt)
+        return [(last[b].argmax(-1).tolist(), last[b].cpu()) for b in range(B)]
+    finally:
+        m.noise_scale_mult = saved_noise
+        m.backbone.config._attn_implementation = orig_attn
+
+
+@torch.no_grad()
+def prefill_rows(S: "Sampler", rows: list):
+    """Prefix KV cache for a batch of equal-length token rows (one batched forward)."""
+    ids = torch.tensor(rows, device=S.dev)
+    emb = S.m.embed_tokens(ids)
+    t_bn = S.m._compute_t_bn(torch.ones(ids.shape, device=S.dev, dtype=S.dtype))
+    _, cache, _ = S.m._forward_backbone(emb, t_bn, attn_mask=None, use_cache=True)
+    return cache, ids.shape[1]
