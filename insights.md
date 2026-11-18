@@ -334,3 +334,9 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
 - **(P-b)** Late window (steps 24–31) **37.0%** vs early window (0–15) **0.5%**.
 - **(P-c)** **77 / 79 flips are hybrids** (recipient's own first token + donor's second token).
 - **Reading:** editing *only* what the neighbours told j last step (their fed-back predictions), with all states intact, causally produces "San York"-type hybrids in ~40% of cases, and only when done during the late commitment window. This is a direct causal demonstration of the message channel; it fits E1 (late), family R (feedback needed while states are uninformative) and L2.
+
+## 18. ELF step 0 (gap G-e)
+- **v1 (INVALID as an SC ablation):** compared SC "scale" 0 / 1 / 3 with the previous prediction always supplied.
+  - ELF-B trains SC-off as a zero self-conditioning input (50% of rows), with the scale passed as a separate guidance token from a sampled range. Scale 0 is out of distribution (the guidance weight is 1 − 1/w).
+  - Kept for the record: judge log-prob/token −4.83 (w = 0), −4.63 (w = 1), −4.24 (w = 3).
+- **v2 (correct):** SC off = zero input vs. SC on = previous x-prediction, at w = 1 and w = 3. Same noise and schedule; 256 samples; Mistral judge. *(running)*

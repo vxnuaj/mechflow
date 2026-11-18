@@ -8,6 +8,7 @@ import os, glob as _g
 jp = os.environ.get("JUDGE_PATH") or snapshot_download("mistralai/Mistral-7B-Instruct-v0.3", revision="c170c708c41dac9275d15a8fff4eca08d52bab71")
 jt = AutoTokenizer.from_pretrained(jp); jm = AutoModelForCausalLM.from_pretrained(jp, dtype=torch.bfloat16).to("cuda").eval()
 res = {}
+base = None
 for sc, ts in texts.items():
     lps, reps, d2 = [], [], []
     for txt in ts:

@@ -56,20 +56,35 @@ z0 = torch.randn((a.n, cfg.max_length, model.text_encoder_dim), generator=g) * c
 gs = torch.Generator().manual_seed(1)
 t_steps = get_sampling_steps(a.steps, time_schedule="logit_normal", generator=gs).to(dev) if "generator" in get_sampling_steps.__code__.co_varnames else get_sampling_steps(a.steps, time_schedule="logit_normal").to(dev)
 samp = SimpleNamespace(sampling_method=a.method, sde_gamma=getattr(cfg, "sde_gamma", 0.0))
+from utils.sampling_utils import net_out_to_v_x
 texts = {}
-for sc in (0.0, 1.0, 3.0):
+# Conditions follow ELF training: "SC off" = zero self-conditioning input (as for the 50% of training rows with
+# SC dropped); "SC on" = previous x-prediction. The scale token w is passed as in training (w = 1: plain SC;
+# w = 3: ELF default guidance). Same noise z0 and schedule for every condition.
+def run(z, sc_on, w):
+    B = z.shape[0]; xp = torch.zeros_like(z)
+    wt = torch.full((B,), float(w), device=dev)
+    with torch.amp.autocast("cuda", dtype=torch.bfloat16):
+        for i in range(len(t_steps) - 1):
+            t, tn = t_steps[i].item(), t_steps[i + 1].item()
+            tb = torch.full((B,), t, device=dev)
+            out = model(torch.cat([z, xp], -1), tb, deterministic=True, self_cond_cfg_scale=wt)
+            v, x = net_out_to_v_x(out, z, tb, cfg.t_eps)
+            z = z + (tn - t) * v
+            xp = x if sc_on else torch.zeros_like(x)
+    return z
+for name, sc_on, w in (("off_w1", False, 1.0), ("on_w1", True, 1.0), ("on_w3", True, 3.0), ("off_w3", False, 3.0)):
     t0 = time.time(); out = []
     for b in range(0, a.n, 32):
         with torch.no_grad():
-            z = _generate_samples_single_batch(model, torch.Generator(device=dev).manual_seed(2), z0[b:b + 32].to(dev),
-                                               t_steps, None, None, cfg, samp, 1.0, sc)
-            ids = _dlm_decode_batch(z, model, t_steps[-1], cfg, sc)
+            z = run(z0[b:b + 32].to(dev), sc_on, w)
+            ids = _dlm_decode_batch(z, model, t_steps[-1], cfg, w)
         out += [tok.decode(r, skip_special_tokens=True) for r in ids.tolist()]
-    texts[str(sc)] = out
-    print(f"sc={sc}: generated {len(out)} in {time.time()-t0:.0f}s; e.g. {out[0][:120]!r}", flush=True)
+    texts[name] = out
+    print(f"{name}: generated {len(out)} in {time.time()-t0:.0f}s; e.g. {out[0][:120]!r}", flush=True)
 del model; torch.cuda.empty_cache()
 os.makedirs(os.path.dirname(a.out), exist_ok=True)
-json.dump(texts, open(a.out.replace(".json", "_texts.json"), "w"), indent=1)
+json.dump(texts, open(a.out.replace(".json", "_texts_v2.json"), "w"), indent=1)
 if a.judge == "skip":
     sys.exit(0)
 
