@@ -37,4 +37,4 @@
 5. L2 behavioural cut: non-valid rate base vs. random vs. H\*, with examples ("Franz Kafka" → "Fran King").
 
 ## Related work anchors
-Davis et al.; Yoo et al.; CANDI; He et al. (latent tokens); Zhang et al. (repetition direction); Li & Xu; Shabalin; SCMDM / Loopholing (scale); DiffusionGemma transparency (open problem §7.2); Gu et al. (NAT multimodality); Shai et al. (factored representations); Induction in Both Directions.
+Davis et al.; Yoo et al.; CANDI; He et al. (latent tokens); Zhang et al. (repetition direction); Li & Xu; Shabalin; SCMDM / Loopholing (scale); DiffusionGemma transparency (§7.2 poses patching across denoising steps + circuit analysis as open; does not mention SC; their SC channel is highly compressible, so contrast with Lafa); Gu et al. (NAT multimodality); Shai et al. (factored representations); Induction in Both Directions.

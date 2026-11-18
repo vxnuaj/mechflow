@@ -178,7 +178,7 @@ Several authoritative sources state that why self-conditioning works for languag
 | Paper | What it says | Verdict |
 |---|---|---|
 | **CANDI** (Pynadath, Shi, Zhang; 2510.22510) | App. B.3.2 speculates that SC works as "pseudo-clean anchors" (confident positions help denoise *others*); untested | **Partial: the closest prior statement.** We turn it into a causal measurement |
-| **How Transparent is DiffusionGemma?** (Engels…Nanda; 2606.20560) | The SC matrix = softmax·W_E; top-8 truncation matches baseline; token smearing; **per-position SC patching listed as future work (§7.2)** | Partial (framing). We do the experiment they list as open |
+| **How Transparent is DiffusionGemma?** (Engels…Nanda; 2606.20560) | The SC matrix = softmax·W_E; top-8 truncation matches baseline; token smearing; §7.2 poses activation patching across the diffusion axis and circuit analysis (e.g. a token-smearing circuit) as open. **It does NOT mention self-conditioning or per-/cross-position patching in §7** (verified verbatim 2026-11-18; an earlier summary overstated this) | Partial (framing). We do patching across denoising steps + circuit analysis for an SC channel |
 | Yoo et al. (2607.00714) | SC = sequence-level fixed point; mechanism "poorly understood" | Partial (competing explanation) |
 | Shabalin et al. (2604.02028) | SC avoids low-density regions (temporal, per trajectory); toy scale | Partial |
 | Davis et al. (2610.13834) | SC = mismatch + identifiability (per position); no size ablation | Partial (main competing explanation) |
@@ -256,3 +256,9 @@ Same verdict: the decomposition and the dominance of neighbour-reading are **app
 **Differentiation from Li & Xu:**
 - They treat SC redundancy as a feature-space train/inference mismatch: a token's previous prediction is already folded into its own latent.
 - We show causally that SC's benefit comes from positions reading their neighbours' fed-back predictions through attention, as a stand-in for neighbours' still-uninformative states. So the effect follows the sampler's schedule, vanishes once states become informative, and is carried by distributed mid-layer heads.
+
+
+### 8.3 Correction (2026-11-18, verified verbatim from arXiv HTML v2)
+- DiffusionGemma-transparency §7.2, item 2: "Can we do 'activation patching' ... across the diffusion axis ...?" Item 7: "is there a simple circuit implementing token smearing?" **§7 does not mention self-conditioning or per-/cross-position effects.**
+- **Safe wording:** "poses activation patching across denoising steps and circuit analysis of non-autoregressive behaviours (e.g. token smearing) as open problems."
+- **Contrast to discuss:** their §7.2 item 4 says "ablating almost all information from intermediate vectors barely damages performance" (the SC channel is highly compressible in DiffusionGemma). In Lafa, removing the cross-position feedback causes large coherence losses and failures. Discuss as a regime / architecture difference (masked vs. continuous flow; block size), not a contradiction.
