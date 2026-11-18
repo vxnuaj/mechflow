@@ -159,3 +159,38 @@ Measure: cut j's reads of neighbours' SC-carrying K/V. Share = effect / effect o
 **Measure (fixed before data):** the decision uses **dep_{2,3}** (and coh) of the generated tokens, n = 300 exploration docs per grid.
 - The smooth "drop" metric saturates under `uniform`: at the final step, t ≈ 0.97 and the prediction is near-certain whatever happened earlier.
 - **Implementation check:** Lafa's reference sampler treats a 1-D grid as the same t for every position. `run_block_headcut` now broadcasts 1-D grids identically.
+
+### 7.1 E1c RESULT (n = 300 docs per grid; Prime A100 under MPS; decision per the pre-committed rule)
+
+| Grid | Where the N effect (dep_{2,3}, share of the full cut) sits | Total |
+|---|---|---|
+| `uniform_range` (t ≤ 0.2: states never clean) | s24-31 **0.95** [0.82, 1.08], of which s31 0.70; s0-23 ≈ 0 | +1.31 [0.91, 1.73] |
+| `uniform` (t → 1: states clean by the late steps) | s8-15 **0.63** [0.44, 0.84]; s16-23 0.16; s0-7 0.10; **s24-31 = 0.00 exactly** | +1.09 [0.73, 1.46] |
+
+(coh: same pattern.)
+
+**Verdict:**
+- H-readout ✗ (late = 0 under `uniform`);
+- H-gate ✗ (large effect under `uniform_range`, although t never exceeds 0.2);
+- **H-clean ✓ in both grids.**
+
+**Mechanism statement:** a position reads its neighbours' fed-back predictions as a **substitute for the neighbours' states while those states are still uninformative**. Once the states become readable, the feedback channel stops mattering (exactly 0 effect).
+- The default `warp` schedule keeps states noisy until the final jump, which is why the reading appears late there (E1, E1b).
+- Consistent with S12: at low inference noise (states more informative), the N share is lower (0.73) than at MR (≈ 1.0), i.e. partial substitution.
+
+**Refinement to test:**
+- Under `uniform`, the effect peaks at steps 8–15 (t ≈ 0.25–0.47) rather than at steps 0–7. So the feedback matters most while positions are **committing** and before the neighbours' states are readable.
+- A direct test: per step, measure the linear decodability of each neighbour's final token from its state x vs. from its feedback q, and correlate the per-step N effect with (q-decodability − x-decodability).
+
+## 8. E1b result (n = 100 docs, smooth drop metric)
+- **Steps (warp):**
+  - final step alone 0.05;
+  - steps 24–30 0.28;
+  - steps 28–31 0.26;
+  - steps 16–23 0.17.
+  - So it is not a readout artifact.
+- **Single layers:**
+  - **L8 0.20** [0.09, 0.32], L19 0.12, L9 0.07, L15 0.05, L3 / L5 / L10 0.04;
+  - the sum of single-layer drops is 0.73 of the full cut, so the effect is **mostly additive and concentrated**, not redundant;
+  - the dep metric was too noisy for single layers, so use drop for screening.
+- **Head screen 1 launched:** single heads in L8, L19, L9, L15, L3, L5, L10, L12, L18 (126 heads), 100 docs, on the pod.
