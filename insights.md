@@ -293,3 +293,9 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
   - **MR** (2,000 docs): dep **+0.134** [0.028, 0.240], coh **+0.230** [0.118, 0.338]. Removing own feedback *helps*, as in the toy.
   - **PR / guidance on** (750 docs): dep −0.04 [−0.14, 0.07], coh −0.14 [−0.24, −0.04]. No help.
   - **So:** own feedback's harm is regime-dependent (present at high noise / no guidance). Not a free improvement to the deployed sampler; report it as a mechanism finding.
+
+## 14. L2 RESULT (pre-registered; 1,888 circuit-validation prompts): **SUPPORTED**
+- Non-valid answers: base 17.6%, random 26-head sets 20.0%, **H\* 48.8%**. θ = +28.9 pp [24.6, 33.3] vs a 3 pp bar.
+- Hybrids 6.2% → 11.6%; garbles 11.3% → 37.2%. Examples: "Chinua Achebe" → "Chin Gaiman"; "Franz Kafka" → "Fran King"; "Salman Rushdie" → "Sal Twain".
+- **Headline:** cutting the feedback reads of 26 identified heads (~8% of heads) nearly triples cross-answer and garbled outputs at deployed settings. Random layer-matched heads have no effect.
+- L1 (mechanistic share) remains inconclusive under our stricter logged rule; it would pass under the original Holm step-down (LB 0.311).

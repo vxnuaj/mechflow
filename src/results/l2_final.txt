@@ -1,0 +1,2 @@
+prompts 1888, pairs 118: non-valid base 0.176, H* 0.488, random 0.200
+theta (H* − random) = +28.88 pp [95% +24.63, +33.29]; one-sided LB (α=0.025) +24.63 pp vs 3 pp → L2 SUPPORTED

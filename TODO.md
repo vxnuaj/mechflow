@@ -292,11 +292,15 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [ ] **G-b: external-judge decomposition.** Score the 2,000 confirmation H2-N cell outputs with Mistral (no new generation); report the N share under the external judge.
 - [ ] **G-c: pre-registered held-out replication of E1c** (both grids) on ~1,000 unused confirmation docs, with the decision rule from insights §7, pre-registered before running.
 - [ ] **G-d: 7B mechanism.** Larger exploratory H2-N (≥ 300 blocks, dep resolved) + the E1c grid test at 7B.
-- [ ] **G-e: generality.** Toy factor-graph model (E7) + **ELF** second model (cached torch port: ELF-B/M-owt-torch on CARC); run H2-N there.
+- [x] *(toy done 2026-11-18: neighbour-only SC ≥ full, own-only ≈ none; insights §13)* **G-e: generality.** Toy factor-graph model (E7) + **ELF** second model (cached torch port: ELF-B/M-owt-torch on CARC); run H2-N there.
 - [ ] Weekly scoop check (due 2026-11-20); final literature pass before writing.
 
-### Phase 10 — Localization (circuit-validation only after k, H* are frozen)
-- [ ] Layer sweep → head screen on exploration/confirmation docs → freeze k and H\* in §11 and push → L1/L2 test on circuit-validation.
+### Phase 10 — Localization ✅ (2026-11-18) → `insights.md` §6–§14
+- [x] E1 step × layer map → late steps, mid layers (L8–11).
+- [x] E1b single layers (L8 ≈ 20%) → head screen (126 heads).
+- [x] Joint top-k on held-out exploration docs → **k = 26**. H\* frozen and published before circuit-validation.
+- [x] **L1** (share, 1,777 docs): θ = 0.377 [0.298, 0.454] → **inconclusive** under the stricter logged rule (would pass under the original Holm, LB 0.311).
+- [x] **L2** (behaviour, 1,888 prompts): **+28.9 pp [24.6, 33.3] → SUPPORTED.** Cutting H\* nearly triples cross-answer and garbled outputs.
 
 ### Phase 11 — Extensions and paper
 - [ ] ELF second model (unofficial port validated against JAX).
