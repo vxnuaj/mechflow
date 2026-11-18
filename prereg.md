@@ -135,6 +135,25 @@ All primary tests are **one-sided** against a margin m: H0: θ ≤ m vs. H1: θ 
 
 **Outcome mapping.** L1 ✓ (± L2) → "a sparse set of heads reads neighbours' self-conditioning feedback"; mech-interp headline. L1 ✗ → "the coordination is distributed"; reported as such.
 
+
+### 2.5 Mechanism family R (added 2026-11-18, before any of its data; exploratory basis: insights.md §7, §11)
+**Account under test (two redundant channels):** j obtains its neighbours' identity through their states and their fed-back predictions; either channel can suffice. The feedback's causal effect is what the state channel cannot supply.
+
+**Data:** 1,000 confirmation documents never used before (`src/tasks_gc.jsonl`; shuffled confirmation positions ≥ 7,100, excluding every document in any `tasks_conf_*` file). 0.5B, MR (g = 1, noise 4.0, K = 32), j ∈ {2, 3}, outcome dep_{2,3}.
+
+**Manipulation:** `run_block_headcut_batched`, all layers. In window w, j reads the neighbours from a pass with: nofb (state, no feedback), nostate (feedback, noise state) or neither. Windows: late = steps 24–31, mid = steps 8–15. Grids: `warp` (default) and `uniform`.
+
+**Tests** (Holm over 3, α = 0.05; cluster bootstrap by document, 20,000; one-sided):
+- **R1** (redundancy under the default sampler): `warp`, late. Redundancy index (neither − nofb − nostate) > 0.
+- **R2** (feedback dispensable once states are informative): `uniform`, late. nofb < 0.10 nats (upper one-sided 95% bound) **and** neither > 0.
+  - R2 is supported only if both parts hold; p = max of the two.
+- **R3** (the schedule moves the feedback effect): nofb effect at `uniform` mid minus nofb at `uniform` late > 0.
+
+**Interpretation:**
+- R1 ∧ R2 ∧ R3 → the two-channel account is confirmed.
+- R2 failing on its first part → feedback matters even with informative states (the account is wrong).
+- R1 failing → no redundancy (the channels are independent).
+
 ## 3. Metrics
 - **Primary:** dep_j (positions 2–3); the hybrid rate; μ_j.
 - **Co-requirement:** external-judge and own-AR coh_j.
