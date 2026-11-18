@@ -194,3 +194,9 @@ Measure: cut j's reads of neighbours' SC-carrying K/V. Share = effect / effect o
   - the sum of single-layer drops is 0.73 of the full cut, so the effect is **mostly additive and concentrated**, not redundant;
   - the dep metric was too noisy for single layers, so use drop for screening.
 - **Head screen 1 launched:** single heads in L8, L19, L9, L15, L3, L5, L10, L12, L18 (126 heads), 100 docs, on the pod.
+
+## 9. E1 final (n = 300 docs; CARC)
+- Steps 24–31 **0.74** [0.57, 0.94] (coh 0.58); steps 16–23 0.14; steps 8–15 0.10; steps 0–7 0.01.
+- Layer bands: L8–11 **0.19** (largest), L0–3 0.13, L4–7 0.10, L12–15 0.09, L16–19 0.06, L20–23 0.02.
+- Peak cell: steps 24–31 × L8–15 = 0.26.
+- Consistent with E1b (L8 hotspot) and with E1c (late because the default schedule keeps states uninformative until the end).
