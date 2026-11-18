@@ -23,4 +23,4 @@ for sc, ts in texts.items():
     res[sc] = {"n": len(lps), "judge_lp_mean": m(lps), "judge_lp_se": sd(lps) / math.sqrt(max(1, len(lps))),
                "immediate_word_repeat": m(reps), "distinct2": m(d2), "lps": lps}
     print(sc, {k: (round(v, 4) if isinstance(v, float) else v) for k, v in res[sc].items() if k != "lps"}, flush=True)
-json.dump(res, open(sys.argv[1].replace("_texts.json", "_judged.json"), "w"), indent=1)
+json.dump(res, open(sys.argv[1].replace(".json", "_judged.json"), "w"), indent=1)
