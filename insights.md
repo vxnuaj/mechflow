@@ -328,3 +328,9 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
 ## 17. Family R RESULT (pre-registered §2.5; 1,000 untouched confirmation docs): **all supported**
 - R1 redundancy (`warp` late) +0.55 [0.32, 0.79]; R2 `uniform` late feedback-only cut 0.000 (≤ 0.004) while removing both +0.21 [0.14, 0.28]; R3 schedule shift +0.54 [0.41, 0.67].
 - **Confirmed mechanism statement:** a position learns its neighbours' content through two redundant channels, their states and their fed-back predictions. The feedback is causally necessary exactly when the state channel cannot supply it (noisy states). Lafa's default schedule keeps states noisy until the final jump, so coordination runs through the feedback in the late steps.
+
+### 15.1 E4 RESULT (200 exploration prompts, 62 pairs; Mac MPS): **all three predictions confirmed**
+- **(P-a)** Flip to the donor's mode at j: Y-donor **39.5%** vs X-donor control **0.5%**; diff +39.0 pp [32.0, 45.5].
+- **(P-b)** Late window (steps 24–31) **37.0%** vs early window (0–15) **0.5%**.
+- **(P-c)** **77 / 79 flips are hybrids** (recipient's own first token + donor's second token).
+- **Reading:** editing *only* what the neighbours told j last step (their fed-back predictions), with all states intact, causally produces "San York"-type hybrids in ~40% of cases, and only when done during the late commitment window. This is a direct causal demonstration of the message channel; it fits E1 (late), family R (feedback needed while states are uninformative) and L2.
