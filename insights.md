@@ -340,3 +340,15 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
   - ELF-B trains SC-off as a zero self-conditioning input (50% of rows), with the scale passed as a separate guidance token from a sampled range. Scale 0 is out of distribution (the guidance weight is 1 − 1/w).
   - Kept for the record: judge log-prob/token −4.83 (w = 0), −4.63 (w = 1), −4.24 (w = 3).
 - **v2 (correct):** SC off = zero input vs. SC on = previous x-prediction, at w = 1 and w = 3. Same noise and schedule; 256 samples; Mistral judge. *(running)*
+
+## 19. 7B mechanism (G-d), interim (227 / 300 exploration blocks)
+- **coh:** T +2.74 [2.15, 3.35]; Shapley N share **0.73** [0.60, 0.89]; O share **0.23** [0.14, 0.31]; F 0.05; contrast +0.85 [0.44, 1.26].
+- **dep:** T +0.44 [−0.22, 1.12] (not resolved, as in the 7B pilot).
+- **Reading:** neighbours dominate at 7B, but own feedback contributes (~1/4), unlike 0.5B (≈ 0 or harmful).
+
+**Plan to resolve dep at 7B (predictions committed before re-scoring, 2026-11-18):**
+- (i) Re-score the existing 7B cell outputs with **S = 64** predecessor samples (instead of 16); no new generation.
+- (ii) Score the same outputs with the external judge (Mistral), as in G-b.
+- (iii) If still unresolved: 500 more blocks with the same design.
+
+**Predictions:** dep T > 0 with S = 64; N is the largest Shapley share on both dep and Mistral-coh, with share ≥ 0.5; O share 0.1–0.3 (own feedback emerging at scale).
