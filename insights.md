@@ -339,7 +339,10 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
 - **v1 (INVALID as an SC ablation):** compared SC "scale" 0 / 1 / 3 with the previous prediction always supplied.
   - ELF-B trains SC-off as a zero self-conditioning input (50% of rows), with the scale passed as a separate guidance token from a sampled range. Scale 0 is out of distribution (the guidance weight is 1 − 1/w).
   - Kept for the record: judge log-prob/token −4.83 (w = 0), −4.63 (w = 1), −4.24 (w = 3).
-- **v2 (correct):** SC off = zero input vs. SC on = previous x-prediction, at w = 1 and w = 3. Same noise and schedule; 256 samples; Mistral judge. *(running)*
+- **v2 (correct), RESULT:** SC off = zero input vs. SC on = previous x-prediction. Same noise and schedule; 256 samples; Mistral judge.
+  - Judge log-prob/token: off −6.13, **on (w = 1) −4.67**, on (w = 3) −4.22, off (w = 3) −6.14.
+  - **SC matters strongly in ELF** (+1.46 nats/token at w = 1). The scale token has no effect without feedback, which validates the corrected design.
+  - **Decision: build the ELF decomposition (gap G-e)** and pre-register its predictions before running.
 
 ## 19. 7B mechanism (G-d), interim (227 / 300 exploration blocks)
 - **coh:** T +2.74 [2.15, 3.35]; Shapley N share **0.73** [0.60, 0.89]; O share **0.23** [0.14, 0.31]; F 0.05; contrast +0.85 [0.44, 1.26].
