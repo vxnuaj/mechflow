@@ -237,3 +237,22 @@ Same verdict: the decomposition and the dominance of neighbour-reading are **app
 **Do not cite:** PURL 2611.11551, which was **withdrawn** (v2, 10 Nov 2026).
 
 **Novelty statement (merged, for the intro):** "Prior work explains self-conditioning as iterative fixed-point refinement (Yoo et al.), correction of train/inference mismatch and token identifiability (Davis et al.), or avoidance of low-density regions (Shabalin et al.), and causal interventions on self-conditioning have so far targeted failure modes such as repetition (Zhang et al.). CANDI conjectures that previous predictions act as pseudo-clean anchors for other positions, and He et al. show causally that diffusion LMs reason jointly across undecoded positions. We isolate the routes through which fed-back predictions act (a position's own feedback, neighbours' feedback read through attention, and neighbour-state refinement) and find, in Lafa at 0.5B and 7B and in both the mechanism and deployed decoding regimes, that reading neighbours' feedback carries most of the benefit."
+
+### 8.2 Novelty of the new mechanism claims (2026-11-17)
+
+**Substitution:** neighbour feedback stands in for neighbours' uninformative states; the effect follows the schedule and goes to 0 once states become informative. **Localization:** distributed over ~25–33 mid-layer heads, L8 ≈ 20%.
+
+**Both are novel.**
+
+**Closest work:**
+- **Li & Xu 2608.22244** (full text): SC is redundant when the solver has folded the previous prediction into the latent, a **feature-space, per-position** train/inference mismatch that grows with step width. No cross-position, attention or per-timestep analysis. **PARTIAL.**
+- **Davis et al. 2610.13834 App. F.6:** a theoretical per-noise-level bound (an SC input beats a noisy input); per-position, no ablation. **PARTIAL.**
+- **Shabalin 2604.02028:** SC acts in a "critical interval" t/T ∈ [0, 0.4] (low-noise end); observational, trajectory-level. **PARTIAL.**
+- **Induction in Both Directions 2607.15893:** causal head localization in small masked DLMs without SC (sparse circuits). **PARTIAL** (framing).
+- **DiffusionGemma transparency 2606.20560 §7.2** lists activation patching across denoising steps and circuit analysis as open. **Cite this as the stated gap.**
+- Irrelevant: Yoo 2607.00714, Loopholing 2510.19304, TDLM 2610.36940, 2610.22330.
+- Analog Bits: abstract only; check for a timestep ablation before citing.
+
+**Differentiation from Li & Xu:**
+- They treat SC redundancy as a feature-space train/inference mismatch: a token's previous prediction is already folded into its own latent.
+- We show causally that SC's benefit comes from positions reading their neighbours' fed-back predictions through attention, as a stand-in for neighbours' still-uninformative states. So the effect follows the sampler's schedule, vanishes once states become informative, and is carried by distributed mid-layer heads.
