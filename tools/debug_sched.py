@@ -7,7 +7,7 @@ Keeps at most MAX_SUB debug jobs submitted; submits units in priority order; exi
 """
 import json, shlex, subprocess, sys, time
 
-MAX_SUB = 3
+MAX_SUB = 5
 U = [  # name, tasks, job, out, wpg, arr, count, extra exports, skip-if-any-of-these-jobs-queued
     ("mf_h2n_0", "tasks_conf_h2n.jsonl", "jobs_h2n:h2n_task", "results/conf_h2n", 4, 0, 2, "H2N_REGIME=MR,PYTORCH_ALLOC_CONF=expandable_segments:True", ["mf_dh2n"]),
     ("mf_h2n_1", "tasks_conf_h2n.jsonl", "jobs_h2n:h2n_task", "results/conf_h2n", 4, 1, 2, "H2N_REGIME=MR,PYTORCH_ALLOC_CONF=expandable_segments:True", ["mf_dh2n"]),
