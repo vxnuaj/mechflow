@@ -289,3 +289,7 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
 **Follow-ups:**
 - (a) Measure per-step commitment / mode flips under own vs. neighbour feedback.
 - (b) In Lafa, test inference-time "neighbour-only SC" (remove each position's own feedback) as a **sampler improvement**. If it lowers hybrids/garbles, it is the practical upside.
+- **Follow-up (b) in Lafa** (zero-GPU re-analysis of the confirmation 2 × 2 × 2 cells, exploratory). Own feedback removed, neighbours kept (O0 N1 F1), minus full (O1 N1 F1):
+  - **MR** (2,000 docs): dep **+0.134** [0.028, 0.240], coh **+0.230** [0.118, 0.338]. Removing own feedback *helps*, as in the toy.
+  - **PR / guidance on** (750 docs): dep −0.04 [−0.14, 0.07], coh −0.14 [−0.24, −0.04]. No help.
+  - **So:** own feedback's harm is regime-dependent (present at high noise / no guidance). Not a free improvement to the deployed sampler; report it as a mechanism finding.
