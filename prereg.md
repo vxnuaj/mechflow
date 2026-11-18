@@ -325,6 +325,7 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
   - **Conditions per prompt:** base, H\*, and 4 of the 20 L1 random sets (rotated by task_id).
   - **Labels:** the audited text classifier; non-valid = hybrid + other.
   - **Decision:** θ = mean non-valid(H\*) − mean non-valid(random), cluster bootstrap by pair, one-sided lower bound at α = 0.025 > 3 pp (`analysis/l2.py`).
+  - **Platform:** the whole of L2 runs on Apple MPS (the user's Mac; bf16; pinned commit). All conditions of each prompt share one batch, so the paired contrast is unaffected by platform.
 - **2026-11-18: L1 outcome (frozen analysis).** dep_{2,3}: θ = 0.377 [0.298, 0.454], one-sided LB 0.298 < 0.30 → **inconclusive**. coh: θ = 0.427 [0.379, 0.475]. H\* share 0.44 vs random 0.06. Operations: one worker ran out of memory on long documents; its shard was resumed (the 8 docs computed twice keep their first copy). L2 not run (tool pending).
 - **2026-11-17 (before any circuit-validation data): localization procedure details.**
   - **Discovery restricted to the 9 layers** with the largest single-layer effect in E1b (L8, L19, L9, L15, L3, L5, L10, L12, L18; 126 heads).
