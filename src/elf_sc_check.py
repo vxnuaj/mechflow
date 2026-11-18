@@ -29,7 +29,11 @@ from huggingface_hub import snapshot_download
 
 dev = torch.device("cuda")
 ck = snapshot_download("embedded-language-flows/ELF-B-owt-torch")
-cfg = load_config_from_yaml(os.path.join(ck, "config.yml"))
+_y = open(os.path.join(ck, "config.yml")).read().replace(
+    "src/configs/sampling_configs/uncond_sampling_configs.yml",
+    os.path.join(a.hcfrl, "hcfrl/elf/configs/sampling_configs/uncond_sampling_configs.yml"))
+_tmp = f"/tmp/elf_cfg_{os.getpid()}.yml"; open(_tmp, "w").write(_y)
+cfg = load_config_from_yaml(_tmp)
 cfg = apply_config_overrides(cfg, [f"max_length={a.L}", "use_wandb=false"])
 tok = AutoTokenizer.from_pretrained(cfg.encoder_model_name)
 enc_cfg, _ = get_encoder(cfg.encoder_model_name, torch.float32)
