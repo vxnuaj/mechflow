@@ -284,6 +284,17 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [ ] E7 toy factor-graph flow model vs. exact BP marginals.
 - [ ] Verify all citations from the 2026-11-17 interp review (abstract-only) before use.
 
+### Phase 9.6 — Closing the hard-to-vary gaps (decided 2026-11-18)
+- [ ] **G-a (critical): causal substitution control.** Under the `uniform` grid at late steps, cut neighbour feedback **and** corrupt the neighbours' states (replace the neighbour x with its no-SC-pass / noise-matched x).
+  - Substitution predicts: feedback-only cut ≈ 0, joint cut > 0.
+  - "Nothing matters late" predicts: both ≈ 0.
+  - Commit the predictions before data.
+- [ ] **G-b: external-judge decomposition.** Score the 2,000 confirmation H2-N cell outputs with Mistral (no new generation); report the N share under the external judge.
+- [ ] **G-c: pre-registered held-out replication of E1c** (both grids) on ~1,000 unused confirmation docs, with the decision rule from insights §7, pre-registered before running.
+- [ ] **G-d: 7B mechanism.** Larger exploratory H2-N (≥ 300 blocks, dep resolved) + the E1c grid test at 7B.
+- [ ] **G-e: generality.** Toy factor-graph model (E7) + **ELF** second model (cached torch port: ELF-B/M-owt-torch on CARC); run H2-N there.
+- [ ] Weekly scoop check (due 2026-11-20); final literature pass before writing.
+
 ### Phase 10 — Localization (circuit-validation only after k, H* are frozen)
 - [ ] Layer sweep → head screen on exploration/confirmation docs → freeze k and H\* in §11 and push → L1/L2 test on circuit-validation.
 
