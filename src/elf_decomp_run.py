@@ -6,8 +6,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from elf_instr import load_elf, run_cell, decode
 ap = argparse.ArgumentParser(); ap.add_argument("--hcfrl", required=True); ap.add_argument("--ckpt", required=True)
 ap.add_argument("--n", type=int, default=256); ap.add_argument("--L", type=int, default=128); ap.add_argument("--steps", type=int, default=32)
-ap.add_argument("--bs", type=int, default=32); ap.add_argument("--out", default="results/elf_decomp/cells.json")
-a = ap.parse_args(); dev = torch.device("cuda")
+ap.add_argument("--bs", type=int, default=32); ap.add_argument("--device", default="cuda"); ap.add_argument("--out", default="results/elf_decomp/cells.json")
+a = ap.parse_args(); dev = torch.device(a.device)
 model, cfg, tok = load_elf(a.hcfrl, a.ckpt, a.L, dev)
 from utils.sampling_utils import get_sampling_steps
 t_steps = get_sampling_steps(a.steps, time_schedule="logit_normal", generator=torch.Generator().manual_seed(1)).to(dev)
