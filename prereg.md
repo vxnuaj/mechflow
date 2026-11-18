@@ -169,6 +169,22 @@ All primary tests are **one-sided** against a margin m: H0: θ ≤ m vs. H1: θ 
 - S7-1 ∧ S7-2 → neighbours dominate at 7B.
 - S7-3 → own feedback emerges with scale (it is ≈ 0 or negative at 0.5B, §11 / insights §16).
 
+
+### 2.7 Family E: the mechanism in a second architecture, ELF (added 2026-11-18, before any of its data; basis: insights.md §18)
+**Model:** ELF-B (OpenWebText; full-sequence continuous flow over T5-small latents; SC input [z, x_prev], off = zeros as in training), used through the authors' PyTorch implementation (read-only).
+
+**Generation:** unconditional, L = 128, 32 logit-normal steps (generator seed 1), SC guidance token w = 1, n = 256 samples (noise seed 0), identical noise per sample across cells.
+
+**Intervention:** `src/elf_instr.py` three-stream routing. The identity cells reproduce SC-on / SC-off sampling to float precision (verified on CPU). Targets j ∈ {32, 64, 96}, run separately.
+
+**Outcome:** Mistral-7B-Instruct-v0.3 log-prob of the decoded text span of token j given the decoded tokens 0..j−1 (`src/elf_decomp_judge.py`). Unit: the sample (mean over the targets with complete cells).
+
+**Tests** (`analysis/elf.py`; Holm over 2, α = 0.05; one-sided bootstrap over samples, 20,000; "not estimable" unless T's one-sided 95% LB > 0):
+- **E-1:** mN − 0.2·T > 0.
+- **E-2:** Shapley(N) − 0.5·T > 0.
+
+O and F shares are descriptive.
+
 ## 3. Metrics
 - **Primary:** dep_j (positions 2–3); the hybrid rate; μ_j.
 - **Co-requirement:** external-judge and own-AR coh_j.
