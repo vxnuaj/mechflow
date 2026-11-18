@@ -22,6 +22,7 @@ def cuts():
     if _CUTS is None:
         raw = json.load(open(os.environ["CUTS"]))
         _CUTS = {k: ({int(l): h for l, h in v["layers"].items()}, set(v["steps"]) if v.get("steps") else None)
+                 + ((v["src"],) if v.get("src") else ())
                  for k, v in raw.items()}
     return _CUTS
 
@@ -48,7 +49,8 @@ def cut_task(task, ctx):
         lpb = F.log_softmax(lb[j].float(), -1)
         coh, dep = score(yb)
         out[f"j{j}|base"] = {"y": yb, "coh": coh, "dep": dep, "drop": 0.0}
-        for name, (layers, steps) in cuts().items():
+        for name, spec in cuts().items():
+            layers, steps = spec[0], spec[1]
             y, lg = run_block_headcut(S, cache, L, CFG, j, layers, reroute=True, steps=steps)
             lp = F.log_softmax(lg[j].float(), -1)
             coh, dep = score(y)

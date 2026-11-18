@@ -219,3 +219,25 @@ Measure: cut j's reads of neighbours' SC-carrying K/V. Share = effect / effect o
   - ranking used the smooth drop metric (dep is too noisy per head);
   - the screen was restricted to the 9 layers selected by E1b;
   - k is selected on a held-out exploration subset.
+
+## 11. G-a: causal substitution control (predictions committed before data, 2026-11-18)
+**Question:** is "feedback stops mattering late under `uniform`" substitution (j reads the neighbours' now-informative states instead), or trivial ("nothing about the neighbours matters late")?
+
+**Manipulation** (all layers; only what query j reads changes; the neighbours' own trajectories are untouched). In window w, j reads the neighbours from a pass where they have:
+- **nofb:** state intact, feedback removed (= the N cut);
+- **nostate:** feedback intact, state replaced by pure noise (initial-noise scale);
+- **neither:** noise state, no feedback.
+
+Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n = 300 exploration docs per grid; outcome dep_{2,3} (coh also reported).
+
+**Predictions:**
+
+| | `uniform` late (states informative) | `warp` late (states uninformative) | `uniform` early |
+|---|---|---|---|
+| **Substitution** | nofb ≈ 0; **nostate > 0; neither > 0** | **nofb > 0**; nostate ≈ small (states already uninformative); neither ≥ nofb | nofb > 0 |
+| **"Nothing matters late"** | nofb ≈ nostate ≈ neither ≈ 0 | — | — |
+
+**Decision:**
+- Substitution is supported if, in `uniform` late, nostate and neither are > 0 (95% CI excludes 0) while nofb ≈ 0, **and** in `warp` late, nofb > 0.
+- "Nothing matters late" is supported if all three are ≈ 0 in `uniform` late.
+- Otherwise: unresolved.

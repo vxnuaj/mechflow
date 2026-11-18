@@ -493,7 +493,8 @@ def prefill_batched(S: "Sampler", prompt_ids: list, B: int):
 @torch.no_grad()
 def run_block_headcut_batched(S: "Sampler", cache_B, block_start: int, cfg: BlockCfg, j: int, conds: list):
     """Batched version of run_block_headcut(..., reroute=True): B = len(conds) conditions in one batch.
-    conds: list of (cut: {layer: [heads]}, steps: set or None). cache_B: prefix cache with batch B
+    conds: list of (cut: {layer: [heads]}, steps: set or None[, src]) with src in {'nofb','nostate','neither'}
+    (what query j reads for the neighbours at cut layers/steps; default 'nofb' = the N cut). cache_B: prefix cache with batch B
     (prefill_batched). Same initial noise for every condition, as in the unbatched runs (same seed).
     Returns [(tokens, logits [bd, V] cpu)] per condition."""
     m, E, bd, dt, dev = S.m, S.E, S.bd, S.dtype, S.dev
@@ -522,6 +523,10 @@ def run_block_headcut_batched(S: "Sampler", cache_B, block_start: int, cfg: Bloc
         esc = F.softmax(lg0.float(), -1).to(dt) @ E
         default = torch.zeros(B, 1, bd, cl + 2 * bd, dtype=dt, device=dev)
         default[..., cl:cl + bd] = neg
+        srcs = [c[2] if len(c) > 2 else "nofb" for c in conds]          # what j reads from the neighbours in pass B
+        conds = [(c[0], c[1]) for c in conds]
+        gN = torch.Generator(device="cpu").manual_seed(7)
+        z_noise = (torch.randn(1, bd, m._d_model, generator=gN) * m._noise_sigma * m.noise_scale_mult).to(dev, dt)
         layers = sorted({l for c, _ in conds for l in c})
         last = None
         for step in range(K):
@@ -540,6 +545,16 @@ def run_block_headcut_batched(S: "Sampler", cache_B, block_start: int, cfg: Bloc
             tb = m._compute_t_bn(t_fwd.to(dt)[None, :].expand(B, -1))
             full = m._apply_self_cond(z, esc)
             eB = z.clone(); eB[:, j, :] = full[:, j, :]
+            # neighbour inputs for pass B per condition: 'nofb' = state, no feedback (default N cut);
+            # 'nostate' = feedback kept, state replaced by pure noise; 'neither' = noise state, no feedback
+            if any(x != "nofb" for x in srcs):
+                zn = z_noise.expand(B, -1, -1)
+                fulln = m._apply_self_cond(zn, esc)
+                for b, x in enumerate(srcs):
+                    if x == "nostate":
+                        eB[b, nb] = fulln[b, nb]
+                    elif x == "neither":
+                        eB[b, nb] = zn[b, nb]
             lgA, _, _ = m._forward_backbone(full, tb, base_mask, past_key_values=cache_B, use_cache=False, position_ids=pos_ids)
             S._trim(cache_B, cache_B.get_seq_length() - cl)
             m._forward_backbone(eB, tb, base_mask, past_key_values=cache_B, use_cache=False, position_ids=pos_ids)
