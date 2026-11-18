@@ -324,3 +324,7 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
 - **O share −0.09 [−0.17, −0.03]** (own feedback slightly harmful); F share 0.06 [−0.01, 0.12].
 - Contrast N − 0.2T = +1.19 [1.04, 1.35].
 - **Closes the circularity gap:** the neighbour-reading result does not depend on scoring with Lafa's own AR head.
+
+## 17. Family R RESULT (pre-registered §2.5; 1,000 untouched confirmation docs): **all supported**
+- R1 redundancy (`warp` late) +0.55 [0.32, 0.79]; R2 `uniform` late feedback-only cut 0.000 (≤ 0.004) while removing both +0.21 [0.14, 0.28]; R3 schedule shift +0.54 [0.41, 0.67].
+- **Confirmed mechanism statement:** a position learns its neighbours' content through two redundant channels, their states and their fed-back predictions. The feedback is causally necessary exactly when the state channel cannot supply it (noisy states). Lafa's default schedule keeps states noisy until the final jump, so coordination runs through the feedback in the late steps.

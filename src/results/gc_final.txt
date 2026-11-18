@@ -1,0 +1,7 @@
+n warp 1000, uniform 1000
+R1 redundancy index (warp late) +0.553 [+0.315,+0.791] p=0
+R2 uniform late nofb +0.000 (upper 95% +0.004 vs 0.10, p=0); neither +0.206 [+0.141,+0.276] p=0 → p=0
+R3 uniform nofb mid − late +0.539 [+0.414,+0.671] p=0
+  R1: p=0 → SUPPORTED (Holm)
+  R2: p=0 → SUPPORTED (Holm)
+  R3: p=0 → SUPPORTED (Holm)

@@ -318,6 +318,12 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | **GO** (user decision, 2026-11-16), reframed around the coordination mechanism (`phase8_memo.md`). Primary = {P1, P2, H2-N}, Holm over 3 | 2026-11-16 |
 
 ## 12. Deviations / Change Log
+- **2026-11-18: family R outcome (§2.5; 1,000 untouched confirmation docs; frozen `analysis/gc.py`): R1, R2, R3 all SUPPORTED (Holm).**
+  - **R1:** redundancy index (`warp` late) +0.553 [0.315, 0.791].
+  - **R2:** `uniform` late nofb +0.000 (upper 95% bound 0.004 < 0.10); neither +0.206 [0.141, 0.276].
+  - **R3:** `uniform` nofb mid − late +0.539 [0.414, 0.671].
+  - **The two-redundant-channels account is confirmed.**
+  - Operations: the `uniform` half ran on a Prime A100 (MPS); the `warp` half on CARC, with 2 shards partly on the pod (synced partial progress resumed on CARC; no duplicates).
 - **2026-11-18: L2 outcome (frozen analysis; 1,888 circuit-validation prompts, 118 pairs; Apple MPS).** Non-valid rate: base 0.176, random layer-matched sets 0.200, **H\* 0.488**. **θ = +28.9 pp [24.6, 33.3]; one-sided LB (α = 0.025) 24.6 pp > 3 pp → L2 SUPPORTED.**
   - Under H\*: hybrids 0.062 → 0.116, other 0.113 → 0.372. Examples: "Chinua Achebe" → "Chin Gaiman", "Franz Kafka" → "Fran King".
   - **L1 restated transparently:** with L2 supported at α = 0.025, the original §2.4 Holm step-down would test L1 at α = 0.05, where its one-sided LB is 0.311 > 0.30. **Per the stricter rule logged before data (L1 at α = 0.025 regardless), L1 remains INCONCLUSIVE.** Both are reported; L1 is not claimed.
