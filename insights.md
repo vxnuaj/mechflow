@@ -299,3 +299,21 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
 - Hybrids 6.2% → 11.6%; garbles 11.3% → 37.2%. Examples: "Chinua Achebe" → "Chin Gaiman"; "Franz Kafka" → "Fran King"; "Salman Rushdie" → "Sal Twain".
 - **Headline:** cutting the feedback reads of 26 identified heads (~8% of heads) nearly triples cross-answer and garbled outputs at deployed settings. Random layer-matched heads have no effect.
 - L1 (mechanistic share) remains inconclusive under our stricter logged rule; it would pass under the original Holm step-down (LB 0.311).
+
+## 15. E4 steering by message transplant (predictions committed before data, 2026-11-18; exploratory; `src/steer.py`)
+
+**Design:**
+- Exploration bimodal prompts whose two modes both span ≥ 2 tokens; MR regime, 0.5B.
+- For each prompt, run seeds 1–12 and label each run by its first two tokens: committed to mode X, committed to mode Y, or neither.
+- **Recipient** = the first X-committed seed. **Y-donor** = a Y-committed seed. **X-donor control** = a different X-committed seed.
+- Target j = 1 (the second token of the answer). Neighbour 0 carries the first word.
+- **Transplant:** j reads its neighbours through (recipient states, donor feedback), all layers, in window w ∈ {all steps, late 24–31, early 0–15}.
+
+**Outcome:** flip(j) = 1 if the recipient's token at j becomes Y's second token.
+
+**Predictions:**
+- (P-a) flip rate with the Y-donor (all steps) ≫ with the X-donor control (≈ 0).
+- (P-b) late-window transplant ≥ early-window transplant (E1: the reading is late under `warp`).
+- (P-c) Flips should produce **hybrids** (recipient's X first word + Y's second token, e.g. "Key Jose"): the transplant writes the neighbour's *message*, not its state. A causal "San York" generator.
+
+**n:** up to 200 eligible exploration prompts (Mac, MPS).
