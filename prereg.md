@@ -349,6 +349,7 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | **GO** (user decision, 2026-11-16), reframed around the coordination mechanism (`phase8_memo.md`). Primary = {P1, P2, H2-N}, Holm over 3 | 2026-11-16 |
 
 ## 12. Deviations / Change Log
+- **2026-11-18 (before any family E data): ELF platform.** Because CARC was congested (fair-share), family E runs on the user's Mac. Generation uses CPU/MPS in a local env matching ELF's pinned requirements (transformers 4.44, torch 2.x). The Mistral judge runs on MPS (mechflow env). The design, n, seeds and analysis are unchanged.
 - **2026-11-18: family R outcome (§2.5; 1,000 untouched confirmation docs; frozen `analysis/gc.py`): R1, R2, R3 all SUPPORTED (Holm).**
   - **R1:** redundancy index (`warp` late) +0.553 [0.315, 0.791].
   - **R2:** `uniform` late nofb +0.000 (upper 95% bound 0.004 < 0.10); neither +0.206 [0.141, 0.276].
