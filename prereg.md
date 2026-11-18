@@ -299,6 +299,7 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | **GO** (user decision, 2026-11-16), reframed around the coordination mechanism (`phase8_memo.md`). Primary = {P1, P2, H2-N}, Holm over 3 | 2026-11-16 |
 
 ## 12. Deviations / Change Log
+- **2026-11-18: L1 outcome (frozen analysis).** dep_{2,3}: θ = 0.377 [0.298, 0.454], one-sided LB 0.298 < 0.30 → **inconclusive**. coh: θ = 0.427 [0.379, 0.475]. H\* share 0.44 vs random 0.06. Operations: one worker ran out of memory on long documents; its shard was resumed (the 8 docs computed twice keep their first copy). L2 not run (tool pending).
 - **2026-11-17 (before any circuit-validation data): localization procedure details.**
   - **Discovery restricted to the 9 layers** with the largest single-layer effect in E1b (L8, L19, L9, L15, L3, L5, L10, L12, L18; 126 heads).
   - **Heads ranked by the smooth metric** (drop in the final-step log-prob of the baseline token at j) on 100 exploration docs, because per-head dep_{2,3} is too noisy.

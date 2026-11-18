@@ -1,0 +1,2 @@
+[dep] n = 1777: share H* = 0.438, share random = 0.061, theta = 0.377 [95% 0.298, 0.454], one-sided LB (α=0.025) 0.298  → L1 inconclusive (bar 0.30)
+[coh] n = 1777: share H* = 0.463, share random = 0.035, theta = 0.427 [95% 0.379, 0.475], one-sided LB (α=0.025) 0.379

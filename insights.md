@@ -241,3 +241,28 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
 - Substitution is supported if, in `uniform` late, nostate and neither are > 0 (95% CI excludes 0) while nofb ≈ 0, **and** in `warp` late, nofb > 0.
 - "Nothing matters late" is supported if all three are ≈ 0 in `uniform` late.
 - Otherwise: unresolved.
+
+### 11.1 G-a RESULT (n = 300 per grid; Prime A100) → by the pre-committed rule: **UNRESOLVED**
+
+| dep_{2,3} | nofb | nostate | neither | redundancy index (neither − nofb − nostate) |
+|---|---|---|---|---|
+| `uniform` late | +0.02 [0.00, 0.06] | +0.01 [−0.00, 0.04] | **+0.15** [0.05, 0.28] | +0.12 |
+| `warp` late | **+0.81** [0.54, 1.11] | **+1.31** [0.98, 1.66] | **+3.02** [2.55, 3.51] | +0.90 |
+| `uniform` early | +0.65 | +0.56 | +1.42 | +0.21 |
+
+(coh: same pattern.)
+
+**Scored against the predictions:**
+- "Nothing matters late" ✗: `uniform` late neither > 0.
+- Strict substitution ✗: `uniform` late nostate ≈ 0 (predicted > 0); `warp` late nostate is large (predicted small).
+
+**Post-hoc account (must be confirmed on new data, G-c): two redundant channels.**
+- Position j obtains its neighbours' identity through their **states** and through their **fed-back predictions**. Either one alone often suffices (an OR structure); removing both is always super-additive.
+- The feedback's causal contribution = what the state channel cannot supply. That is ≈ 0 once states are clean (`uniform` late), and large while states are noisy (`warp` late, which is also why the default schedule's reading is late).
+- This explains E1c and G-a jointly, and it predicts a positive redundancy index in every window.
+
+## 12. L1 RESULT (pre-registered, circuit-validation, n = 1,777; frozen analysis `analysis/l1.py`)
+- **dep_{2,3} (decision measure):** H\* share 0.438, random layer-matched share 0.061. **θ = 0.377 [0.298, 0.454]**; one-sided LB (α = 0.025) **0.298 vs the bar 0.30** → **L1 INCONCLUSIVE** (missed by 0.002). No data extension, per prereg §6.
+- **coh (reported):** H\* 0.463 vs random 0.035; θ = 0.427 [0.379, 0.475].
+- **Reading:** H\* is ~7× more important than random head sets of the same size and layer profile and carries ~44–46% of the N effect. The pre-registered margin is not established at the decision measure.
+- **Operations note:** 8 docs were computed twice when a crashed shard was resumed; the first copy was kept (dedupe by task_id; `l1_merged`).
