@@ -293,6 +293,13 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [ ] **G-c: pre-registered held-out replication of E1c** (both grids) on ~1,000 unused confirmation docs, with the decision rule from insights §7, pre-registered before running.
 - [ ] **G-d: 7B mechanism.** Larger exploratory H2-N (≥ 300 blocks, dep resolved) + the E1c grid test at 7B.
 - [x] *(toy done 2026-11-18: neighbour-only SC ≥ full, own-only ≈ none; insights §13)* **G-e: generality.** Toy factor-graph model (E7) + **ELF** second model (cached torch port: ELF-B/M-owt-torch on CARC); run H2-N there.
+- [ ] **ELF build plan (recon 2026-11-18):**
+  - A PyTorch ELF exists in the user's `hcfrl` project on CARC (`hcfrl/elf/modules/model.py`, `utils/sampling_utils.py`); use it read-only. Checkpoint: ELF-B-owt-torch (T5-small latents, 1,024-length full-sequence denoising, `self_cond_proj([z, x_prev])`, uncond SC = zeros).
+  - **Build:**
+    - (1) a per-query K/V routing hook on ELF attention: two passes per step, with and without neighbour x_prev;
+    - (2) a 2 × 2 (O × N) decomposition at sampled target positions;
+    - (3) outcome = coherence of decoded tokens scored by an external LM (Mistral) at the target positions, plus SC-on/off validity.
+  - ~1 day.
 - [ ] Weekly scoop check (due 2026-11-20); final literature pass before writing.
 
 ### Phase 10 — Localization ✅ (2026-11-18) → `insights.md` §6–§14
