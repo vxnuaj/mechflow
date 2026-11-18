@@ -10,7 +10,9 @@ ap.add_argument("--bs", type=int, default=32); ap.add_argument("--device", defau
 a = ap.parse_args(); dev = torch.device(a.device)
 model, cfg, tok = load_elf(a.hcfrl, a.ckpt, a.L, dev)
 from utils.sampling_utils import get_sampling_steps
-t_steps = get_sampling_steps(a.steps, time_schedule="logit_normal", generator=torch.Generator().manual_seed(1)).to(dev)
+torch.manual_seed(1)   # get_sampling_steps draws from the global RNG; seeding it fixes the schedule
+t_steps = get_sampling_steps(a.steps, time_schedule="logit_normal").to(dev)
+print("t_steps", [round(float(x), 4) for x in t_steps], flush=True)
 z0 = torch.randn((a.n, a.L, model.text_encoder_dim), generator=torch.Generator().manual_seed(0)) * cfg.denoiser_noise_scale
 res = {}
 for j in (32, 64, 96):
