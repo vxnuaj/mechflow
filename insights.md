@@ -378,3 +378,10 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
 - **Consistent with the confirmed two-channel account (family R):** states and fed-back predictions carry neighbour information redundantly, and which carries SC's benefit depends on the architecture and schedule. ELF: full-sequence denoising, continuous x-prediction feedback (not an expected token embedding), logit-normal schedule.
 - **Scope for any claim:** "SC is not self-refinement; it is cross-position communication, via feedback (Lafa) or via feedback-improved states (ELF)."
 - **Possible follow-up (exploratory):** ELF E1c-style schedule manipulation. Does N grow when ELF's states are kept uninformative longer (e.g. `uniform_range`-like)? This would test the two-channel account's prediction in ELF directly.
+
+### 20.1 Sensitivity analysis for family E (exploratory; prediction committed before running, 2026-11-18)
+- **Concern:** the family E outcome scores token j given the cell's own decoded left context. Route F also improves the 127 neighbours' tokens, so part of F's 0.69 share may be "better context for the judge" rather than "j's own choice improved". In Lafa (4-token blocks, fixed prefix) this was negligible.
+- **Analysis:** re-score each cell's token at j against a FIXED context (the O1N1F1 cell's tokens 0..j−1, same sample), so only j's choice varies (`src/elf_judge_fixedctx.py`). Same family E data; no new generation.
+- **Prediction (if the confound explains the gap):** the F share falls and the N share rises, with N the largest Shapley share.
+- **If the shares stay as in family E:** the state-route reading stands.
+- Reported alongside the pre-registered result in either case, never instead of it.
