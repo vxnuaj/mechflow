@@ -365,3 +365,7 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
   - s16-31 ≈ 0.
   - The 0.5B peak was at s8-15.
   - **The larger model's feedback reading ends earlier.** Under the two-channel account this means 7B states become informative sooner; it is a second-scale confirmation of the timing account (exploratory).
+- **E1c `uniform_range` at 7B** (states never clean; 100 docs):
+  - all-cut effect dep +1.58 [0.70, 2.47], coh +2.48 [1.79, 3.22];
+  - the reading persists and is late-weighted (s24-31 share: dep 0.47, coh 0.30; spread over s8-31 by drop).
+  - **With `uniform` (effect only in s0-7), the 7B timing tracks state informativeness exactly as at 0.5B.** The two-channel account holds at both scales (exploratory at 7B).
