@@ -6,16 +6,23 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from elf_instr import load_elf, run_cell, decode
 ap = argparse.ArgumentParser(); ap.add_argument("--hcfrl", required=True); ap.add_argument("--ckpt", required=True)
 ap.add_argument("--n", type=int, default=256); ap.add_argument("--L", type=int, default=128); ap.add_argument("--steps", type=int, default=32)
-ap.add_argument("--bs", type=int, default=32); ap.add_argument("--device", default="cuda"); ap.add_argument("--out", default="results/elf_decomp/cells.json")
+ap.add_argument("--bs", type=int, default=32); ap.add_argument("--device", default="cuda"); ap.add_argument("--schedule", default="logit_normal"); ap.add_argument("--targets", default="32,64,96"); ap.add_argument("--out", default="results/elf_decomp/cells.json")
 a = ap.parse_args(); dev = torch.device(a.device)
 model, cfg, tok = load_elf(a.hcfrl, a.ckpt, a.L, dev)
 from utils.sampling_utils import get_sampling_steps
-torch.manual_seed(1)   # get_sampling_steps draws from the global RNG; seeding it fixes the schedule
-t_steps = get_sampling_steps(a.steps, time_schedule="logit_normal").to(dev)
+if a.schedule == "logit_normal":
+    torch.manual_seed(1)   # get_sampling_steps draws from the global RNG; seeding it fixes the schedule
+    t_steps = get_sampling_steps(a.steps, time_schedule="logit_normal").to(dev)
+elif a.schedule == "latejump":   # states stay noisy (t <= 0.2) until the final step jumps to 1
+    t_steps = torch.cat([torch.linspace(0.0, 0.2, a.steps), torch.ones(1)]).to(dev)
+elif a.schedule == "frontload":  # states become informative early: t_k = 1 - (1 - k/K)^3
+    k = torch.arange(a.steps + 1, dtype=torch.float32) / a.steps; t_steps = (1 - (1 - k) ** 3).to(dev)
+else:
+    raise ValueError(a.schedule)
 print("t_steps", [round(float(x), 4) for x in t_steps], flush=True)
 z0 = torch.randn((a.n, a.L, model.text_encoder_dim), generator=torch.Generator().manual_seed(0)) * cfg.denoiser_noise_scale
 res = {}
-for j in (32, 64, 96):
+for j in [int(x) for x in a.targets.split(",")]:
     res[j] = {}
     for O in (0, 1):
         for N in (0, 1):

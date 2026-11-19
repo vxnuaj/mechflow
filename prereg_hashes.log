@@ -31,3 +31,4 @@
 2026-11-18T23:22:55Z prereg.md §12 family E platform (before data) sha256=b2bea4ef5aecf0f19b271205b2e46b41780daa42ec598ec10b490cb5910c1671
 2026-11-18T23:25:18Z prereg.md §12 ELF schedule seeding (before data) sha256=eb3e620b92b4e0095863355b8cc20ea788679f6564da14d94f75109120c3ee60
 2026-11-19T04:14:44Z prereg.md §12 family E outcome sha256=d4d8b7cd039bd3544858f506bbf2831a3f41bb51c46188985986e9d2a51a0a34; elf_final.txt sha256=d3185ca31250b099eae4f5c439e8d0a2d37d856b1d1b9ae90c0558ab2e748b0f
+2026-11-19T04:15:23Z prereg.md §2.8 family E2 (ELF schedules, before data) sha256=0cab43bf36d30cd824a4fc11b03b2ec2cc4a974105e02551ae21a9cd393b47d1; analysis/elf_sched.py sha256=fce524ffd0d1f343d13706967e3bb26812b9e1b887ad2be68f8b704cde250f33

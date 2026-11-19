@@ -185,6 +185,20 @@ All primary tests are **one-sided** against a margin m: H0: θ ≤ m vs. H1: θ 
 
 O and F shares are descriptive.
 
+
+### 2.8 Family E2: schedule manipulation in ELF (added 2026-11-18 after family E, before any of its data)
+**Prediction of the confirmed two-channel account (§2.5) for ELF:** when states stay uninformative longer, neighbour information must travel through the fed-back predictions, so the direct feedback-reading route (N) grows. When states become informative early, the state route (F) dominates.
+
+**Design:** as family E, but target j = 64 only, n = 256, under two schedules of 32 steps:
+- **latejump:** t = linspace(0, 0.2, 32), then a jump to 1;
+- **frontload:** t_k = 1 − (1 − k/32)³.
+
+Outcome: Mistral span log-prob of token j. Mac MPS (as family E).
+
+**Tests** (`analysis/elf_sched.py`; Holm over 2, α = 0.05; bootstrap within schedule, 20,000; both T one-sided LB > 0 required):
+- **E2-1:** Möbius N main (latejump) − (frontload) > 0.
+- **E2-2:** Möbius F main (frontload) − (latejump) > 0.
+
 ## 3. Metrics
 - **Primary:** dep_j (positions 2–3); the hybrid rate; μ_j.
 - **Co-requirement:** external-judge and own-AR coh_j.
