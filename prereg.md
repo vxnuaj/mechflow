@@ -199,6 +199,16 @@ Outcome: Mistral span log-prob of token j. Mac MPS (as family E).
 - **E2-1:** Möbius N main (latejump) − (frontload) > 0.
 - **E2-2:** Möbius F main (frontload) − (latejump) > 0.
 
+
+### 2.9 L1-R: replication of the localization share test (added 2026-11-19, before any of its data)
+**Motivation:** L1 was inconclusive (θ = 0.377 [0.298, 0.454]; one-sided LB 0.298 vs 0.30 at α = 0.025).
+
+**Design:** identical to L1 (§2.4, §12 2026-11-17 entry).
+- **Same** frozen H\* and the **same** 20 layer-matched random sets (`src/cuts_l1.json`, sha256 prefix b8ae9e6f3bdccb16), the same rotation (4 of 20 per document), the same job (`jobs_l1:l1_task`), the same estimand θ = (reduction_H\* − mean reduction_random) / N on dep_{2,3}, and the same analysis (`analysis/l1.py`).
+- **Data:** 3,000 confirmation documents never used before (`src/tasks_l1r.jsonl`; shuffled confirmation order, excluding every document in any earlier task file). 0.5B, MR.
+
+**Decision:** unchanged, a one-sided lower bound at **α = 0.025** > 0.30 → supported. Upper bound < 0.30 → rejected. Otherwise inconclusive. No data extension.
+
 ## 3. Metrics
 - **Primary:** dep_j (positions 2–3); the hybrid rate; μ_j.
 - **Co-requirement:** external-judge and own-AR coh_j.
