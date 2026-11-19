@@ -7,7 +7,8 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 src = sys.argv[1]; R = json.load(open(src))
 t5 = AutoTokenizer.from_pretrained(os.environ.get("T5_PATH", "t5-small"))
 jp = os.environ["JUDGE_PATH"]; jt = AutoTokenizer.from_pretrained(jp)
-jm = AutoModelForCausalLM.from_pretrained(jp, dtype=torch.bfloat16).to(DEV).eval()
+jm = AutoModelForCausalLM.from_pretrained(jp, dtype=getattr(torch, os.environ.get("JUDGE_DTYPE", "bfloat16"))).to(DEV).eval()
+torch.set_num_threads(int(os.environ.get("SLURM_CPUS_PER_TASK", "8"))) if DEV == "cpu" else None
 @torch.no_grad()
 def span_lp(prefix, piece):
     full = prefix + piece
@@ -29,4 +30,4 @@ for j, cells in R.items():
             vals.append(span_lp(pre, full[len(pre):]))
         out[j][cell] = vals
         print(j, cell, sum(v for v in vals if v is not None) / max(1, sum(v is not None for v in vals)), flush=True)
-json.dump(out, open(src.replace(".json", "_judged.json"), "w"))
+json.dump(out, open(os.environ.get("JUDGE_OUT", src.replace(".json", "_judged.json")), "w"))
