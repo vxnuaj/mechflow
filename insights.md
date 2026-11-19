@@ -401,3 +401,7 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
     - direct reading of neighbours' feedback is secondary (~0.25, via interaction);
     - own feedback ≈ 0.
   - **Cross-architecture invariant:** SC's benefit is not self-refinement of the target (O ≈ 0 in Lafa 0.5B and ELF; 0.19 at Lafa 7B). It reaches each position through its neighbours. **The channel (feedback in Lafa; states in ELF) is architecture-dependent and is not predicted by the schedule account.**
+
+## 22. 2026-11-19 confirmations
+- **S7 (7B, pre-registered §2.6): all supported.** Neighbours carry the coherence benefit at 7B (Shapley N 0.86; Mistral 0.76); own feedback contributes a small but positive share (0.07; S7-3 p = 0.046). The exploratory 0.19 own share was an overestimate.
+- **L1-R (pre-registered §2.9): supported.** The 26 frozen heads carry 49.5% of the neighbour-reading effect vs 4.2% for layer-matched random sets; θ 0.45 [0.39, 0.52]. Together with L2 (behaviour), **H\* is a confirmed distributed circuit.**

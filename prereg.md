@@ -386,6 +386,15 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | **GO** (user decision, 2026-11-16), reframed around the coordination mechanism (`phase8_memo.md`). Primary = {P1, P2, H2-N}, Holm over 3 | 2026-11-16 |
 
 ## 12. Deviations / Change Log
+- **2026-11-19: S7 outcome (7B, 500 untouched confirmation docs; frozen `analysis/s7b.py`): S7-1, S7-2, S7-3 all SUPPORTED (Holm).**
+  - T(coh) = +2.167; Shapley N share 0.856, O share 0.066.
+  - S7-1 +1.012 [0.765, 1.261]; S7-2 +0.772 [0.601, 0.949], Mistral co-requirement N share 0.757 (met); S7-3 +0.143 [−0.024, 0.311], p = 0.0455 (supported at the third Holm step, α = 0.05).
+  - Operations: shards 1–3 on Prime 4× A6000 (MPS); shard 0 on CARC. Shard 1 with AR_CHUNK = 4 (logged). A duplicated pod driver (after a laptop crash) computed some tasks twice; deduplicated by task_id (identical seeds).
+- **2026-11-19: L1-R outcome (3,000 untouched docs; frozen `analysis/l1.py`): SUPPORTED.**
+  - dep: H\* share 0.495 vs random 0.042; θ = 0.453 [0.391, 0.519]; one-sided LB (α = 0.025) 0.391 > 0.30.
+  - coh: θ = 0.424 [0.385, 0.463].
+  - **This resolves the inconclusive L1.**
+  - Operations: Prime 4× A6000; shard 3 split into two halves; 1,957 duplicate rows from a duplicated driver were dropped by task_id.
 - **2026-11-19 (S7, before shard 1's remaining data): memory-only chunked AR scoring for S7 shard 1.**
   - One long confirmation document in S7 shard 1 runs out of memory when the 16 predecessor samples are scored in one 7B batch (11 GB attention; this also stalled the shard on CARC).
   - Shard 1 (docs after its first 2) is therefore run with `AR_CHUNK=4` (scoring in 4 chunks of 4).

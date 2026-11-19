@@ -294,7 +294,7 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [ ] **G-d: 7B mechanism.**
   - Exploratory H2-N (227 / 300 interim): coh N share 0.73, O 0.23; dep unresolved.
   - Running: S = 64 rescoring + Mistral judge (auto after 300 blocks); E1c grids at 7B.
-  - **Pre-registered confirmation S7** (prereg §2.6; 500 untouched docs) is running on CARC (debug + gpu partitions).
+  - **S7 confirmation: ALL SUPPORTED (2026-11-19)** — N 0.86 (Mistral 0.76), O 0.07 (insights §22).
 - [x] *(toy done 2026-11-18: neighbour-only SC ≥ full, own-only ≈ none; insights §13)*
 - [ ] *(ELF: step 0 v2 shows SC +1.46 nats/token; 2 × 2 × 2 routing hook built and identity-checked; **family E pre-registered** (prereg §2.7); generating on the Mac, judging on CARC, auto-analysis)* **G-e: generality.** Toy factor-graph model (E7) + **ELF** second model (cached torch port: ELF-B/M-owt-torch on CARC); run H2-N there.
 - [ ] **ELF build plan (recon 2026-11-18):**

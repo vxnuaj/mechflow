@@ -1,0 +1,8 @@
+n = 500 docs; T = +2.167; Shapley N share 0.856, O share 0.066
+S7-1: +1.012 [+0.765, +1.261] p=0
+S7-2: +0.772 [+0.601, +0.949] p=0
+S7-3: +0.143 [-0.024, +0.311] p=0.0455
+co-requirement (S7-2): Mistral Shapley N share = 0.757 (n = 500) → met
+  S7-1: SUPPORTED (Holm)
+  S7-2: SUPPORTED (Holm)
+  S7-3: SUPPORTED (Holm)

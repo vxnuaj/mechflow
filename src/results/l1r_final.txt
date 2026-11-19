@@ -1,0 +1,2 @@
+[dep] n = 3000: share H* = 0.495, share random = 0.042, theta = 0.453 [95% 0.391, 0.519], one-sided LB (α=0.025) 0.391  → L1 SUPPORTED (bar 0.30)
+[coh] n = 3000: share H* = 0.457, share random = 0.033, theta = 0.424 [95% 0.385, 0.463], one-sided LB (α=0.025) 0.385
