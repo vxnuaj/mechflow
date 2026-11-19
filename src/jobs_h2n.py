@@ -37,7 +37,9 @@ def _ar_logits_at(model, x, pos):
 def ar_logprob(model, seqs, pos):
     """log p_AR(seq[pos] | seq[:pos]) for a batch of equal-length sequences."""
     x = torch.tensor(seqs, device=model.embed_tokens.weight.device)
-    lp = torch.log_softmax(_ar_logits_at(model, x, pos - 1).float(), -1)
+    ch = int(os.environ.get("AR_CHUNK", "0")) or x.shape[0]      # memory-only option; default = one batch
+    lg = torch.cat([_ar_logits_at(model, x[i:i + ch], pos - 1) for i in range(0, x.shape[0], ch)], 0)
+    lp = torch.log_softmax(lg.float(), -1)
     return lp.gather(1, x[:, pos:pos + 1])[:, 0].cpu()
 
 
@@ -46,7 +48,9 @@ def sample_prefixes(model, prefix, n_tokens, S, gen):
     seqs = [list(prefix) for _ in range(S)]
     for _ in range(n_tokens):
         x = torch.tensor(seqs, device=model.embed_tokens.weight.device)
-        p = torch.softmax(_ar_logits_at(model, x, x.shape[1] - 1).float(), -1)
+        ch = int(os.environ.get("AR_CHUNK", "0")) or x.shape[0]
+        lg = torch.cat([_ar_logits_at(model, x[i:i + ch], x.shape[1] - 1) for i in range(0, x.shape[0], ch)], 0)
+        p = torch.softmax(lg.float(), -1)
         nxt = torch.multinomial(p.cpu(), 1, generator=gen)[:, 0].tolist()
         for s, t in zip(seqs, nxt):
             s.append(t)
