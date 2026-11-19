@@ -385,3 +385,12 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
 - **Prediction (if the confound explains the gap):** the F share falls and the N share rises, with N the largest Shapley share.
 - **If the shares stay as in family E:** the state-route reading stands.
 - Reported alongside the pre-registered result in either case, never instead of it.
+
+## 21. Family E2 RESULT (ELF schedule manipulation, pre-registered §2.8): **not supported**
+- latejump: T +1.34 [0.67, 2.00]; N main +0.06; **F main +0.77**.
+- frontload: T +0.20 (not estimable); N −0.54; F +0.21.
+- **Reading:**
+  - In ELF, SC's benefit flows through the neighbours' own feedback improving the neighbours (F), even when states stay noisy. Direct feedback reading does not take over.
+  - The two-channel account (confirmed in Lafa, family R) **does not predict ELF's channel choice**.
+  - When ELF's states become informative early, SC hardly matters at all (T ≈ 0), which is consistent with SC mattering only while states are uninformative.
+- **Next (queued):** the fixed-context sensitivity analysis (§20.1) asks whether ELF's F benefit reaches token j's own choice or mainly improves the judged context.

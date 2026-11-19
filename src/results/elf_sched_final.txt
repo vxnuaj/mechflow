@@ -1,0 +1,6 @@
+latejump: n=155 T +1.339 [+0.674,+1.997]  N main +0.063  F main +0.765
+frontload: n=185 T +0.204 [-0.334,+0.744]  N main -0.537  F main +0.209
+E2-1 N(late) - N(front) = +0.600 [-0.001,+1.224] p=1
+E2-2 F(front) - F(late) = -0.556 [-1.379,+0.254] p=1
+  E2-1: not supported (Holm)
+  E2-2: not supported (Holm)

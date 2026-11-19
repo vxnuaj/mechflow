@@ -363,6 +363,14 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | **GO** (user decision, 2026-11-16), reframed around the coordination mechanism (`phase8_memo.md`). Primary = {P1, P2, H2-N}, Holm over 3 | 2026-11-16 |
 
 ## 12. Deviations / Change Log
+- **2026-11-18: family E2 outcome (ELF schedules; frozen `analysis/elf_sched.py`): NOT SUPPORTED.**
+  - frontload T = +0.204 [−0.334, 0.744] fails the estimability requirement, so p := 1 for both tests.
+  - **Descriptive:**
+    - latejump: T +1.339 [0.674, 1.997], N main +0.063, F main +0.765;
+    - frontload: N main −0.537, F main +0.209;
+    - N(late) − N(front) +0.600 [−0.001, 1.224];
+    - F(front) − F(late) −0.556 [−1.379, 0.254] (opposite to the prediction).
+  - **The two-channel account's prediction for ELF's channel choice fails.** ELF's SC benefit runs through the neighbour-state route even when states stay noisy.
 - **2026-11-18: family E outcome (ELF-B; 246 samples with complete cells; frozen `analysis/elf.py`; generated and judged on the Mac): E-1 and E-2 NOT SUPPORTED.**
   - T = +1.896 [1.490, 2.314] (estimable).
   - Shapley shares: **N 0.347, O −0.040, F 0.694**; Möbius N 0.001.
