@@ -320,4 +320,4 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [ ] ELF second model (unofficial port validated against JAX).
 - [ ] Better-sampler upside (exploratory).
 - [ ] Read 2610.19628 App. D.5.2; re-check papers citing Lafa.
-- [ ] Draft the paper (`academic-writing` + `icml` guidance); brief the co-author. *(results core §3–7 drafted 2026-11-18, `paper/draft.md`; intro / methods / related work / discussion / abstract in progress)*
+- [ ] ~~Draft the paper~~ *(not Claude's task: the user said 2026-11-18 not to work on the paper; a rough draft exists in `paper/` for reference; the writing is done by the user and co-author)*
