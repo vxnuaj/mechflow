@@ -355,3 +355,13 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
 - (iii) If still unresolved: 500 more blocks with the same design.
 
 **Predictions:** dep T > 0 with S = 64; N is the largest Shapley share on both dep and Mistral-coh, with share ≥ 0.5; O share 0.1–0.3 (own feedback emerging at scale).
+
+### 19.1 7B exploration, complete (300 blocks) + E1c uniform at 7B (100 docs)
+- **coh:** T +2.73 [2.22, 3.24]; Shapley **N 0.76** [0.65, 0.90], **O 0.19** [0.12, 0.26], F 0.05; contrast N − 0.2T **+0.90** [0.54, 1.27].
+- **dep:** T +0.37 [−0.20, 0.93] (unresolved); contrast +0.38 [0.05, 0.71].
+- **E1c uniform at 7B** (share of the full N cut):
+  - s0-7 **0.62–0.87** (dep / coh / drop);
+  - s8-15 0.05–0.18;
+  - s16-31 ≈ 0.
+  - The 0.5B peak was at s8-15.
+  - **The larger model's feedback reading ends earlier.** Under the two-channel account this means 7B states become informative sooner; it is a second-scale confirmation of the timing account (exploratory).
