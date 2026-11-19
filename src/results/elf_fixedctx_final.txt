@@ -1,0 +1,6 @@
+n samples 249; T = +4.262 [+3.743,+4.809] → estimable
+Shapley shares: N 0.247, O 0.009, F 0.744; Möbius N -0.009
+E-1: -0.891 [-1.157,-0.626] p=1
+E-2: -1.080 [-1.307,-0.858] p=1
+  E-1: not supported (Holm)
+  E-2: not supported (Holm)

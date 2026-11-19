@@ -394,3 +394,10 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
   - The two-channel account (confirmed in Lafa, family R) **does not predict ELF's channel choice**.
   - When ELF's states become informative early, SC hardly matters at all (T ≈ 0), which is consistent with SC mattering only while states are uninformative.
 - **Next (queued):** the fixed-context sensitivity analysis (§20.1) asks whether ELF's F benefit reaches token j's own choice or mainly improves the judged context.
+- **§20.1 RESULT:** fixed-context re-scoring (249 samples): T +4.26 [3.74, 4.81]; Shapley **N 0.25, O 0.01, F 0.74**; Möbius N −0.01.
+  - **Prediction failed.** The context confound does not explain ELF's F dominance; F improves token j's own choice.
+  - **Conclusion on ELF (robust across family E, E2 and this analysis):**
+    - SC acts mainly through the neighbours' feedback-improved **states** (F);
+    - direct reading of neighbours' feedback is secondary (~0.25, via interaction);
+    - own feedback ≈ 0.
+  - **Cross-architecture invariant:** SC's benefit is not self-refinement of the target (O ≈ 0 in Lafa 0.5B and ELF; 0.19 at Lafa 7B). It reaches each position through its neighbours. **The channel (feedback in Lafa; states in ELF) is architecture-dependent and is not predicted by the schedule account.**
