@@ -8,7 +8,8 @@ DEV = os.environ.get("JUDGE_DEVICE", "mps")
 R = json.load(open(sys.argv[1]))
 t5 = AutoTokenizer.from_pretrained(os.environ.get("T5_PATH", "t5-small"))
 jp = os.environ["JUDGE_PATH"]; jt = AutoTokenizer.from_pretrained(jp)
-jm = AutoModelForCausalLM.from_pretrained(jp, dtype=torch.bfloat16).to(DEV).eval()
+jm = AutoModelForCausalLM.from_pretrained(jp, dtype=getattr(torch, os.environ.get("JUDGE_DTYPE", "bfloat16"))).to(DEV).eval()
+if DEV == "cpu": torch.set_num_threads(int(os.environ.get("SLURM_CPUS_PER_TASK", "8")))
 @torch.no_grad()
 def span_lp(prefix, piece):
     if not piece.strip(): return None
