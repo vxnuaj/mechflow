@@ -22,9 +22,10 @@ print(" ".join(str(done("results/conf7b_h2n", "tasks_conf7b.jsonl", a, 4)) for a
       "|", " ".join(str(done("results/l1r", "tasks_l1r.jsonl", a, 6)) for a in range(6)),
       "|", " ".join(str(done("results/conf7b_judge", "tasks_conf7b.jsonl", a, 2)) for a in range(2)))
 PY
-squeue -u $USER -h -o %j | tr "\n" " "' 2>/dev/null)
+echo "Q $(squeue -u $USER -h -o %j | tr "\n" " ")"' 2>/dev/null | tr "\n" " ")
   [ -z "$ST" ] && { sleep 300; continue; }
-  read -r a0 a1 a2 a3 _ b0 b1 b2 b3 b4 b5 _ c0 c1 rest <<< "$ST"; Q=" $rest "
+  read -r a0 a1 a2 a3 _ b0 b1 b2 b3 b4 b5 _ c0 c1 _q rest <<< "$ST"; Q=" $rest "
+  [ "$_q" != "Q" ] && { echo "$(date +%H:%M) parse error, skipping cycle"; sleep 300; continue; }
   echo "$(date +%H:%M) S7 [$a0$a1$a2$a3] L1R [$b0$b1$b2$b3$b4$b5] judge [$c0$c1]"
   i=0; for d in $a0 $a1 $a2 $a3; do [ "$d" = 0 ] && ! grep -q " mf_s7h_$i " <<< "$Q" && sub mf_s7h_$i tasks_conf7b.jsonl jobs_h2n:h2n_task results/conf7b_h2n $i 4 ",H2N_REGIME=MR$R7$AL" 08:00:00; i=$((i+1)); done
   i=0; for d in $b0 $b1 $b2 $b3 $b4 $b5; do [ "$d" = 0 ] && ! grep -q " mf_l1r_$i " <<< "$Q" && ! grep -q " mf_l1r " <<< "$Q" && sub mf_l1r_$i tasks_l1r.jsonl jobs_l1:l1_task results/l1r $i 6 ",CUTS=cuts_l1.json$AL" 08:00:00; i=$((i+1)); done
