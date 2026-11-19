@@ -209,6 +209,19 @@ Outcome: Mistral span log-prob of token j. Mac MPS (as family E).
 
 **Decision:** unchanged, a one-sided lower bound at **α = 0.025** > 0.30 → supported. Upper bound < 0.30 → rejected. Otherwise inconclusive. No data extension.
 
+
+### 2.10 Family E3: ELF decoder hypothesis (added 2026-11-19, before any of its data; basis: insights §20–21)
+**Hypothesis:** ELF's state-route dominance (F ≈ 0.7, even when states stay noisy) arises at its final decoding pass, which attends across all positions' final latents. It does not arise during denoising.
+
+**Test:** same setup as family E (ELF-B, L = 128, 32 logit-normal steps, w = 1, n = 256, noise seed 0), target j = 64. For each 2 × 2 × 2 cell, decode token j with (own) the cell's final latents and (swap) the O1N1F1 cell's final latents everywhere except position j (`src/elf_decode_swap.py`). Outcome: Mistral span log-prob of token j against the fixed O1N1F1 left context (`src/elf_judge_fixedctx.py`). Analysis: `analysis/elf.py` (Shapley shares).
+
+**Decision:**
+- F Shapley share (swap) < 0.25 **and** N the largest share → the decoder hypothesis is **supported**.
+- F share (swap) ≥ 0.5 → **refuted**.
+- Otherwise: inconclusive.
+
+Platform: CARC CPU (main partition).
+
 ## 3. Metrics
 - **Primary:** dep_j (positions 2–3); the hybrid rate; μ_j.
 - **Co-requirement:** external-judge and own-AR coh_j.

@@ -309,6 +309,14 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [x] **E4 steering (2026-11-18):** neighbour-feedback transplant flips j to the donor mode in 39.5% vs 0.5% (control); late window only; 77/79 flips are hybrids (insights §15.1).
 - [x] **G-b external judge:** Mistral N share 0.80 / 1.04; O −0.09 (insights §16).
 
+### Phase 12 — Hard-to-vary programme (decided 2026-11-19; Deutsch / Popper: explanations whose every part makes a risky prediction; no patching after failures) → `assumptions.md`
+- [x] Background-assumptions register (`assumptions.md`): instrument / measurement / statistical assumptions with status; scope claims NOT assumed.
+- [ ] **ELF decoder hypothesis (E3, prereg §2.10)** replaces the patch "the channel depends on the architecture" with a falsifiable mechanism; running on CARC CPU.
+- [ ] **Own feedback at 7B:** formulate a predictive account (when does own feedback help?) and test it on existing 7B cells first (which tokens / steps), then on fresh data.
+- [ ] **Message content (D6):** linear probe of what j's state encodes about its neighbour's final token, with vs. without neighbour feedback (exploration docs).
+- [ ] **Measure validity (B1):** human judgements on ~100 stratified output pairs vs. both LM judges (needs the user's labels).
+- [ ] **Text-type generality (D4):** H2-N decomposition on code or math text (0.5B, exploration-style, then a pre-registered confirmation).
+
 ### Phase 10 — Localization ✅ (2026-11-18) → `insights.md` §6–§14
 - [x] E1 step × layer map → late steps, mid layers (L8–11).
 - [x] E1b single layers (L8 ≈ 20%) → head screen (126 heads).
