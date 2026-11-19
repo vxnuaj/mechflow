@@ -291,8 +291,12 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
   - Commit the predictions before data.
 - [x] *(2026-11-18: Mistral N share 0.80 Möbius / 1.04 Shapley; O −0.09; insights §16)* **G-b: external-judge decomposition.** Score the 2,000 confirmation H2-N cell outputs with Mistral (no new generation); report the N share under the external judge.
 - [x] *(2026-11-18: family R R1–R3 all SUPPORTED; prereg §12, insights §17)* **G-c: pre-registered held-out replication of E1c** (both grids) on ~1,000 unused confirmation docs, with the decision rule from insights §7, pre-registered before running.
-- [ ] **G-d: 7B mechanism.** Larger exploratory H2-N (≥ 300 blocks, dep resolved) + the E1c grid test at 7B.
-- [x] *(toy done 2026-11-18: neighbour-only SC ≥ full, own-only ≈ none; insights §13)* **G-e: generality.** Toy factor-graph model (E7) + **ELF** second model (cached torch port: ELF-B/M-owt-torch on CARC); run H2-N there.
+- [ ] **G-d: 7B mechanism.**
+  - Exploratory H2-N (227 / 300 interim): coh N share 0.73, O 0.23; dep unresolved.
+  - Running: S = 64 rescoring + Mistral judge (auto after 300 blocks); E1c grids at 7B.
+  - **Pre-registered confirmation S7** (prereg §2.6; 500 untouched docs) is running on CARC (debug + gpu partitions).
+- [x] *(toy done 2026-11-18: neighbour-only SC ≥ full, own-only ≈ none; insights §13)*
+- [ ] *(ELF: step 0 v2 shows SC +1.46 nats/token; 2 × 2 × 2 routing hook built and identity-checked; **family E pre-registered** (prereg §2.7); generating on the Mac, judging on CARC, auto-analysis)* **G-e: generality.** Toy factor-graph model (E7) + **ELF** second model (cached torch port: ELF-B/M-owt-torch on CARC); run H2-N there.
 - [ ] **ELF build plan (recon 2026-11-18):**
   - A PyTorch ELF exists in the user's `hcfrl` project on CARC (`hcfrl/elf/modules/model.py`, `utils/sampling_utils.py`); use it read-only. Checkpoint: ELF-B-owt-torch (T5-small latents, 1,024-length full-sequence denoising, `self_cond_proj([z, x_prev])`, uncond SC = zeros).
   - **Build:**
@@ -301,6 +305,9 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
     - (3) outcome = coherence of decoded tokens scored by an external LM (Mistral) at the target positions, plus SC-on/off validity.
   - ~1 day.
 - [ ] Weekly scoop check (due 2026-11-20); final literature pass before writing.
+
+- [x] **E4 steering (2026-11-18):** neighbour-feedback transplant flips j to the donor mode in 39.5% vs 0.5% (control); late window only; 77/79 flips are hybrids (insights §15.1).
+- [x] **G-b external judge:** Mistral N share 0.80 / 1.04; O −0.09 (insights §16).
 
 ### Phase 10 — Localization ✅ (2026-11-18) → `insights.md` §6–§14
 - [x] E1 step × layer map → late steps, mid layers (L8–11).
@@ -313,4 +320,4 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [ ] ELF second model (unofficial port validated against JAX).
 - [ ] Better-sampler upside (exploratory).
 - [ ] Read 2610.19628 App. D.5.2; re-check papers citing Lafa.
-- [ ] Draft the paper (`academic-writing` + `icml` guidance); brief the co-author.
+- [ ] Draft the paper (`academic-writing` + `icml` guidance); brief the co-author. *(results core §3–7 drafted 2026-11-18, `paper/draft.md`; intro / methods / related work / discussion / abstract in progress)*
