@@ -373,6 +373,11 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | **GO** (user decision, 2026-11-16), reframed around the coordination mechanism (`phase8_memo.md`). Primary = {P1, P2, H2-N}, Holm over 3 | 2026-11-16 |
 
 ## 12. Deviations / Change Log
+- **2026-11-19 (S7, before shard 1's remaining data): memory-only chunked AR scoring for S7 shard 1.**
+  - One long confirmation document in S7 shard 1 runs out of memory when the 16 predecessor samples are scored in one 7B batch (11 GB attention; this also stalled the shard on CARC).
+  - Shard 1 (docs after its first 2) is therefore run with `AR_CHUNK=4` (scoring in 4 chunks of 4).
+  - Verified on the pod (7B, bf16): sampled predecessors identical; max |Δ log-prob| 0.11 nats per sample (batch-size rounding).
+  - All other S7 shards: unchunked, as before. Platform for S7 shards 1–3 (and the S7 judge): Prime Intellect 4× A6000 (MPS); shard 0 ran on CARC A40.
 - **2026-11-18: family E2 outcome (ELF schedules; frozen `analysis/elf_sched.py`): NOT SUPPORTED.**
   - frontload T = +0.204 [−0.334, 0.744] fails the estimability requirement, so p := 1 for both tests.
   - **Descriptive:**
