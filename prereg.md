@@ -349,6 +349,11 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | **GO** (user decision, 2026-11-16), reframed around the coordination mechanism (`phase8_memo.md`). Primary = {P1, P2, H2-N}, Holm over 3 | 2026-11-16 |
 
 ## 12. Deviations / Change Log
+- **2026-11-18: family E outcome (ELF-B; 246 samples with complete cells; frozen `analysis/elf.py`; generated and judged on the Mac): E-1 and E-2 NOT SUPPORTED.**
+  - T = +1.896 [1.490, 2.314] (estimable).
+  - Shapley shares: **N 0.347, O −0.040, F 0.694**; Möbius N 0.001.
+  - E-1 contrast −0.378 [−0.641, −0.118]; E-2 −0.290 [−0.502, −0.087].
+  - **Reading:** in ELF, SC's benefit runs mainly through the neighbours' own feedback improving their states (F), with neighbour-feedback reading contributing only jointly with F. A position's own feedback is ≈ 0, as in Lafa 0.5B.
 - **2026-11-18 (before any family E data): ELF schedule seeding.** `get_sampling_steps` in this ELF version takes no generator; the schedule is fixed by `torch.manual_seed(1)` immediately before the call (equivalent determinism), and is printed in the run log.
 - **2026-11-18 (before any family E data): ELF platform.** Because CARC was congested (fair-share), family E runs on the user's Mac. Generation uses CPU/MPS in a local env matching ELF's pinned requirements (transformers 4.44, torch 2.x). The Mistral judge runs on MPS (mechflow env). The design, n, seeds and analysis are unchanged.
 - **2026-11-18: family R outcome (§2.5; 1,000 untouched confirmation docs; frozen `analysis/gc.py`): R1, R2, R3 all SUPPORTED (Holm).**

@@ -369,3 +369,12 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
   - all-cut effect dep +1.58 [0.70, 2.47], coh +2.48 [1.79, 3.22];
   - the reading persists and is late-weighted (s24-31 share: dep 0.47, coh 0.30; spread over s8-31 by drop).
   - **With `uniform` (effect only in s0-7), the 7B timing tracks state informativeness exactly as at 0.5B.** The two-channel account holds at both scales (exploratory at 7B).
+
+## 20. Family E RESULT (ELF-B, pre-registered §2.7): E-1, E-2 **not supported**
+- T +1.90 [1.49, 2.31]; Shapley **N 0.35, O −0.04, F 0.69**; Möbius N ≈ 0 (N helps only with F; N × F synergy).
+- **Cross-architecture picture:**
+  - (i) **own feedback ≈ 0** in Lafa 0.5B (≤ 0, two judges) and ELF (−0.04); 0.19 at Lafa 7B;
+  - (ii) SC acts by improving what a position learns about its neighbours, **through the feedback channel in Lafa** (N ≈ 0.75–1.0) **and mainly through the state channel in ELF** (F 0.69).
+- **Consistent with the confirmed two-channel account (family R):** states and fed-back predictions carry neighbour information redundantly, and which carries SC's benefit depends on the architecture and schedule. ELF: full-sequence denoising, continuous x-prediction feedback (not an expected token embedding), logit-normal schedule.
+- **Scope for any claim:** "SC is not self-refinement; it is cross-position communication, via feedback (Lafa) or via feedback-improved states (ELF)."
+- **Possible follow-up (exploratory):** ELF E1c-style schedule manipulation. Does N grow when ELF's states are kept uninformative longer (e.g. `uniform_range`-like)? This would test the two-channel account's prediction in ELF directly.
