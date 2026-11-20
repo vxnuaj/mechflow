@@ -413,6 +413,7 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
    - [x] 3c-iv-b0. Prime API lists **zero GPU resources of any type** (2026-11-20 ~03:30), even after upgrading the CLI 0.5.38 → 0.22.1. Either an outage or the account balance (the CLI cannot show it; the user can check the web UI).
      - **Fallback submitted:** the full E4 chain on CARC GPUs (`tools/carc_e4.sh`; A40/A100/L40S; 16 fine-tunes → 16 decompositions + CE → 56 judge jobs → frozen analysis job 14400976 → `/scratch1/<user>/mechflow/e4run/E4_final.txt`). 91 jobs pending.
      - If Prime returns first: run `pod/run_e4.sh` there and cancel the CARC chain (never both).
+     - **Prime balance $3.94 (user, 2026-11-20)**: likely why availability is empty; insufficient for E4 (~$5–10). Decision: stay on CARC unless the user tops up. LangFlow calibration moved to the CARC GPU queue.
    - [ ] 3c-iv-b. Launch when GPUs are available (no A6000 at 2026-11-20 ~03:00).
      - From the laptop: create the pod; rsync the repo at the pinned commit + hcfrl_min (hcfrl/elf_path.py + hcfrl/elf) via a CARC → laptop → pod stream; run setup + driver under nohup.
      - **Kill timer under `caffeinate -i`** (the last timer failed while the Mac slept); verify termination.
