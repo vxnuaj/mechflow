@@ -309,19 +309,45 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [x] **E4 steering (2026-11-18):** neighbour-feedback transplant flips j to the donor mode in 39.5% vs 0.5% (control); late window only; 77/79 flips are hybrids (insights §15.1).
 - [x] **G-b external judge:** Mistral N share 0.80 / 1.04; O −0.09 (insights §16).
 
-### Phase 13 — Generalization programme (2026-11-19; merged Claude search + GPT review → `generalization_search.md`)
-Rule adopted from E3: **decide on absolute route effects (with total T), never on shares alone.**
+### Phase 13 — Generalization programme (2026-11-19; merged Claude search + GPT review → `generalization_search.md`; every external fact verified → `verification_log.md`)
+**Rules:**
+- Decide on absolute route effects (with total T), never on shares alone (lesson from E3).
+- Before freezing any decision rule, write out what it returns if the hypothesis is true and if it is false. Freeze it only if the two outcomes differ.
 
-**Question:** does the dominant SC route follow *where the token decision is made and whether feedback is readable there* (access/decision-locus), or the feedback's representation, block structure, scale, or SC/state redundancy?
+**Account under test (H-clean + access):** a position reads its neighbours' fed-back predictions as a substitute for their states while those states are uninformative, and only where the feedback is readable in the computation where the token commits.
+- Lafa: commits at noisy steps with SC readable → N.
+- ELF: commits at the SC-free decode pass → F.
+- Already shown: the strong "readout access alone decides" version is refuted by E1c (N = 0 in late steps under `uniform` despite SC at readout); E1b: the final step alone carries 0.05.
 
-Experiments (each pre-registered before its data):
-- [ ] **E3b** (running): ELF decode-pass replication, fresh seed.
-- [~] **C1, Lafa SC-off final readout: largely answered by existing data** (E1b: the final step alone carries 0.05 of N; E1c: N = 0 exactly in late steps under `uniform` despite SC at readout). Demoted (`verification_log.md`).
-- [ ] **Toy factorial (now the primary test of the access variable; no external model varies it):** readout SC on/off × feedback form (expected embedding vs continuous latent), 3 seeds. Prediction: the route follows readout access, not form.
-- [ ] **LangFlow 130M** (`Continuous-Rivals-Discrete/langflow-owt`, verified: expected-embedding SC via concat projection, SC present at final readout, full sequence, L = 1024). Prediction: N-dominant, O ≈ 0. Block-locality rival: N small.
-- [ ] **Plaid 1B** (verified release; expected-embedding SC, SC at readout, full sequence). Second external test.
-- [ ] Stretch: **DiffusionGemma 26B-A4B** (masked/discrete); high cost; adaptive-acceptance confound.
-- [ ] Threat checks: sham swaps, absolute effects + interactions reported, commitment horizon from a separate calibration split.
+**Run order (stop and rethink on failure):**
+1. [ ] **E3b** (running, CARC CPU job 14391603, ~10:30 pm 2026-11-19): ELF decode-pass replication, fresh seed; φ_F lower bound > 0.5.
+   - **Fail** → the ELF explanation is wrong; rethink before step 3.
+2. [ ] **Toy factorial** (primary test of access; no external model varies it): readout SC on/off × feedback form (expected embedding vs continuous latent), 3 seeds each, with matched data, architecture and budget.
+   - **Prediction:** the route follows access, not form (SC-readable → N; SC-zeroed readout → F), on absolute effects.
+   - **Fail** (the route follows form) → the core account is refuted; reinterpret steps 3–5 before running them.
+3. [ ] **ELF decode-access manipulation:** a brief fine-tune that lets the decode pass read SC (vs a matched fine-tune that keeps it zeroed).
+   - **Prediction:** N rises.
+   - **Validity:** decode fluency drop ≤ 20% vs the matched control.
+   - ~6 GPU-h.
+4. [ ] **LangFlow 130M** (`Continuous-Rivals-Discrete/langflow-owt`; verified: expected-embedding SC, SC at readout, full sequence, L = 1024).
+   - **Prediction:** N-dominant, O ≈ 0; timing tracks when neighbour states become decodable (measured on a separate calibration split).
+   - **Block-locality rival:** N small.
+   - ~2–3 GPU-h.
+5. [ ] **Plaid 1B** (verified release): the same predictions as step 4. ~4 GPU-h.
+6. [ ] Stretch: **DiffusionGemma 26B-A4B** (discrete; adaptive-acceptance confound; expensive).
+- [~] C1 (Lafa SC-off final readout): largely answered by E1b/E1c; demoted.
+
+**Process for each experiment:**
+1. Draft the pre-registration (prediction, decision rule with both outcome scenarios, feasibility criterion "no identifiable mechanism" separate from "refuted").
+2. Run a 16-sample microbenchmark to measure real cost.
+3. **GPT red-team:** the user sends the draft rules to GPT with a "find flaws" prompt (Claude writes it).
+4. Fold in valid criticism, hash and push, then launch.
+
+**Threat checks in every run:**
+- sham swaps;
+- the identity cells reproduce normal sampling;
+- absolute effects + interactions reported;
+- commitment horizon from a separate calibration split.
 
 ### Phase 12 — Hard-to-vary programme (decided 2026-11-19; Deutsch / Popper: explanations whose every part makes a risky prediction; no patching after failures) → `assumptions.md`
 - [x] Background-assumptions register (`assumptions.md`): instrument / measurement / statistical assumptions with status; scope claims NOT assumed.
