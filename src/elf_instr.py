@@ -137,3 +137,66 @@ def run_plain(model, cfg, z0, t_steps, sc_on, w=1.0, autocast=True):
 def decode(model, cfg, z, t_final, w=1.0):
     from utils.generation_utils import _dlm_decode_batch
     return _dlm_decode_batch(z, model, t_final, cfg, w)
+
+
+# ---- Phase 13 step 3 (decoder access): truncated trajectories + routed decode pass with optional readable SC ----
+@torch.no_grad()
+def run_cell_x(model, cfg, z0, t_steps, j, O, N, F, w=1.0, autocast=True):
+    """As run_cell, but returns (z, xprev) after len(t_steps) - 1 steps (pass a prefix of t_steps to truncate)."""
+    global ROUTE
+    B, L, Cd = z0.shape; dev = z0.device
+    z = z0.clone(); xprev = torch.zeros_like(z); wt = torch.full((3 * B,), float(w), device=dev)
+    ctx = torch.amp.autocast("cuda", dtype=torch.bfloat16, enabled=autocast and dev.type == "cuda")
+    with ctx:
+        for i in range(len(t_steps) - 1):
+            t, tn = t_steps[i].item(), t_steps[i + 1].item(); zero = torch.zeros_like(z); o_in = zero.clone()
+            if O: o_in[:, j] = xprev[:, j]
+            inp = torch.cat([torch.cat([z, zero], -1), torch.cat([z, xprev], -1), torch.cat([z, o_in], -1)], 0)
+            tb = torch.full((3 * B,), t, device=dev); ROUTE = {"L": L, "j": j, "n": N}
+            try: out = model(inp, tb, deterministic=True, self_cond_cfg_scale=wt)
+            finally: ROUTE = None
+            v, x = _vx(out, torch.cat([z, z, z], 0), tb, cfg.t_eps)
+            vS, vF, vO = v.split(B); xS, xF, xO = x.split(B)
+            vv = (vF if F else vS).clone(); xx = (xF if F else xS).clone(); vv[:, j] = vO[:, j]; xx[:, j] = xO[:, j]
+            z = z + (tn - t) * vv; xprev = xx
+    return z, xprev
+
+
+@torch.no_grad()
+def run_plain_x(model, cfg, z0, t_steps, sc_on, w=1.0, autocast=True):
+    B = z0.shape[0]; dev = z0.device; z = z0.clone(); xp = torch.zeros_like(z); wt = torch.full((B,), float(w), device=dev)
+    with torch.amp.autocast("cuda", dtype=torch.bfloat16, enabled=autocast and dev.type == "cuda"):
+        for i in range(len(t_steps) - 1):
+            t, tn = t_steps[i].item(), t_steps[i + 1].item(); tb = torch.full((B,), t, device=dev)
+            out = model(torch.cat([z, xp], -1), tb, deterministic=True, self_cond_cfg_scale=wt)
+            v, x = _vx(out, z, tb, cfg.t_eps); z = z + (tn - t) * v; xp = x if sc_on else torch.zeros_like(x)
+    return z, xp
+
+
+def _dec_logits(model, inp, w):
+    B = inp.shape[0]; dev = inp.device
+    tf = torch.ones((B,), device=dev, dtype=inp.dtype); sc = torch.full((B,), float(w), device=dev, dtype=inp.dtype)
+    with torch.amp.autocast("cuda", dtype=torch.bfloat16, enabled=dev.type == "cuda"):
+        _, lg = model(inp, tf, deterministic=True, self_cond_cfg_scale=sc, decoder_step_active=torch.ones((B,), device=dev, dtype=inp.dtype))
+    return lg
+
+
+@torch.no_grad()
+def decode_plain_x(model, z, xp, readable, w=1.0):
+    """Decode pass; SC input = xp if readable else zeros (ELF default)."""
+    return _dec_logits(model, torch.cat([z, xp if readable else torch.zeros_like(z)], -1), w).argmax(-1)
+
+
+@torch.no_grad()
+def decode_cell(model, z, xprev, j, O, N, F, readable, w=1.0):
+    """Routed decode pass. S: zero SC; F: SC = xprev if readable; O: target j gets xprev_j iff O and readable.
+    Tokens: neighbours from F (F = 1) or S; target from O. If not readable, S = F = O inputs (SC is zero everywhere)."""
+    global ROUTE
+    B, L, _ = z.shape; zero = torch.zeros_like(z); fb = xprev if readable else zero; o_in = zero.clone()
+    if O and readable: o_in[:, j] = xprev[:, j]
+    inp = torch.cat([torch.cat([z, zero], -1), torch.cat([z, fb], -1), torch.cat([z, o_in], -1)], 0)
+    ROUTE = {"L": L, "j": j, "n": N}
+    try: lg = _dec_logits(model, inp, w)
+    finally: ROUTE = None
+    yS, yF, yO = lg.argmax(-1).split(B); y = (yF if F else yS).clone(); y[:, j] = yO[:, j]
+    return y
