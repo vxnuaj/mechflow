@@ -34,7 +34,8 @@ We use **causal interventions**: we change what the model can see during generat
 - SC clearly improves coherence under both judges.
 
 **2. Neighbours, not selves.**
-- At 0.5B, **reading the neighbours' feedback carries essentially all of SC's benefit**. A position's own feedback contributes about zero.
+- At 0.5B, **a position's own feedback contributes about zero**; the whole benefit comes from its neighbours.
+- It reaches the position through **two roughly equal routes**: directly reading the neighbours' fed-back guesses, and the neighbours' own states improving because *they* got feedback. This shows up when each word is scored against a fixed context, so that changes in the neighbours' words can't mask it. A pre-registered robustness check confirmed this.
 - At 7B, neighbours carry **86%** (76% by the independent judge); own feedback contributes a small **7%**.
 - In a toy model trained from scratch, giving positions **only their neighbours' feedback** works as well as or better than full SC (72% vs 53% valid answers). Giving them only their **own** feedback is no better than nothing.
 
