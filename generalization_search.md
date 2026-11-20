@@ -43,3 +43,17 @@ Also proposed: a probe-based quantitative prediction of the N share (decision pr
 - state SNR alone (already weakened);
 - injection method;
 - capacity.
+
+## Merge with GPT review (2026-11-19)
+- **Convergence:** both independently propose the same account ("commitment propagation through the channel accessible where the decision is made"). Both rank within-model access manipulations above more model replications.
+- **Adopted from GPT:**
+  - matched toy factorial (readout SC access × feedback form);
+  - absolute effects, never shares alone (we made exactly this error in E3);
+  - commitment horizon from a separate calibration split;
+  - sham swaps;
+  - a feasibility category ("no identifiable mechanism") distinct from refutation.
+- **GPT claims corrected by code inspection:**
+  - LangFlow's feedback is an **expected token embedding** (softmax → `_embed_tokens`), not a continuous latent prediction. It is injected ELF-style (concat + zero-init projection), and SC **is** passed to the final readout call.
+  - Plaid's readout SC is verified present (no audit needed).
+- **Priority disagreement:** GPT ranks DiffusionGemma first among external models, but schedules it last in its own programme. We keep it last (cost, MoE, adaptive-acceptance confound). LangFlow replaces Plaid as the first external test (130M, HF, the same predictions).
+- **Where the two theories diverge (tested by C1):** "readout access determines the route" vs "the decision is made at late noisy steps before readout". Removing SC only at Lafa's final readout should collapse N under the first and barely change it under the second.

@@ -309,6 +309,20 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [x] **E4 steering (2026-11-18):** neighbour-feedback transplant flips j to the donor mode in 39.5% vs 0.5% (control); late window only; 77/79 flips are hybrids (insights §15.1).
 - [x] **G-b external judge:** Mistral N share 0.80 / 1.04; O −0.09 (insights §16).
 
+### Phase 13 — Generalization programme (2026-11-19; merged Claude search + GPT review → `generalization_search.md`)
+Rule adopted from E3: **decide on absolute route effects (with total T), never on shares alone.**
+
+**Question:** does the dominant SC route follow *where the token decision is made and whether feedback is readable there* (access/decision-locus), or the feedback's representation, block structure, scale, or SC/state redundancy?
+
+Experiments (each pre-registered before its data):
+- [ ] **E3b** (running): ELF decode-pass replication, fresh seed.
+- [ ] **C1, Lafa SC-off final readout** (cheapest; separates "readout access decides" from "the decision is made earlier"). Decision-locus account predicts the N effect is unchanged (within 0.15 of T-normalised baseline, plus absolute effect).
+- [ ] **Toy factorial:** readout SC on/off × feedback form (expected embedding vs continuous latent), 3 seeds. Prediction: the route follows readout access, not form.
+- [ ] **LangFlow 130M** (`Continuous-Rivals-Discrete/langflow-owt`, verified: expected-embedding SC via concat projection, SC present at final readout, full sequence, L = 1024). Prediction: N-dominant, O ≈ 0. Block-locality rival: N small.
+- [ ] **Plaid 1B** (verified release; expected-embedding SC, SC at readout, full sequence). Second external test.
+- [ ] Stretch: **DiffusionGemma 26B-A4B** (masked/discrete); high cost; adaptive-acceptance confound.
+- [ ] Threat checks: sham swaps, absolute effects + interactions reported, commitment horizon from a separate calibration split.
+
 ### Phase 12 — Hard-to-vary programme (decided 2026-11-19; Deutsch / Popper: explanations whose every part makes a risky prediction; no patching after failures) → `assumptions.md`
 - [x] Background-assumptions register (`assumptions.md`): instrument / measurement / statistical assumptions with status; scope claims NOT assumed.
 - [x] **ELF decoder hypothesis (E3, §2.10):** REFUTED under its share rule; exploratory: 82% of F's absolute effect arises at decode (insights §23).
