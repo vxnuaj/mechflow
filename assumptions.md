@@ -35,10 +35,10 @@ We do not justify claims from axioms. Every result rests on background assumptio
 
 | ID | Claim we do NOT assume | Status |
 |---|---|---|
-| D1 | The mechanism is the same in other architectures | **Tested: partly fails** (ELF uses the state route; the decoder hypothesis is under test) |
-| D2 | The mechanism is the same at scale | Being tested (S7, 7B): own feedback contributes ~19% at 7B |
+| D1 | The mechanism is the same in other architectures | **Tested: partly fails** (ELF uses the state route). Candidate design-level cause: ELF zeroes the SC input at its decode pass (2605.10938 Alg. 5), so feedback can reach the output only through states. E3 is under test |
+| D2 | The mechanism is the same at scale | **Tested, confirmed (S7, 7B):** N share 0.86 (Mistral 0.76); own feedback a small positive 0.07 |
 | D3 | The toy model's mechanism is the real one | Not assumed: an analogy that shows the algorithmic property |
 | D4 | The mechanism holds beyond chat answers and two-answer prompts | **Open:** a decomposition on another text type (code / math) is planned |
-| D5 | Attention heads are the natural unit | Not assumed: the effect is distributed (26 heads ≈ 44%) |
+| D5 | Attention heads are the natural unit | Not assumed: the effect is distributed (26 heads carry 49.5% vs 4.2% random; L1-R confirmed) |
 | D6 | The transmitted content is "which answer" in general text | Shown only for bimodal prompts (steering). **Open:** probe what j's state knows about its neighbour's token with vs. without feedback |
 | D7 | The mechanism regime (no guidance, training noise) describes deployment | **Checked:** S12 (N 0.73 with guidance), S3/S4 equivalence, G1 end tasks |
