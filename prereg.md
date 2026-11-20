@@ -564,6 +564,7 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | **GO** (user decision, 2026-11-16), reframed around the coordination mechanism (`phase8_memo.md`). Primary = {P1, P2, H2-N}, Holm over 3 | 2026-11-16 |
 
 ## 12. Deviations / Change Log
+- **2026-11-21: family P implementation fix (before any uniform-grid probe data):** `S.run_block` (the identity reference) supports only the warp grid, so the uniform-grid shards crashed at start. Under `uniform` the identity reference is now `run_block_two_pass` with SC everywhere (as in E1c). Warp data are unaffected.
 - **2026-11-21: execution moved to the CARC debug partition (before any E4 / G data):** the gpu partition started nothing in 8 h, and the Prime API lists no GPUs for the account. Implementation-only changes:
   - E4 fine-tunes save every 0.2 epoch and auto-resume across 55-min jobs (`FT_SAVE_FREQ`; ELF's own resume skips already-processed batches; only the newest checkpoint is kept);
   - E4 decompositions run one config per job (identical code and seeds);

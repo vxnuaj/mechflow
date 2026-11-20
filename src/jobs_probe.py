@@ -12,7 +12,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 import load
-from lafa_instr import BlockCfg
+from lafa_instr import BlockCfg, run_block_two_pass
 
 LAYERS = [int(x) for x in os.environ.get("PROBE_LAYERS", "3,8,15,19").split(",")]
 GRID = os.environ.get("PROBE_GRID", "warp"); OUTDIR = os.environ.get("PROBE_OUT", "results/probe")
@@ -62,7 +62,9 @@ def probe_task(task, ctx):
     p_ids = load.chat_prompt_ids(tok, task["user"]); r_ids = tok(task["response"], add_special_tokens=False).input_ids
     rng = random.Random(task["task_id"]); cut = 4 * rng.randint(0, max(0, (len(r_ids) - 8) // 4))
     prefix = p_ids + r_ids[:cut]; cache, L = S.prefill(prefix)
-    ref = S.run_block(cache, L, CFG).tokens
+    # identity reference: S.run_block mirrors only the warp grid; for other grids use the validated two-pass primitive
+    # with SC everywhere (fbA = all, take = all A), the reference E1c used under `uniform`
+    ref = S.run_block(cache, L, CFG).tokens if GRID == "warp" else run_block_two_pass(S, cache, L, CFG, fbA={0, 1, 2, 3}, fbB=set(), take=["A"] * 4)[0]
     hAs, hBs, ys = [], [], []
     for j in (2, 3):
         y, hA, hB, K = _two_pass_capture(S, cache, L, CFG, j); ys.append(y); hAs.append(hA); hBs.append(hB)
