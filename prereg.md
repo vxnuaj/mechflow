@@ -320,6 +320,24 @@ A prediction holds when the CI excludes 0 in the predicted direction and all 3 s
 
 **Platform:** Prime GPU pod (the user's decision, 2026-11-20). Smoke tests on CARC CPU passed (identities 1.0000).
 
+**§2.13 v2 amendment (2026-11-20, after the GPT red-team, before any E4 data).** The design and decision rule are replaced by the docstring of `analysis/elf_access.py` v2 (frozen with this entry).
+
+**Changes:**
+- **Common reference context (C4, confirmed in code):** the base ELF-B SC-on tokens for the same noise (`REF_FILE` in `elf_judge_fixedctx.py`).
+- **Shuffled-feedback control** `24_shuf` (decode SC from another sample; M14) → mandatory M3: R = Δ24s − 0.5·Δ24 < 0.
+- **Joint per-sample contrasts on a common sample set;** M2 is tested as Q = Δ32 − 0.5·Δ24 < 0 (M6, M7, M11).
+- **M1 includes its minimum effect** explicitly (SESOI = 0.1·|T|; M10).
+- **8 fine-tune seeds per arm** (M5/M15; the MDE ≈ 0.20 nats from E3b variance vs SESOI ≈ 0.41).
+- **Per-seed gates:** identities (tokens and decode-logit max-diff); regime via decoder log-prob of the eventual token from state vs feedback, globally and in the |i − j| ≤ 16 window (C1, M4, M9); uptake = the decode-SC zeroing change rate ≥ 0.10 (C5, M12); fluency = held-out native decoder CE (M8); missingness ≤ 5%. The positive-T gate is dropped (M13).
+- **Rule check:** 10 synthetic scenarios incl. boundary cases return the intended verdicts. A tiny positive effect below SESOI → REFUTED, by design.
+
+**Not adopted, with reasons:**
+- C2: the truncated state is in distribution. The decoder is trained on λ·x0 + (1 − λ)·5·e with λ ~ sigmoid(N(0.8, 0.8)), and the flow state at t = 0.35 matches λ ≈ 0.58, about the 27th percentile.
+- C3: the account *is* information-dependent use; the claim is narrowed, and the rivals are now "access regardless of information" (M2) and "any new input" (M3).
+- M1: same-state SC training is standard practice; a limitation, with uptake measured at inference.
+
+**Implementation note:** the smoke test of v2 showed that the identity logit check compared the F stream in the O0N0F0 cell, where the S stream is used. This was a bug in the check, not the computation: a direct test gave routed and plain decode logits equal to ≤ 1.3e-4. It was fixed before any data.
+
 ## 3. Metrics
 - **Primary:** dep_j (positions 2–3); the hybrid rate; μ_j.
 - **Co-requirement:** external-judge and own-AR coh_j.

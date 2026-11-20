@@ -1,6 +1,8 @@
 """Exploratory sensitivity analysis for family E (insights §20.1): score each cell's token at target j against a
 FIXED left context, the (O1N1F1) cell's decoded tokens 0..j-1 for the same sample. Only j's own choice varies
-across cells. Mistral-7B-Instruct-v0.3 span log-prob, as in elf_decomp_judge.py."""
+across cells. Mistral-7B-Instruct-v0.3 span log-prob, as in elf_decomp_judge.py.
+E4 v2: if REF_FILE is set ({"tokens": [[ids] per sample]}), that common reference context is used for every cell and
+config (the base ELF-B SC-on tokens for the same noise), so contexts do not differ between access conditions."""
 import json, os, sys
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
@@ -20,9 +22,10 @@ def span_lp(prefix, piece):
     for t in range(1, len(ids)):
         if a <= offs[t][0] < b: s += float(lp[t - 1, ids[t]]); hit = True
     return s if hit else None
+REF = json.load(open(os.environ["REF_FILE"]))["tokens"] if os.environ.get("REF_FILE") else None   # E4 v2 (red-team C4)
 out = {}
 for j, cells in R.items():
-    j_ = int(j); ref = cells["O1N1F1"]; out[j] = {}
+    j_ = int(j); ref = REF if REF is not None else cells["O1N1F1"]; out[j] = {}
     for cell, rows in cells.items():
         vals = []
         for i, ids in enumerate(rows):

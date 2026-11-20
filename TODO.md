@@ -396,13 +396,15 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
        - C3: the account *is* information-dependent use; claim narrowed; the rivals are "access regardless of information" and "any new input" (shuffled control);
        - M1: same-state SC training is standard; limitation noted; uptake measured at inference;
        - M2: report all 8 cells + interactions.
-   - [ ] 3c-ii-c. Implement E4 v2:
+   - [x] 3c-ii-c. E4 v2 implemented and frozen: smoke test passes in all 6 configs (token identity 1.0000; decode-logit max-diff ≤ 0.014 after fixing the check's stream selection); 10 synthetic scenarios give the intended verdicts. Implement E4 v2:
      - `elf_judge_fixedctx.py --ref`; decomposition adds access=shuf, regime log-probs, uptake rate, logit identity diffs and base-model reference tokens;
      - `src/elf_heldout_ce.py` (fluency/uptake on held-out OWT);
      - analysis v2 + synthetic/boundary tests;
      - prereg amendment; hash; push.
    - [ ] 3c-ii-d. Optional second red-team pass on v2 (the user's call).
    - [ ] 3c-iii. Code and smoke-test steps 4 (LangFlow) and 5 (Plaid) decompositions on CPU so that one Prime session runs everything.
+     - LangFlow: attention is the module-level `regular_attention_multi_headed`, so the same three-stream patch applies. SC = softmax(logits) @ E via `_embed_tokens`; Euler-EDM over a Gumbel-proposal gamma schedule (128 steps); the final forward uses SC.
+     - Plaid: custom repo (`lib/models.py`); check the flash-attn dependency.
    - [ ] 3c-iv. Prime session: fine-tunes (readable, zeroed; 3,000 steps each) → decompositions (n_steps {32, 24} × access {read, zero} for readable; zero for zeroed; n = 256, seed 2) → Mistral fixed-context judge, plus LangFlow and Plaid. Verified-termination timer.
    - [ ] 3c. Pre-register the design: fine-tune readable vs zeroed × sampling t_end {1.0, truncated} × inference access, interaction prediction (insights §26). Predictions from 3a; rule checked on synthetic scenarios incl. partial identifiability; fixed-context outcome; fluency validity ≤ 20% drop; within-model readable-vs-zeroed-at-inference contrast). GPT red-team. GPU run (~6 GPU-h; Prime or CARC, the user's choice).
    - **Validity:** decode fluency drop ≤ 20% vs the matched control.
