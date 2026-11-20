@@ -262,3 +262,47 @@ Same verdict: the decomposition and the dominance of neighbour-reading are **app
 - DiffusionGemma-transparency §7.2, item 2: "Can we do 'activation patching' ... across the diffusion axis ...?" Item 7: "is there a simple circuit implementing token smearing?" **§7 does not mention self-conditioning or per-/cross-position effects.**
 - **Safe wording:** "poses activation patching across denoising steps and circuit analysis of non-autoregressive behaviours (e.g. token smearing) as open problems."
 - **Contrast to discuss:** their §7.2 item 4 says "ablating almost all information from intermediate vectors barely damages performance" (the SC channel is highly compressible in DiffusionGemma). In Lafa, removing the cross-position feedback causes large coherence losses and failures. Discuss as a regime / architecture difference (masked vs. continuous flow; block size), not a contradiction.
+
+### 8.4 Literature round (2026-11-19): final claims + scoop check (window 11-10 to 11-19)
+**No scoop of claims 2–7.**
+
+New items in the window (all partial or irrelevant):
+- Token Commitment as a Control Surface 2611.21669;
+- LOOT / hollow transformers 2611.19127 (cousin of neighbour-only SC; position claim 7 against it);
+- Schedule-Calibrated Commitment 2611.15234;
+- Fast at the Frontier 2611.20693;
+- The Price of Not Planning 2611.21285;
+- ViLFlow 2611.24240 (cites ELF).
+
+Pre-window, not previously listed:
+- TDLM 2610.36940 (own-history memory helps masked DLMs; scope "own ≈ 0" to expected-embedding SC in continuous flows);
+- One Block Ahead 2610.19510.
+
+**Claim-by-claim:**
+- **Claim 3 (two channels, schedule manipulation):**
+  - Novel as a causal test.
+  - Timestep-specific interventions exist: Gorgun et al. 2512.08486 (ICLR 2026, prompt switching at t); TimeROME-DLM 2606.12841.
+  - **Correlational support:** 2610.19628 App. D.5.2: attention to the SC input "declin[es] nearly monotonically from 31.3% to 20.0%… uses it most heavily at early steps, where the noisy state is less informative". This is pooled over positions, first layer only, and has no own/other split.
+- **Claim 4 (head circuit):** novel; no prior head-level circuit reading fed-back predictions (Mask-Predict/CMLM, attention sinks 2510.15731, depth-recurrent 2507.02199 all lack it).
+- **Claim 5 (message transplant):**
+  - Cross-run state swaps are established in image diffusion: Prompt-to-Prompt 2208.01626, prompt-mixing 2303.11306, h-space 2210.10960, Plug-and-Play 2211.12572; also 2610.19628 D.5.3 (condition swap after k steps).
+  - **Frame as:** a neighbour-only SC-message transplant that creates cross-answer hybrids.
+- **ELF:** Hu, Qiu, Lu, Zhao, Li, Kim, Andreas, He, *ELF: Embedded Language Flows*, arXiv 2605.10938 (NeurIPS 2026).
+  - The decoder is a full cross-position pass of the same network at t = 1.
+  - **The SC input is zeroed at decode** (their Alg. 5; verified in the hcfrl implementation: `_dlm_decode_batch` concatenates zeros). So the feedback cannot reach the output directly, and its benefit must pass through states. This is a design-level explanation candidate for family E; E3 tests the decoder route.
+- **Analog Bits:** no per-timestep SC ablation (on/off only).
+
+**Citations verified (arXiv API):**
+- Mask-Predict 1904.09324 (EMNLP 2019);
+- Sigma: title "Large Language Continuous Diffusion Models" 2610.02665 (Nemotron-Labs-Sigma is the model name);
+- DA-DLM 2609.15070;
+- Alpha-DLM 2609.38066;
+- DStill 2610.27379;
+- IOI 2211.00593;
+- path patching 2304.05969.
+
+**Reviewer objections to pre-empt:**
+- (1) The ELF result may be forced by the architecture (SC zeroed at decode).
+- (2) "Prompt-to-Prompt for text": contrast explicitly.
+- (3) Scope "own ≈ 0" to SC with expected embeddings / continuous flows (TDLM shows own history helps elsewhere).
+- (4) **Double-blind risk:** the public GitHub repo surfaces in searches for Lafa (the user's decision).
