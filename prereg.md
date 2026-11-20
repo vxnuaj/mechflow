@@ -564,7 +564,7 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | **GO** (user decision, 2026-11-16), reframed around the coordination mechanism (`phase8_memo.md`). Primary = {P1, P2, H2-N}, Holm over 3 | 2026-11-16 |
 
 ## 12. Deviations / Change Log
-- **2026-11-21: B1 raters (before any ratings):** raters may include an independent third party (blind, no stake) besides or instead of the user and co-author. A third party strengthens B1. Each rater's file is scored separately; the pooled analysis and Cohen's κ cover all raters (`analysis/b1.py` is extended to N raters before scoring). The sheet's instructions were expanded for a non-expert; the items and key are unchanged.
+- **2026-11-21: B1 raters (before any ratings):** raters may include an independent third party (blind, no stake) besides or instead of the user and co-author. A third party strengthens B1. Each rater's file is scored separately; the pooled analysis and Cohen's κ cover all raters (`analysis/b1.py` is extended to N raters before scoring). The sheet's instructions were expanded for a non-expert. Display fix: line breaks inside the 32 multi-line snippets are shown as spaces, so every snippet renders on one line (following the user's edit of item 1). The items, their order and the key are unchanged.
 - **2026-11-21: R-FC outcome (prereg §2.14; frozen `analysis/fixctx.py`; 2,000 docs): ROBUST.**
   - Fixed-context dep_23 contrast N − 0.2T = +0.219 [0.118, 0.320]; Shapley N share 0.501, just at the 0.5 bar. coh (descriptive): +0.636 [0.516, 0.761]; N share 0.606.
   - **Descriptive decomposition (not a decision):**

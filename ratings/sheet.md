@@ -44,12 +44,8 @@ Save the file **with your name in it**, e.g. `sheet_alex.md`, and send it back (
 
 **Context:** … moments when Sophie felt a twinge of something less positive. There were songs she had written ages ago, when she was still finding her voice, that she didn't feel as enthusiastic about anymore. There were moments when she felt like she was performing for the sake of the audience, rather than for herself
 
-- **A:** `.
-
-And sometimes sparked`
-- **B:** `.
-
-And sometimes Sophie`
+- **A:** `. And sometimes sparked`
+- **B:** `. And sometimes Sophie`
 
 Answer: 
 
@@ -95,8 +91,7 @@ assistant
 The Vikings have several players out for the
 
 - **A:** ` game on Sunday due`
-- **B:** ` game on  
-–`
+- **B:** ` game on –`
 
 Answer: 
 
@@ -104,10 +99,8 @@ Answer:
 
 **Context:** … that Kingston didn't deserve to compete for the WWE Championship at WrestleMania but gave him the opportunity provided he could beat 5 Superstars in a gauntlet match. Kingston did precisely that, but McMahon put another obstacle in his path in the form of Bryan, and Kingston simply couldn't overcome it
 
-- **A:** `.
-While Kingston is`
-- **B:** `.
-Despite three Kingston`
+- **A:** `. While Kingston is`
+- **B:** `. Despite three Kingston`
 
 Answer: 
 
@@ -296,10 +289,8 @@ Mix the yoghurt with the lime juice and zest and serve with the fish cakes and r
 assistant
 - Basmati
 
-- **A:** ` rice rice
--`
-- **B:** ` rice paste
--`
+- **A:** ` rice rice -`
+- **B:** ` rice paste -`
 
 Answer: 
 
@@ -391,12 +382,8 @@ Answer:
 
 **Context:** …esh, take a non-stick pan and dry roast the saffron. In a small bowl, soak the saffron in 2 tsp of milk. Heat the non-stick pan and add sugar to it. Add the paneer and mix well until the sugar dissolves and the mixture
 
-- **A:** ` is evenly.
-
-Once`
-- **B:** ` is smooth.
-
-Once`
+- **A:** ` is evenly. Once`
+- **B:** ` is smooth. Once`
 
 Answer: 
 
@@ -434,12 +421,8 @@ When life was simple, things were fine
 With my pup by my side, I felt complete
 His wagging tail and sloppy kisses, oh
 
-- **A:** ` ohore
-Sp`
-- **B:** ` oh!
-
-
-Sp`
+- **A:** ` ohore Sp`
+- **B:** ` oh! Sp`
 
 Answer: 
 
@@ -519,11 +502,8 @@ Answer:
 assistant
 1) Punjab State Industrial Policy 2017: The policy aims to provide a conducive environment for entrepreneurs and small businesses in the state by offering incentives and subsidies for setting up new businesses and expanding
 
-- **A:** ` existing ones.
-2`
-- **B:** ` existing operations.
-
-2`
+- **A:** ` existing ones. 2`
+- **B:** ` existing operations. 2`
 
 Answer: 
 
@@ -533,9 +513,7 @@ Answer:
 assistant
 The top pumpkin-producing states are Illinois, Ohio, Pennsylvania and California, with Illinois growing 90 to 95 percent of the processed pumpkins in the
 
-- **A:** ` United States.
-
-**`
+- **A:** ` United States. **`
 - **B:** ` United States (according`
 
 Answer: 
@@ -549,10 +527,8 @@ Yes, I can explain the difference between a viola and a violin.
 
 The main difference between a viola and a violin is their size
 
-- **A:** ` and shape.
-Vi`
-- **B:** ` and shape.
-Viol`
+- **A:** ` and shape. Vi`
+- **B:** ` and shape. Viol`
 
 Answer: 
 
@@ -600,10 +576,8 @@ For the Strawberries:
 For the Whipped Cream:
 - 1
 
-- **A:** ` cup vanilla
--`
-- **B:** ` cup cream
--`
+- **A:** ` cup vanilla -`
+- **B:** ` cup cream -`
 
 Answer: 
 
@@ -626,10 +600,8 @@ Answer:
 Tips:
 - Don't overload the wrap with too much filling or dressing to avoid the wrap from
 
-- **A:** ` becoming sog.
--`
-- **B:** ` becoming too.
--`
+- **A:** ` becoming sog. -`
+- **B:** ` becoming too. -`
 
 Answer: 
 
@@ -670,10 +642,8 @@ Her laugh could lift the heaviest ton.
 She smiled at all who passed her by,
 With a twinkle in her eye
 
-- **A:** `.
-Her laughter sparked`
-- **B:** `.
-Her laughter danced`
+- **A:** `. Her laughter sparked`
+- **B:** `. Her laughter danced`
 
 Answer: 
 
@@ -712,10 +682,8 @@ Answer:
 
 **Context:** …As the sun slowly crept behind the mountains, the sky transformed into a deep shade of purple, signaling the onset of evening. The air was filled with the sweet fragrance of blooming flowers and freshly cut grass. A gentle breeze rustled through the trees, causing the leaves to dance and sway in
 
-- **A:** ` spring rhythm.
-Sp`
-- **B:** ` time like  
-Sp`
+- **A:** ` spring rhythm. Sp`
+- **B:** ` time like Sp`
 
 Answer: 
 
@@ -751,10 +719,8 @@ with the breeze, as I sit beside it
 and sway with memories 
 
 
-- **A:** `neverore  
-sp`
-- **B:** `never worse  
-sp`
+- **A:** `neverore sp`
+- **B:** `never worse sp`
 
 Answer: 
 
@@ -854,10 +820,8 @@ Step 3: Post-Launch Activities
 
 1. Keep the momentum going. Don’t just stop promoting your book after
 
-- **A:** ` launch’s.
-2`
-- **B:** ` launch launch.
-2`
+- **A:** ` launch’s. 2`
+- **B:** ` launch launch. 2`
 
 Answer: 
 
@@ -959,8 +923,7 @@ user
 assistant
 
 
-- **A:** `It!  
-If`
+- **A:** `It! If`
 - **B:** `It's **2`
 
 Answer: 
@@ -1029,10 +992,8 @@ assistant
 - Increase conversions and sales
 - Build email list and improve
 
-- **A:** ` open rate
--`
-- **B:** ` lead rate
--`
+- **A:** ` open rate -`
+- **B:** ` lead rate -`
 
 Answer: 
 
@@ -1190,8 +1151,7 @@ Answer:
 
 The significance of the golden gate and eternal light is thus related to the concept of redemption, as they represent the ultimate goal of the Christian faith. Through faith in Jesus Christ, individuals can be freed from sin and enter into eternal life, symbolized by the beauty and radiance of the golden
 
-- **A:** ` gate. This
-`
+- **A:** ` gate. This `
 - **B:** ` gate. This serves`
 
 Answer: 
@@ -1232,9 +1192,7 @@ Answer:
 
 6. Referral Program: Our loyalty program also rewards members who refer friends and family to our sustainable home goods – for every referral, you'll earn points that can be redeemed
 
-- **A:** ` for additional rewards.
-
-`
+- **A:** ` for additional rewards. `
 - **B:** ` for a special exclusive`
 
 Answer: 
