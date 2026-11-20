@@ -405,3 +405,8 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
 ## 22. 2026-11-19 confirmations
 - **S7 (7B, pre-registered §2.6): all supported.** Neighbours carry the coherence benefit at 7B (Shapley N 0.86; Mistral 0.76); own feedback contributes a small but positive share (0.07; S7-3 p = 0.046). The exploratory 0.19 own share was an overestimate.
 - **L1-R (pre-registered §2.9): supported.** The 26 frozen heads carry 49.5% of the neighbour-reading effect vs 4.2% for layer-matched random sets; θ 0.45 [0.39, 0.52]. Together with L2 (behaviour), **H\* is a confirmed distributed circuit.**
+
+## 23. ELF decoder test (E3, 2026-11-19)
+- **Pre-registered rule: refuted.** The F share within the swap variant is 0.84.
+- **But the share criterion was the wrong quantity.** Fixing neighbours' final latents at decode removes **83% of SC's whole effect on token j** (T 4.51 → 0.77) and **82% of the F route's absolute effect** [0.74, 0.90] (exploratory). The remaining 17% keeps the same F-dominated split, which is why the share did not move.
+- **Reading:** in ELF, neighbours' feedback improves their final latents, and token j reads those latents at the decode pass, where SC is zeroed by design (2605.10938). This is the hypothesis; E3b (§2.11, fresh seed) is its pre-registered test.

@@ -311,7 +311,8 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 
 ### Phase 12 — Hard-to-vary programme (decided 2026-11-19; Deutsch / Popper: explanations whose every part makes a risky prediction; no patching after failures) → `assumptions.md`
 - [x] Background-assumptions register (`assumptions.md`): instrument / measurement / statistical assumptions with status; scope claims NOT assumed.
-- [ ] **ELF decoder hypothesis (E3, prereg §2.10)** replaces the patch "the channel depends on the architecture" with a falsifiable mechanism; running on CARC CPU.
+- [x] **ELF decoder hypothesis (E3, §2.10):** REFUTED under its share rule; exploratory: 82% of F's absolute effect arises at decode (insights §23).
+- [ ] **E3b (§2.11):** absolute measure, fresh seed 1, CARC CPU job 14391603 (~4 h).
 - [ ] **Own feedback at 7B:** formulate a predictive account (when does own feedback help?) and test it on existing 7B cells first (which tokens / steps), then on fresh data.
 - [ ] **Message content (D6):** linear probe of what j's state encodes about its neighbour's final token, with vs. without neighbour feedback (exploration docs).
 - [ ] **Measure validity (B1):** human judgements on ~100 stratified output pairs vs. both LM judges (needs the user's labels).
