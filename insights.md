@@ -441,3 +441,9 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
 - **Implication for the access test:** at full t_end the last estimate x̂ ≈ the final latent, so making SC readable at decode adds almost no information (a near-tautological test). A discriminating version decodes from **truncated** trajectories (noisy latents; in-distribution, since ELF's decoder is trained on corrupted z).
   - Account: N rises in an SC-readable-decode fine-tune **only** at truncated t_end.
   - Rival "readout access decides": it rises at both.
+
+## 27. Own feedback at 7B (Phase 14.5, EXPLORATORY, h2n_7b_300, coh)
+- O share by token class is flat (word-start 0.19, continuation 0.15, punctuation 0.22): the "own feedback completes sub-word pieces" hypothesis is **not supported**.
+- O share depends on block position: **j = 2: 0.28; j = 3: 0.11** (N 0.63 vs 0.88).
+- **Candidate account:** a position leans on its own feedback in proportion to how weakly the rest of the block constrains it; later positions have more in-block left context.
+- **Risky prediction for a fresh pre-registered 7B test:** the O share decreases monotonically with j (j = 1 > j = 2 > j = 3).

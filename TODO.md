@@ -318,7 +318,7 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
   - Pre-register; GPU (debug partition).
 - [ ] **14.3 Text-type generality** (D4): an H2-N decomposition on code and math prompts (0.5B). Exploratory pilot, then a pre-registered confirmation on fresh prompts. GPU.
 - [ ] **14.4 Second external model: Plaid 1B.** Pure-PyTorch port (apex / flash-attn v1 / mup removed), validated by reproducing Plaid's reported likelihood; then calibrate the regime first, pre-register, decompose.
-- [ ] **14.5 Own feedback at 7B (7%):** test candidate accounts on existing 7B cells (which tokens / steps carry O), then pre-register on fresh data.
+- [~] **14.5 Own feedback at 7B (7%):** exploratory (insights §27): the O share is flat by token class but depends on position (j = 2: 0.28, j = 3: 0.11). Next: pre-register a monotone-decrease prediction with j ∈ {1, 2, 3} on fresh 7B docs (task ids 600000+), run on GPU. Original plan: test candidate accounts on existing 7B cells (which tokens / steps carry O), then pre-register on fresh data.
 
 ### Phase 13 — Generalization programme (2026-11-19; merged Claude search + GPT review → `generalization_search.md`; every external fact verified → `verification_log.md`)
 **Rules:**
