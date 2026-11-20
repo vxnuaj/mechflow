@@ -298,6 +298,28 @@ A prediction holds when the CI excludes 0 in the predicted direction and all 3 s
 - #6: the hybrid-world estimand is intended, as in Lafa.
 - #10: same-state SC training with previous-step feedback at inference is standard practice in Lafa and ELF (2605.10938 Alg. 3), so the toy mirrors it.
 
+
+### 2.13 Family E4: ELF decode-access test (added 2026-11-20, before any of its data; basis: E3b, insights §26, the family T lesson)
+**Account under test (H-clean + access):** a position reads its neighbours' fed-back predictions as a substitute for their states while those states are uninformative, and only where the feedback is readable in the computation where the token commits.
+
+**Rival:** readout access alone decides the route.
+
+**Design:**
+- **Matched fine-tunes of ELF-B** (`src/elf_ft_decode.py`; hcfrl ELF code patched in memory, read-only): arm `readable` (decoder rows receive a stop-gradient same-state SC estimate with p = 0.5) vs arm `zeroed` (unchanged ELF training).
+- Both arms: init ELF-B (step 95085); OWT-t5 shards 0–1; 3,000 steps × batch 64 × L 1024; lr 2e-5 constant after 100 warmup; an identical extra no-grad forward; fine-tune seeds {0, 1, 2}.
+- **Decomposition** (`src/elf_access_decomp.py`): routed O/N/F over the trajectory and the decode pass; target j = 64; n = 256; noise seed 2 (unused in E/E3/E3b/calibration); 32 logit-normal steps; truncation n_steps ∈ {32, 24}.
+  - n_steps = 24 was chosen by a pre-set rule on separate noise (seed 7): `src/results/elf_trunc_calib.json`, t = 0.35, state→token 13% vs feedback→token 87%.
+  - Access at inference: {read, zero} for `readable`; {zero} for `zeroed`.
+- **Outcome:** the Mistral span log-prob of token j against the fixed O1N1F1 left context (`src/elf_judge_fixedctx.py`).
+
+**Analysis and decision:** `analysis/elf_access.py` (frozen with this entry; its docstring is the rule).
+- **M1:** Δ_24 > 0.
+- **M2:** I = Δ_24 − Δ_32 > 0 with Δ_32 < 0.5·Δ_24.
+- Validity V1–V4: identities, regime, identifiability, fluency.
+- **Rule check before freezing:** 8 synthetic scenarios returned the intended verdicts: account → SUPPORTED; rival → REFUTED; clear null → REFUTED; reversal → REFUTED; no SC effect, regime failure and fluency failure → NOT TESTABLE; partial rival → INCONCLUSIVE.
+
+**Platform:** Prime GPU pod (the user's decision, 2026-11-20). Smoke tests on CARC CPU passed (identities 1.0000).
+
 ## 3. Metrics
 - **Primary:** dep_j (positions 2–3); the hybrid rate; μ_j.
 - **Co-requirement:** external-judge and own-AR coh_j.
