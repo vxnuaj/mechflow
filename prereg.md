@@ -338,6 +338,18 @@ A prediction holds when the CI excludes 0 in the predicted direction and all 3 s
 
 **Implementation note:** the smoke test of v2 showed that the identity logit check compared the F stream in the O0N0F0 cell, where the S stream is used. This was a bug in the check, not the computation: a direct test gave routed and plain decode logits equal to ≤ 1.3e-4. It was fixed before any data.
 
+
+### 2.14 R-FC: robustness of H2-N to a fixed left context (added 2026-11-20, before any of its data; basis: red-team C4 / family T #1 applied to Lafa)
+**Concern:** H2-N scores coh_j / dep_j against each cell's *actual* predecessors y_<j. Toggling N changes y_<j in 10.6% of cell pairs (vs 36% for y_j; F: 45%), so part of an N effect could come from the context rather than from j.
+
+**Test:** re-score the 2,000 confirmation documents' existing cells (no new generation) with the fixed context y_<j of the O1N1F1 cell (`src/jobs_fixctx.py`), using the same AR head, the same S = 16 predecessor samples and the same generator seeds.
+
+**Analysis:** `analysis/fixctx.py` (frozen) calls confirm.py's frozen `h2n_units` / `summarize` unchanged. On a copy of the original data it reproduces H2-N exactly: +0.515 [0.408, 0.623], N share 1.139.
+
+**Decision:** ROBUST iff the fixed-context dep_23 contrast N − 0.2T has a one-sided 95% LB > 0 AND the Shapley N share ≥ 0.5. Otherwise NOT ROBUST, reported as a limitation of the H2-N headline.
+
+**Platform:** CARC GPU.
+
 ## 3. Metrics
 - **Primary:** dep_j (positions 2–3); the hybrid rate; μ_j.
 - **Co-requirement:** external-judge and own-AR coh_j.

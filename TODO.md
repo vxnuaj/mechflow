@@ -441,7 +441,8 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 4. Fold in valid criticism, hash and push, then launch.
 
 **Robustness item from the red-team (Lafa):**
-- [ ] The Lafa N claim uses coh_j against the *actual* context y_<j, which N can shift slightly via j's state. Rescore the H2-N confirmation cells with a fixed context (cell O1N1F1's y_<j), as already done for ELF. First check whether per-cell tokens were saved; exploratory robustness.
+- [x] R-FC pre-registered (prereg §2.14). Toggling N changes y_<j in 10.6% of pairs; the analysis reproduces H2-N exactly on the original data. Re-score job submitted on CARC GPU → `src/results/conf_h2n_fx`, then `python analysis/fixctx.py src/results`.
+- [ ] (original item) The Lafa N claim uses coh_j against the *actual* context y_<j, which N can shift slightly via j's state. Rescore the H2-N confirmation cells with a fixed context (cell O1N1F1's y_<j), as already done for ELF. First check whether per-cell tokens were saved; exploratory robustness.
 
 **Threat checks in every run:**
 - sham swaps;
