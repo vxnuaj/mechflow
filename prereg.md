@@ -532,6 +532,12 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | **GO** (user decision, 2026-11-16), reframed around the coordination mechanism (`phase8_memo.md`). Primary = {P1, P2, H2-N}, Holm over 3 | 2026-11-16 |
 
 ## 12. Deviations / Change Log
+- **2026-11-21: execution moved to the CARC debug partition (before any E4 / G data):** the gpu partition started nothing in 8 h, and the Prime API lists no GPUs for the account. Implementation-only changes:
+  - E4 fine-tunes save every 0.2 epoch and auto-resume across 55-min jobs (`FT_SAVE_FREQ`; ELF's own resume skips already-processed batches; only the newest checkpoint is kept);
+  - E4 decompositions run one config per job (identical code and seeds);
+  - LangFlow decomposition runs in 8 chunks of 32 samples, sliced from the same full noise draw (seed 2) and merged in order (`src/langflow_merge.py`).
+
+  Orchestrated by `tools/debug_dag.py tools/dag_e4_lf.json`. Analyses and decision rules are unchanged.
 - **2026-11-20: precision change for all instrumented GPU runs (before any E4 / G data):** bf16 autocast breaks routed-vs-plain token identity over long trajectories (LangFlow on A40: 0.92–0.94 in bf16 vs 1.000 in fp32 with TF32 off, at both K16/L128 and K128/L1024; job 14404061). ELF and LangFlow instrumentation now runs in fp32 with TF32 disabled (`MF_FP32 = 1` by default; LangFlow's hard-coded block autocast is neutralised). Fine-tuning stays bf16. Earlier ELF families ran on CPU (fp32) and are unaffected. Deployed to CARC before the E4 decomposition jobs started.
 - **2026-11-19: family T v2 outcome (40 models, 10 seeds; frozen `analysis/toy_access.py` v2): REFUTED** (P1 fails in read/read/0.5/exp, read/read/1.0/cont and read/read/0.5/cont; read/read/1.0/exp is undetermined).
   - In every condition F ≥ N, even with SC readable at commitment. D: exp −0.002 to −0.015; cont −0.021 to −0.027.
