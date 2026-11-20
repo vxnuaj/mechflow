@@ -333,7 +333,7 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
    - [x] 2c. Pre-register as prereg §2.12. Decision rule written out for "account true", "readout-alone rival" and "form rival" scenarios; analysis script frozen; hash and push.
    - [x] 2d-i. GPT red-team prompt written → `prompts/gpt_redteam_toy.md`.
    - [ ] 2d-ii. The user runs it in GPT; Claude verifies each point against the code and folds in the valid ones (logged in prereg §12 before data).
-   - [x] 2e-i. Launched the 12 trainings (CARC CPU jobs 14393266–77; not data).
+   - [x] 2e-i. 12 trainings done 2026-11-19 (13–23 min each; final losses: denoise 0.03–0.09, decode 0.04–0.10). Design check (weights only, no outcomes): embedding norms 11.8–12.2 vs noise norm 11.3, so no embedding inflation and the noise is not trivially defeated.
    - [ ] 2e-ii. Run the decompositions after 2d-ii (the data).
    - [ ] 2f. Run the frozen analysis; record in prereg §12, insights and TODO.
    - **Prediction:** the route follows access, not form (SC-readable → N; SC-zeroed readout → F), on absolute effects.
