@@ -49,7 +49,7 @@ cfg = TR.load_config_from_yaml(_tmp)
 over = dict(data_path=a.data, eval_data_path=None, init_from=a.init, resume=None, output_dir=a.out,
             max_length=a.max_length, global_batch_size=a.batch, batch_size=None, grad_accum_steps=1, lr=a.lr,
             lr_schedule="constant", warmup_steps=100, epochs=1, seed=a.seed, decoder_sc_readable=(a.arm == "readable"),
-            sampling_configs_path=None, sampling_configs=[], online_eval=False, eval_freq=10 ** 9, save_freq=10 ** 9,
+            sampling_configs_path=None, sampling_configs=[], online_eval=False, eval_freq=10 ** 9, save_freq=float(os.environ.get("FT_SAVE_FREQ", "1e9")),
             use_wandb=False, num_workers=2)
 for k, v in over.items(): setattr(cfg, k, v)
 # exactly `steps` optimizer steps: 1 epoch over the first steps × batch examples (the same subset and order in both arms)
@@ -58,5 +58,12 @@ def _load_subset(config, *args, **kw):
     tr, ev = _orig_load(config, *args, **kw)
     return tr.select(range(min(len(tr), a.steps * a.batch))), ev
 TR.load_dataset = _load_subset
+# Resumable on short (55-min) partitions: with FT_SAVE_FREQ < 1, train.py saves every that fraction of the epoch and
+# auto-resumes from the latest checkpoint in output_dir (its init_from is then ignored). Keep only the newest checkpoint.
+import glob as _g, shutil as _sh
+_ck = sorted(_g.glob(os.path.join(a.out, "checkpoint_*")), key=lambda p: int(p.rsplit("_", 1)[1]))
+for _old in _ck[:-1]:
+    (_sh.rmtree if os.path.isdir(_old) else os.remove)(_old)
+if _ck: print(f"[elf_ft] resuming from {_ck[-1]}", flush=True)
 print(f"[elf_ft] arm={a.arm} steps={a.steps} batch={a.batch} L={a.max_length} lr={a.lr} seed={a.seed} decoder_sc_readable={cfg.decoder_sc_readable}", flush=True)
 TR.run_training(cfg, force_cpu=a.cpu)

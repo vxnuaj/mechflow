@@ -1,0 +1,1599 @@
+[
+ {
+  "name": "e4_base",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --out /scratch1/$USER/mechflow/e4dbg/base_ref --n_steps 32 --access zero --plain_only --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json",
+  "deps": [],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4ft_r0",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 0 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s0/checkpoint_3000",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 10,
+  "mem": "64G"
+ },
+ {
+  "name": "e4ce_r0",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s0/heldout_ce.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s0/heldout_ce.json",
+  "deps": [
+   "e4ft_r0"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4d_r0_32read",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s0 --n_steps 32 --access read --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s0/32_read/meta.json",
+  "deps": [
+   "e4ft_r0"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r0_32read",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s0/32_read/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s0/32_read/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r0_32read",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r0_32zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s0 --n_steps 32 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s0/32_zero/meta.json",
+  "deps": [
+   "e4ft_r0"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r0_32zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s0/32_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s0/32_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r0_32zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r0_24read",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s0 --n_steps 24 --access read --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s0/24_read/meta.json",
+  "deps": [
+   "e4ft_r0"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r0_24read",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s0/24_read/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s0/24_read/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r0_24read",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r0_24zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s0 --n_steps 24 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s0/24_zero/meta.json",
+  "deps": [
+   "e4ft_r0"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r0_24zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s0/24_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s0/24_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r0_24zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r0_24shuf",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s0 --n_steps 24 --access shuf --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s0/24_shuf/meta.json",
+  "deps": [
+   "e4ft_r0"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r0_24shuf",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s0/24_shuf/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s0/24_shuf/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r0_24shuf",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4ft_z0",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 0 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s0 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s0/checkpoint_3000",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 10,
+  "mem": "64G"
+ },
+ {
+  "name": "e4ce_z0",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s0 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s0/heldout_ce.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s0/heldout_ce.json",
+  "deps": [
+   "e4ft_z0"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4d_z0_32zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s0 --n_steps 32 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s0/32_zero/meta.json",
+  "deps": [
+   "e4ft_z0"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_z0_32zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s0/32_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s0/32_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_z0_32zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_z0_24zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s0 --n_steps 24 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s0/24_zero/meta.json",
+  "deps": [
+   "e4ft_z0"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_z0_24zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s0/24_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s0/24_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_z0_24zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c0",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_0 --start 0 --count 32 --bs 16 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_0/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4ft_r1",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 1 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s1/checkpoint_3000",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 10,
+  "mem": "64G"
+ },
+ {
+  "name": "e4ce_r1",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s1/heldout_ce.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s1/heldout_ce.json",
+  "deps": [
+   "e4ft_r1"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4d_r1_32read",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s1 --n_steps 32 --access read --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s1/32_read/meta.json",
+  "deps": [
+   "e4ft_r1"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r1_32read",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s1/32_read/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s1/32_read/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r1_32read",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r1_32zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s1 --n_steps 32 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s1/32_zero/meta.json",
+  "deps": [
+   "e4ft_r1"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r1_32zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s1/32_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s1/32_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r1_32zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r1_24read",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s1 --n_steps 24 --access read --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s1/24_read/meta.json",
+  "deps": [
+   "e4ft_r1"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r1_24read",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s1/24_read/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s1/24_read/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r1_24read",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r1_24zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s1 --n_steps 24 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s1/24_zero/meta.json",
+  "deps": [
+   "e4ft_r1"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r1_24zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s1/24_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s1/24_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r1_24zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r1_24shuf",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s1 --n_steps 24 --access shuf --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s1/24_shuf/meta.json",
+  "deps": [
+   "e4ft_r1"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r1_24shuf",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s1/24_shuf/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s1/24_shuf/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r1_24shuf",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4ft_z1",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 1 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s1 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s1/checkpoint_3000",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 10,
+  "mem": "64G"
+ },
+ {
+  "name": "e4ce_z1",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s1 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s1/heldout_ce.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s1/heldout_ce.json",
+  "deps": [
+   "e4ft_z1"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4d_z1_32zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s1 --n_steps 32 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s1/32_zero/meta.json",
+  "deps": [
+   "e4ft_z1"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_z1_32zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s1/32_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s1/32_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_z1_32zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_z1_24zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s1 --n_steps 24 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s1/24_zero/meta.json",
+  "deps": [
+   "e4ft_z1"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_z1_24zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s1/24_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s1/24_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_z1_24zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c32",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_32 --start 32 --count 32 --bs 16 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_32/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4ft_r2",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 2 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s2/checkpoint_3000",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 10,
+  "mem": "64G"
+ },
+ {
+  "name": "e4ce_r2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s2/heldout_ce.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s2/heldout_ce.json",
+  "deps": [
+   "e4ft_r2"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4d_r2_32read",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s2 --n_steps 32 --access read --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s2/32_read/meta.json",
+  "deps": [
+   "e4ft_r2"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r2_32read",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s2/32_read/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s2/32_read/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r2_32read",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r2_32zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s2 --n_steps 32 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s2/32_zero/meta.json",
+  "deps": [
+   "e4ft_r2"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r2_32zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s2/32_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s2/32_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r2_32zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r2_24read",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s2 --n_steps 24 --access read --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s2/24_read/meta.json",
+  "deps": [
+   "e4ft_r2"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r2_24read",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s2/24_read/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s2/24_read/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r2_24read",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r2_24zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s2 --n_steps 24 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s2/24_zero/meta.json",
+  "deps": [
+   "e4ft_r2"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r2_24zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s2/24_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s2/24_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r2_24zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r2_24shuf",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s2 --n_steps 24 --access shuf --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s2/24_shuf/meta.json",
+  "deps": [
+   "e4ft_r2"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r2_24shuf",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s2/24_shuf/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s2/24_shuf/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r2_24shuf",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4ft_z2",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 2 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s2 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s2/checkpoint_3000",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 10,
+  "mem": "64G"
+ },
+ {
+  "name": "e4ce_z2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s2 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s2/heldout_ce.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s2/heldout_ce.json",
+  "deps": [
+   "e4ft_z2"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4d_z2_32zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s2 --n_steps 32 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s2/32_zero/meta.json",
+  "deps": [
+   "e4ft_z2"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_z2_32zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s2/32_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s2/32_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_z2_32zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_z2_24zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s2 --n_steps 24 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s2/24_zero/meta.json",
+  "deps": [
+   "e4ft_z2"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_z2_24zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s2/24_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s2/24_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_z2_24zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c64",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_64 --start 64 --count 32 --bs 16 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_64/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4ft_r3",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 3 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s3/checkpoint_3000",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 10,
+  "mem": "64G"
+ },
+ {
+  "name": "e4ce_r3",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s3/heldout_ce.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s3/heldout_ce.json",
+  "deps": [
+   "e4ft_r3"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4d_r3_32read",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s3 --n_steps 32 --access read --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s3/32_read/meta.json",
+  "deps": [
+   "e4ft_r3"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r3_32read",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s3/32_read/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s3/32_read/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r3_32read",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r3_32zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s3 --n_steps 32 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s3/32_zero/meta.json",
+  "deps": [
+   "e4ft_r3"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r3_32zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s3/32_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s3/32_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r3_32zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r3_24read",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s3 --n_steps 24 --access read --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s3/24_read/meta.json",
+  "deps": [
+   "e4ft_r3"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r3_24read",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s3/24_read/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s3/24_read/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r3_24read",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r3_24zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s3 --n_steps 24 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s3/24_zero/meta.json",
+  "deps": [
+   "e4ft_r3"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r3_24zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s3/24_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s3/24_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r3_24zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r3_24shuf",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s3 --n_steps 24 --access shuf --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s3/24_shuf/meta.json",
+  "deps": [
+   "e4ft_r3"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r3_24shuf",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s3/24_shuf/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s3/24_shuf/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r3_24shuf",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4ft_z3",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 3 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s3 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s3/checkpoint_3000",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 10,
+  "mem": "64G"
+ },
+ {
+  "name": "e4ce_z3",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s3 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s3/heldout_ce.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s3/heldout_ce.json",
+  "deps": [
+   "e4ft_z3"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4d_z3_32zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s3 --n_steps 32 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s3/32_zero/meta.json",
+  "deps": [
+   "e4ft_z3"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_z3_32zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s3/32_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s3/32_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_z3_32zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_z3_24zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s3 --n_steps 24 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s3/24_zero/meta.json",
+  "deps": [
+   "e4ft_z3"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_z3_24zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s3/24_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s3/24_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_z3_24zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c96",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_96 --start 96 --count 32 --bs 16 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_96/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4ft_r4",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 4 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s4/checkpoint_3000",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 10,
+  "mem": "64G"
+ },
+ {
+  "name": "e4ce_r4",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s4/heldout_ce.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s4/heldout_ce.json",
+  "deps": [
+   "e4ft_r4"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4d_r4_32read",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s4 --n_steps 32 --access read --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s4/32_read/meta.json",
+  "deps": [
+   "e4ft_r4"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r4_32read",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s4/32_read/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s4/32_read/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r4_32read",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r4_32zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s4 --n_steps 32 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s4/32_zero/meta.json",
+  "deps": [
+   "e4ft_r4"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r4_32zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s4/32_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s4/32_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r4_32zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r4_24read",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s4 --n_steps 24 --access read --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s4/24_read/meta.json",
+  "deps": [
+   "e4ft_r4"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r4_24read",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s4/24_read/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s4/24_read/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r4_24read",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r4_24zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s4 --n_steps 24 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s4/24_zero/meta.json",
+  "deps": [
+   "e4ft_r4"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r4_24zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s4/24_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s4/24_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r4_24zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r4_24shuf",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s4 --n_steps 24 --access shuf --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s4/24_shuf/meta.json",
+  "deps": [
+   "e4ft_r4"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r4_24shuf",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s4/24_shuf/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s4/24_shuf/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r4_24shuf",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4ft_z4",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 4 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s4 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s4/checkpoint_3000",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 10,
+  "mem": "64G"
+ },
+ {
+  "name": "e4ce_z4",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s4 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s4/heldout_ce.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s4/heldout_ce.json",
+  "deps": [
+   "e4ft_z4"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4d_z4_32zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s4 --n_steps 32 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s4/32_zero/meta.json",
+  "deps": [
+   "e4ft_z4"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_z4_32zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s4/32_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s4/32_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_z4_32zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_z4_24zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s4 --n_steps 24 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s4/24_zero/meta.json",
+  "deps": [
+   "e4ft_z4"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_z4_24zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s4/24_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s4/24_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_z4_24zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c128",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_128 --start 128 --count 32 --bs 16 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_128/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4ft_r5",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 5 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s5/checkpoint_3000",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 10,
+  "mem": "64G"
+ },
+ {
+  "name": "e4ce_r5",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s5/heldout_ce.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s5/heldout_ce.json",
+  "deps": [
+   "e4ft_r5"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4d_r5_32read",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s5 --n_steps 32 --access read --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s5/32_read/meta.json",
+  "deps": [
+   "e4ft_r5"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r5_32read",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s5/32_read/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s5/32_read/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r5_32read",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r5_32zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s5 --n_steps 32 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s5/32_zero/meta.json",
+  "deps": [
+   "e4ft_r5"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r5_32zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s5/32_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s5/32_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r5_32zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r5_24read",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s5 --n_steps 24 --access read --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s5/24_read/meta.json",
+  "deps": [
+   "e4ft_r5"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r5_24read",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s5/24_read/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s5/24_read/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r5_24read",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r5_24zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s5 --n_steps 24 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s5/24_zero/meta.json",
+  "deps": [
+   "e4ft_r5"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r5_24zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s5/24_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s5/24_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r5_24zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r5_24shuf",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s5 --n_steps 24 --access shuf --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s5/24_shuf/meta.json",
+  "deps": [
+   "e4ft_r5"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r5_24shuf",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s5/24_shuf/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s5/24_shuf/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r5_24shuf",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4ft_z5",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 5 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s5 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s5/checkpoint_3000",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 10,
+  "mem": "64G"
+ },
+ {
+  "name": "e4ce_z5",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s5 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s5/heldout_ce.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s5/heldout_ce.json",
+  "deps": [
+   "e4ft_z5"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4d_z5_32zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s5 --n_steps 32 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s5/32_zero/meta.json",
+  "deps": [
+   "e4ft_z5"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_z5_32zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s5/32_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s5/32_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_z5_32zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_z5_24zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s5 --n_steps 24 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s5/24_zero/meta.json",
+  "deps": [
+   "e4ft_z5"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_z5_24zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s5/24_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s5/24_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_z5_24zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c160",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_160 --start 160 --count 32 --bs 16 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_160/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4ft_r6",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 6 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s6/checkpoint_3000",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 10,
+  "mem": "64G"
+ },
+ {
+  "name": "e4ce_r6",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s6/heldout_ce.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s6/heldout_ce.json",
+  "deps": [
+   "e4ft_r6"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4d_r6_32read",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s6 --n_steps 32 --access read --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s6/32_read/meta.json",
+  "deps": [
+   "e4ft_r6"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r6_32read",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s6/32_read/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s6/32_read/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r6_32read",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r6_32zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s6 --n_steps 32 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s6/32_zero/meta.json",
+  "deps": [
+   "e4ft_r6"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r6_32zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s6/32_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s6/32_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r6_32zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r6_24read",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s6 --n_steps 24 --access read --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s6/24_read/meta.json",
+  "deps": [
+   "e4ft_r6"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r6_24read",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s6/24_read/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s6/24_read/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r6_24read",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r6_24zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s6 --n_steps 24 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s6/24_zero/meta.json",
+  "deps": [
+   "e4ft_r6"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r6_24zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s6/24_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s6/24_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r6_24zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r6_24shuf",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s6 --n_steps 24 --access shuf --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s6/24_shuf/meta.json",
+  "deps": [
+   "e4ft_r6"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r6_24shuf",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s6/24_shuf/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s6/24_shuf/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r6_24shuf",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4ft_z6",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 6 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s6 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s6/checkpoint_3000",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 10,
+  "mem": "64G"
+ },
+ {
+  "name": "e4ce_z6",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s6 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s6/heldout_ce.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s6/heldout_ce.json",
+  "deps": [
+   "e4ft_z6"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4d_z6_32zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s6 --n_steps 32 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s6/32_zero/meta.json",
+  "deps": [
+   "e4ft_z6"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_z6_32zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s6/32_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s6/32_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_z6_32zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_z6_24zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s6 --n_steps 24 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s6/24_zero/meta.json",
+  "deps": [
+   "e4ft_z6"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_z6_24zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s6/24_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s6/24_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_z6_24zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c192",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_192 --start 192 --count 32 --bs 16 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_192/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4ft_r7",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 7 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s7/checkpoint_3000",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 10,
+  "mem": "64G"
+ },
+ {
+  "name": "e4ce_r7",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s7/heldout_ce.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s7/heldout_ce.json",
+  "deps": [
+   "e4ft_r7"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4d_r7_32read",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s7 --n_steps 32 --access read --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s7/32_read/meta.json",
+  "deps": [
+   "e4ft_r7"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r7_32read",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s7/32_read/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s7/32_read/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r7_32read",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r7_32zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s7 --n_steps 32 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s7/32_zero/meta.json",
+  "deps": [
+   "e4ft_r7"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r7_32zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s7/32_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s7/32_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r7_32zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r7_24read",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s7 --n_steps 24 --access read --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s7/24_read/meta.json",
+  "deps": [
+   "e4ft_r7"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r7_24read",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s7/24_read/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s7/24_read/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r7_24read",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r7_24zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s7 --n_steps 24 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s7/24_zero/meta.json",
+  "deps": [
+   "e4ft_r7"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r7_24zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s7/24_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s7/24_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r7_24zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_r7_24shuf",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s7 --n_steps 24 --access shuf --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s7/24_shuf/meta.json",
+  "deps": [
+   "e4ft_r7"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_r7_24shuf",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/readable_s7/24_shuf/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s7/24_shuf/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_r7_24shuf",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4ft_z7",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 7 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s7 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s7/checkpoint_3000",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 10,
+  "mem": "64G"
+ },
+ {
+  "name": "e4ce_z7",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s7 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s7/heldout_ce.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s7/heldout_ce.json",
+  "deps": [
+   "e4ft_z7"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4d_z7_32zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s7 --n_steps 32 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s7/32_zero/meta.json",
+  "deps": [
+   "e4ft_z7"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_z7_32zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s7/32_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s7/32_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_z7_32zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4d_z7_24zero",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s7 --n_steps 24 --access zero --n 256 --seed 2",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s7/24_zero/meta.json",
+  "deps": [
+   "e4ft_z7"
+  ],
+  "gres": "gpu:a40:1"
+ },
+ {
+  "name": "e4j_z7_24zero",
+  "cmd": "T5_PATH=$(ls -d /scratch1/$USER/hf_cache/hub/models--t5-small/snapshots/*/ | head -1) JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s7/24_zero/cells.json",
+  "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s7/24_zero/cells_judged_fixedctx.json",
+  "deps": [
+   "e4d_z7_24zero",
+   "e4_base"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c224",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_224 --start 224 --count 32 --bs 16 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_224/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "e4_analysis",
+  "cmd": "cd .. && /scratch1/$USER/mechflow/env/bin/python analysis/elf_access.py /scratch1/$USER/mechflow/e4dbg/e4 > /scratch1/$USER/mechflow/e4dbg/E4_final.txt 2>&1",
+  "done": "/scratch1/$USER/mechflow/e4dbg/E4_final.txt",
+  "deps": [
+   "e4j_r0_32read",
+   "e4j_r0_32zero",
+   "e4j_r0_24read",
+   "e4j_r0_24zero",
+   "e4j_r0_24shuf",
+   "e4j_z0_32zero",
+   "e4j_z0_24zero",
+   "e4j_r1_32read",
+   "e4j_r1_32zero",
+   "e4j_r1_24read",
+   "e4j_r1_24zero",
+   "e4j_r1_24shuf",
+   "e4j_z1_32zero",
+   "e4j_z1_24zero",
+   "e4j_r2_32read",
+   "e4j_r2_32zero",
+   "e4j_r2_24read",
+   "e4j_r2_24zero",
+   "e4j_r2_24shuf",
+   "e4j_z2_32zero",
+   "e4j_z2_24zero",
+   "e4j_r3_32read",
+   "e4j_r3_32zero",
+   "e4j_r3_24read",
+   "e4j_r3_24zero",
+   "e4j_r3_24shuf",
+   "e4j_z3_32zero",
+   "e4j_z3_24zero",
+   "e4j_r4_32read",
+   "e4j_r4_32zero",
+   "e4j_r4_24read",
+   "e4j_r4_24zero",
+   "e4j_r4_24shuf",
+   "e4j_z4_32zero",
+   "e4j_z4_24zero",
+   "e4j_r5_32read",
+   "e4j_r5_32zero",
+   "e4j_r5_24read",
+   "e4j_r5_24zero",
+   "e4j_r5_24shuf",
+   "e4j_z5_32zero",
+   "e4j_z5_24zero",
+   "e4j_r6_32read",
+   "e4j_r6_32zero",
+   "e4j_r6_24read",
+   "e4j_r6_24zero",
+   "e4j_r6_24shuf",
+   "e4j_z6_32zero",
+   "e4j_z6_24zero",
+   "e4j_r7_32read",
+   "e4j_r7_32zero",
+   "e4j_r7_24read",
+   "e4j_r7_24zero",
+   "e4j_r7_24shuf",
+   "e4j_z7_32zero",
+   "e4j_z7_24zero",
+   "e4ce_r0",
+   "e4ce_z0",
+   "e4ce_r1",
+   "e4ce_z1",
+   "e4ce_r2",
+   "e4ce_z2",
+   "e4ce_r3",
+   "e4ce_z3",
+   "e4ce_r4",
+   "e4ce_z4",
+   "e4ce_r5",
+   "e4ce_z5",
+   "e4ce_r6",
+   "e4ce_z6",
+   "e4ce_r7",
+   "e4ce_z7"
+  ],
+  "gres": "",
+  "mem": "16G"
+ },
+ {
+  "name": "lf_merge",
+  "cmd": "/scratch1/$USER/mechflow/env/bin/python langflow_merge.py /scratch1/$USER/mechflow/lfdbg",
+  "done": "/scratch1/$USER/mechflow/lfdbg/merged/meta.json",
+  "deps": [
+   "lf_c0",
+   "lf_c32",
+   "lf_c64",
+   "lf_c96",
+   "lf_c128",
+   "lf_c160",
+   "lf_c192",
+   "lf_c224"
+  ],
+  "gres": "",
+  "mem": "16G"
+ },
+ {
+  "name": "lf_judge",
+  "cmd": "T5_PATH=/scratch1/$USER/hf_cache/hub/models--openai-community--gpt2/snapshots/607a30d783dfa663caf39e06633721c8d4cfcd7e JUDGE_PATH=$(ls -d /scratch1/$USER/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-v0.3/snapshots/*/) JUDGE_DEVICE=cuda REF_FILE=/scratch1/$USER/mechflow/lfdbg/merged/plain_on.json /scratch1/$USER/mechflow/env/bin/python elf_judge_fixedctx.py /scratch1/$USER/mechflow/lfdbg/merged/cells.json",
+  "done": "/scratch1/$USER/mechflow/lfdbg/merged/cells_judged_fixedctx.json",
+  "deps": [
+   "lf_merge"
+  ],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_analysis",
+  "cmd": "cd .. && /scratch1/$USER/mechflow/env/bin/python analysis/langflow.py /scratch1/$USER/mechflow/lfdbg/merged > /scratch1/$USER/mechflow/lfdbg/G_final.txt 2>&1",
+  "done": "/scratch1/$USER/mechflow/lfdbg/G_final.txt",
+  "deps": [
+   "lf_judge"
+  ],
+  "gres": "",
+  "mem": "8G"
+ }
+]

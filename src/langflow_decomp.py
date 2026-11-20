@@ -8,12 +8,14 @@ from langflow_instr import load_langflow, schedule, sample_plain, sample_cell
 ap = argparse.ArgumentParser(); ap.add_argument("--path", required=True); ap.add_argument("--out", required=True)
 ap.add_argument("--n", type=int, default=256); ap.add_argument("--bs", type=int, default=32); ap.add_argument("--L", type=int, default=1024)
 ap.add_argument("--K", type=int, default=128); ap.add_argument("--seed", type=int, default=2); ap.add_argument("--device", default="cuda")
+ap.add_argument("--start", type=int, default=0); ap.add_argument("--count", type=int, default=0)   # chunking (0 = all); noise is sliced from the full draw
 a = ap.parse_args(); dev = torch.device(a.device)
 if dev.type == "cpu": torch.set_num_threads(int(os.environ.get("SLURM_CPUS_PER_TASK", "8")))
 m = load_langflow(a.path, dev); D = m.config.hidden_size; j = a.L // 2; gam = schedule(m, a.K, dev)
 z0_all = torch.randn(a.n, a.L, D, generator=torch.Generator().manual_seed(a.seed))
+if a.count: z0_all = z0_all[a.start:a.start + a.count]
 cells = [(o, n, f) for o in (0, 1) for n in (0, 1) for f in (0, 1)]; out = {f"O{o}N{n}F{f}": [] for o, n, f in cells}; plain = []; ident = []; t0 = time.time()
-for b in range(0, a.n, a.bs):
+for b in range(0, len(z0_all), a.bs):
     z0 = z0_all[b:b + a.bs].to(dev)
     yon, *_ = sample_plain(m, z0, gam, True); yoff, *_ = sample_plain(m, z0, gam, False); plain += yon.tolist()
     for o, n, f in cells:
@@ -25,4 +27,4 @@ for b in range(0, a.n, a.bs):
 assert min(ident) >= 0.99, f"identity {min(ident)}"
 os.makedirs(a.out, exist_ok=True)
 json.dump({str(j): out}, open(f"{a.out}/cells.json", "w")); json.dump({"tokens": plain}, open(f"{a.out}/plain_on.json", "w"))
-json.dump({"n": a.n, "L": a.L, "K": a.K, "j": j, "seed": a.seed, "identity_min": min(ident)}, open(f"{a.out}/meta.json", "w"))
+json.dump({"n": len(z0_all), "start": a.start, "L": a.L, "K": a.K, "j": j, "seed": a.seed, "identity_min": min(ident)}, open(f"{a.out}/meta.json", "w"))
