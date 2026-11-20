@@ -447,3 +447,11 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
 - O share depends on block position: **j = 2: 0.28; j = 3: 0.11** (N 0.63 vs 0.88).
 - **Candidate account:** a position leans on its own feedback in proportion to how weakly the rest of the block constrains it; later positions have more in-block left context.
 - **Risky prediction for a fresh pre-registered 7B test:** the O share decreases monotonically with j (j = 1 > j = 2 > j = 3).
+
+## 28. R-FC (2026-11-21): fixed-context robustness of H2-N, ROBUST but the route split changes
+- Pre-registered rule: ROBUST (dep contrast +0.219 [0.118, 0.320]; N share 0.501).
+- Absolute N is unchanged (dep 0.86 → 0.99, coh 1.58 → 1.71); O ≈ 0 under both scorings.
+- **F was masked under actual-context scoring.** When the neighbours' improved states change j, they also change the neighbours' own tokens (the context), and the two cancel. With the context fixed, F ≈ N (dep shares 0.50 / 0.51; coh 0.61 / 0.45).
+- **Revised statement:** a position's own feedback contributes nothing; its neighbours' information arrives through both channels, direct reading of their feedback (N) and their feedback-improved states (F), in roughly equal measure under target-mediated scoring. This is the two-channel account (family R).
+- It unifies Lafa with ELF: ELF only has F at decode because its decode pass zeroes SC.
+- **For the paper:** report both scorings. Actual-context = the joint coherence of the block; fixed-context = target-mediated routes. E4 and G already use target-mediated (common-reference) scoring.

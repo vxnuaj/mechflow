@@ -21,6 +21,7 @@ We do not justify claims from axioms. Every result rests on background assumptio
 | ID | Assumption | Status | Evidence / check |
 |---|---|---|---|
 | B1 | Log-probability under a language model tracks coherence / consistency | **Assumed; partly corroborated** | Two independent judges (Lafa's own AR head; Mistral-7B) agree on every mechanism result. **Open check:** agreement with human judgements on a stratified sample (~100 pairs) |
+| B4 | Route attribution is not confounded by context co-variation | **Checked (R-FC):** under fixed-context scoring O ≈ 0 and N is unchanged in absolute terms, but F rises from ≈ 0 to ≈ N. Actual-context scoring masks F |
 | B2 | dep_j (PMI with sampled predecessors) measures in-block dependence | **Assumed** (pre-registered definition) | Agrees in sign and route shares with coh and with the external judge; noisy at 7B (`AR_CHUNK` / S = 64 rescoring planned) |
 | B3 | The hybrid classifier labels outputs correctly | **Checked** | 150-label audit: 98.7% agreement, hybrids 100% |
 

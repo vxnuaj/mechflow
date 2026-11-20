@@ -564,6 +564,13 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | **GO** (user decision, 2026-11-16), reframed around the coordination mechanism (`phase8_memo.md`). Primary = {P1, P2, H2-N}, Holm over 3 | 2026-11-16 |
 
 ## 12. Deviations / Change Log
+- **2026-11-21: R-FC outcome (prereg §2.14; frozen `analysis/fixctx.py`; 2,000 docs): ROBUST.**
+  - Fixed-context dep_23 contrast N − 0.2T = +0.219 [0.118, 0.320]; Shapley N share 0.501, just at the 0.5 bar. coh (descriptive): +0.636 [0.516, 0.761]; N share 0.606.
+  - **Descriptive decomposition (not a decision):**
+    - the absolute N effect is unchanged or larger (dep 0.86 → 0.99; coh 1.58 → 1.71);
+    - O stays ≈ 0 (−0.02 / −0.15);
+    - **F becomes large and positive (dep 1.01, share 0.51; coh 1.26, 0.45)**, where with actual-context scoring it was ≈ 0 (−0.16 / +0.10). Changes in the neighbours' tokens moved the context along with j and cancelled F's target-mediated effect.
+  - **Consequence for the headline:** "neighbours, not selves" is robust (O ≈ 0; the neighbour routes carry the benefit). But "N carries essentially all" is specific to actual-context scoring. Under target-mediated scoring, neighbour information reaches j through two roughly equal routes: direct reading of the neighbours' feedback (N) and their feedback-improved states (F). This is the two-channel account (family R), and it aligns Lafa with ELF.
 - **2026-11-21: family P implementation fix (before any uniform-grid probe data):** `S.run_block` (the identity reference) supports only the warp grid, so the uniform-grid shards crashed at start. Under `uniform` the identity reference is `run_block_headcut` with no cuts (= normal SC; the E1c path). The capture loop expands the 1-D uniform grid per position, as lafa_instr does. (A first attempt with `run_block_two_pass` failed because that primitive does not expand 1-D grids.) Warp data are unaffected.
 - **2026-11-21: execution moved to the CARC debug partition (before any E4 / G data):** the gpu partition started nothing in 8 h, and the Prime API lists no GPUs for the account. Implementation-only changes:
   - E4 fine-tunes save every 0.2 epoch and auto-resume across 55-min jobs (`FT_SAVE_FREQ`; ELF's own resume skips already-processed batches; only the newest checkpoint is kept);

@@ -466,7 +466,7 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 4. Fold in valid criticism, hash and push, then launch.
 
 **Robustness item from the red-team (Lafa):**
-- [x] R-FC pre-registered (prereg §2.14). 2026-11-21: nothing started on the CARC gpu partition in 8 h (priority 4834), so moved to the debug partition via `tools/debug_sched.py tools/units_fixctx.json` (8 resumable units, ≤ 5 submitted). Toggling N changes y_<j in 10.6% of pairs; the analysis reproduces H2-N exactly on the original data. Re-score job submitted on CARC GPU → `src/results/conf_h2n_fx`, then `python analysis/fixctx.py src/results`.
+- [x] **R-FC DONE (2026-11-21): ROBUST** (N share 0.501; contrast +0.219 [0.118, 0.320]). Target-mediated scoring reveals F ≈ N; O ≈ 0 (insights §28). The headline is revised to the two-channel version. R-FC pre-registered (prereg §2.14). 2026-11-21: nothing started on the CARC gpu partition in 8 h (priority 4834), so moved to the debug partition via `tools/debug_sched.py tools/units_fixctx.json` (8 resumable units, ≤ 5 submitted). Toggling N changes y_<j in 10.6% of pairs; the analysis reproduces H2-N exactly on the original data. Re-score job submitted on CARC GPU → `src/results/conf_h2n_fx`, then `python analysis/fixctx.py src/results`.
 - [ ] (original item) The Lafa N claim uses coh_j against the *actual* context y_<j, which N can shift slightly via j's state. Rescore the H2-N confirmation cells with a fixed context (cell O1N1F1's y_<j), as already done for ELF. First check whether per-cell tokens were saved; exploratory robustness.
 
 **Threat checks in every run:**
