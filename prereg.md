@@ -281,6 +281,23 @@ A prediction holds when the CI excludes 0 in the predicted direction and all 3 s
 
 **Platform:** CARC CPU (main partition). Trainings may start before the GPT red-team; the decompositions (the data) start after it, and any design change is logged here before data.
 
+**§2.12 v2 amendment (2026-11-19, after the GPT red-team, before any decomposition data; the v1 checkpoints were never decomposed and are discarded).** The design, outcome and decision rule are replaced by the docstring of `analysis/toy_access.py` v2 (frozen with this entry). Summary of changes:
+- **Primary outcome:** target-mediated coherence against *fixed reference neighbours* (the O1N1F1 run), as in ELF E3/E3b. In v1, F could score by changing the neighbours' tokens.
+- **Manipulation check M** (measured commitment at decode). Commitment location is no longer assumed from t_end.
+- **Shared step grid** (t_end = 0.5 stops a 16-step grid after 8 steps).
+- **Inference-time access factor:** read-trained models are also sampled with decode SC zeroed (in-distribution). This adds the within-model predictions P2w and P3w.
+- **10 seeds** with seed-specific task instances; seed-level bootstrap; RNG draws matched across access.
+- **FORM → "estimator recipe"** (it also changes the denoise loss); P4 narrowed to "no sign flip", with the paired Δ reported.
+- **P5** is CI-based and subsidiary.
+- **Decision:** all 12 mandatory cells are required for SUPPORTED; any failure → REFUTED, even when other cells are missing.
+- **Secondary outcomes:** joint coherence, excess over independence, mode diversity.
+- **Rule check:** 9 synthetic scenarios give the intended verdicts, including the red-team's partial-identifiability, hidden-refutation and failed-manipulation cases.
+
+**Not adopted, with reasons:**
+- Red-team #4 (a separate state × feedback informativeness factorial): substitution is already tested in Lafa (family R, pre-registered), and the toy's scope is the access variable.
+- #6: the hybrid-world estimand is intended, as in Lafa.
+- #10: same-state SC training with previous-step feedback at inference is standard practice in Lafa and ELF (2605.10938 Alg. 3), so the toy mirrors it.
+
 ## 3. Metrics
 - **Primary:** dep_j (positions 2–3); the hybrid rate; μ_j.
 - **Co-requirement:** external-judge and own-AR coh_j.
@@ -445,6 +462,7 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | **GO** (user decision, 2026-11-16), reframed around the coordination mechanism (`phase8_memo.md`). Primary = {P1, P2, H2-N}, Holm over 3 | 2026-11-16 |
 
 ## 12. Deviations / Change Log
+- **2026-11-19: family T revised to v2 before data** (see the §2.12 v2 amendment): the GPT red-team found two decision-rule bugs (reproduced) and an outcome confound.
 - **2026-11-19: E3b outcome (ELF decoder hypothesis, absolute measure, fresh seed 1, n = 195 paired; frozen `analysis/elf_e3b.py`): SUPPORTED.**
   - φ_F = 0.891 [0.805, 0.971]: the lower bound exceeds 0.5.
   - Fixing neighbours' final latents at the decode pass removes 89% of the F route's absolute effect and 89% of the total SC effect (T 4.14 → 0.47).

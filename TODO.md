@@ -344,7 +344,7 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
        - #12 RNG matched;
        - plus an inference-time access factor.
      - **Not adopted, with reasons (in prereg §12):** #4 (substitution is already tested in Lafa family R; the toy scope is access), #6 (the hybrid world is the intended estimand, as in Lafa), #10 (same-state SC training is standard practice in Lafa and ELF).
-   - [ ] 2d-iii. Implement T v2 (code + analysis):
+   - [x] 2d-iii. Implement T v2 (code + analysis):
      - synthetic rule tests incl. partial-identifiability cases;
      - log the deviation in prereg §12;
      - hash and push;

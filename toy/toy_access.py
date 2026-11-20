@@ -1,4 +1,4 @@
-"""Toy access × form factorial (prereg §2.12; Phase 13 step 2).
+"""Toy access × estimator-recipe factorial (prereg §2.12, v2 after red-team; Phase 13 step 2).
 
 Task (as in toy_flow.py): K prompts, each with exactly two valid 4-token answers differing at every position;
 data = (prompt, one mode at 50/50). Independent per-position decoding gives cross-mode hybrids.
@@ -118,8 +118,9 @@ class Toy(nn.Module):
         return s._heads_out(xs), s._heads_out(xf), s._heads_out(xo)
 
 
-def make_modes(V, K, seed=1234):
-    g = random.Random(seed); modes = []
+def make_modes(V, K, seed):
+    """v2: one task instance (mode dictionary) per training seed (red-team #9)."""
+    g = random.Random(1234 + 7919 * seed); modes = []
     for _ in range(K):
         a = [g.randrange(V) for _ in range(L)]
         b = [g.choice([v for v in range(V) if v != a[i]]) for i in range(L)]
@@ -129,26 +130,25 @@ def make_modes(V, K, seed=1234):
 
 def train(access, form, seed, steps, V=V_DEF, K=K_DEF, dev="cpu", log=None):
     torch.manual_seed(seed); g = torch.Generator().manual_seed(seed); rr = random.Random(seed * 100003)
-    modes = make_modes(V, K)
+    modes = make_modes(V, K, seed)
     mt = torch.tensor(modes)                                     # [K, 2, L]
     m = Toy(V, K, form).to(dev); opt = torch.optim.AdamW(m.parameters(), 3e-4, weight_decay=0.01)
     for it in range(steps):
         k = torch.randint(0, K, (256,), generator=g); w = torch.randint(0, 2, (256,), generator=g)
         y = mt[k, w].to(dev); k = k.to(dev)
         clean = m.E(y)
-        # denoise branch
+        u_den, u_dec = rr.random(), rr.random()                  # v2: both draws always made (red-team #12)
         t = torch.rand(256, generator=g).to(dev); e = torch.randn(clean.shape, generator=g).to(dev)
         x = (1 - t[:, None, None]) * e + t[:, None, None] * clean
         fb = None
-        if rr.random() < 0.5:
+        if u_den < 0.5:
             with torch.no_grad(): fb = m(k, x, t)[1]
         lg, est = m(k, x, t, fb)
         l_den = F.cross_entropy(lg.reshape(-1, V), y.reshape(-1)) if form == "exp" else F.mse_loss(est, clean.detach())
-        # decode branch (ELF Alg. 4-like): corrupted state, decode embedding, SC readable or zeroed
         t2 = torch.rand(256, generator=g).to(dev); e2 = torch.randn(clean.shape, generator=g).to(dev)
         z = (1 - t2[:, None, None]) * e2 + t2[:, None, None] * clean
         fb2 = None
-        if access == "read" and rr.random() < 0.5:
+        if access == "read" and u_dec < 0.5:
             with torch.no_grad(): fb2 = m(k, z, t2)[1]
         lg2, _ = m(k, z, torch.ones_like(t2), fb2, decode=True)
         l_dec = F.cross_entropy(lg2.reshape(-1, V), y.reshape(-1))
@@ -158,65 +158,83 @@ def train(access, form, seed, steps, V=V_DEF, K=K_DEF, dev="cpu", log=None):
     return m, modes
 
 
+def nsteps(S, t_end):
+    """v2 (red-team #10, grid): one shared grid linspace(0, 1, S + 1); t_end = 0.5 stops after S/2 steps."""
+    n = round(t_end * S); assert abs(n / S - t_end) < 1e-9; return n
+
+
+def est_tokens(m, est):
+    return (est @ m.E.weight.T).argmax(-1)                       # token implied by a clean-embedding estimate
+
+
 @torch.no_grad()
-def sample_plain(m, k, sc, access, S, t_end, seed, dev="cpu"):
+def sample_plain(m, k, sc, dec_read, S, t_end, seed, dev="cpu"):
+    """Returns (decoded tokens, tokens implied by the last flow estimate). dec_read: decode pass receives SC."""
     g = torch.Generator().manual_seed(seed); B = k.shape[0]; d = m.E.weight.shape[1]
-    x = torch.randn(B, L, d, generator=g).to(dev); grid = torch.linspace(0, t_end, S + 1); fb = None
-    for i in range(S):
+    x = torch.randn(B, L, d, generator=g).to(dev); grid = torch.linspace(0, 1, S + 1); fb = None; est = None
+    for i in range(nsteps(S, t_end)):
         t0, t1 = grid[i].item(), grid[i + 1].item()
         _, est = m(k, x, torch.full((B,), t0, device=dev), fb if sc else None)
         if sc: fb = est
         x = x + (t1 - t0) / max(1e-6, 1 - t0) * (est - x)
-    lg, _ = m(k, x, torch.ones(B, device=dev), fb if (sc and access == "read") else None, decode=True)
-    return lg.argmax(-1)
+    lg, _ = m(k, x, torch.ones(B, device=dev), fb if (sc and dec_read) else None, decode=True)
+    return lg.argmax(-1), est_tokens(m, est)
 
 
 @torch.no_grad()
-def sample_cell(m, k, j, O, N, Fc, access, S, t_end, seed, dev="cpu"):
-    """Routed sampler for target j and cell (O, N, F). Neighbours follow stream F if Fc else S; j follows stream O."""
+def sample_cell(m, k, j, O, N, Fc, dec_read, S, t_end, seed, dev="cpu"):
+    """Routed sampler for target j and cell (O, N, F). Neighbours follow stream F if Fc else S; j follows stream O.
+    Estimand (red-team #6): the hybrid world, as in Lafa. All streams read the same assembled state history."""
     g = torch.Generator().manual_seed(seed); B = k.shape[0]; d = m.E.weight.shape[1]
-    x = torch.randn(B, L, d, generator=g).to(dev); grid = torch.linspace(0, t_end, S + 1)
-    fb = torch.zeros_like(x); nb = [i for i in range(L) if i != j]
-    for i in range(S):
+    x = torch.randn(B, L, d, generator=g).to(dev); grid = torch.linspace(0, 1, S + 1)
+    fb = torch.zeros_like(x)
+    for i in range(nsteps(S, t_end)):
         t0, t1 = grid[i].item(), grid[i + 1].item()
         (_, es), (_, ef), (_, eo) = m.routed(k, x, torch.full((B,), t0, device=dev), fb, j, O, N)
         est = (ef if Fc else es).clone(); est[:, j] = eo[:, j]
-        if i == 0:                                               # step 0: no feedback yet, every stream equal
+        if i == 0:
             d1 = (es - ef).abs().max().item(); d2 = (es[:, j] - eo[:, j]).abs().max().item()
-            assert d1 < 1e-4 and d2 < 1e-4, f"step-0 streams differ: S-F {d1:.2e}, S-O {d2:.2e} (O={O},N={N},F={Fc},j={j})"
+            assert d1 < 1e-4 and d2 < 1e-4, f"step-0 streams differ: S-F {d1:.2e}, S-O {d2:.2e}"
         fb = est
         x = x + (t1 - t0) / max(1e-6, 1 - t0) * (est - x)
-    fbd = fb if access == "read" else torch.zeros_like(fb)
+    fbd = fb if dec_read else torch.zeros_like(fb)
     (ls, _), (lf, _), (lo, _) = m.routed(k, x, torch.ones(B, device=dev), fbd, j, O, N, decode=True)
     y = (lf if Fc else ls).argmax(-1); y[:, j] = lo[:, j].argmax(-1)
     return y
 
 
-def coh(y, k, modes, j):
-    mt = torch.tensor(modes)[k.cpu()]                            # [B, 2, L]
-    y = y.cpu(); out = torch.zeros(y.shape[0])
-    for i in range(L):
-        if i == j: continue
-        same = ((y[:, j] == mt[:, 0, j]) & (y[:, i] == mt[:, 0, i])) | ((y[:, j] == mt[:, 1, j]) & (y[:, i] == mt[:, 1, i]))
-        out += same.float()
-    return out / (L - 1)
+def modes_of(y, k, modes):
+    """Per position: 0 if the token equals mode a, 1 if mode b, −1 otherwise. [B, L]."""
+    mt = torch.tensor(modes)[k.cpu()]; y = y.cpu()
+    return torch.where(y == mt[:, 0], 0, torch.where(y == mt[:, 1], 1, -1))
 
 
-def decomp(m, modes, access, S, t_ends, reps, seed, dev="cpu"):
-    K = len(modes); k = torch.arange(K, device=dev).repeat(reps); res = {}; ident = {}
-    for t_end in t_ends:
-        on = sample_plain(m, k, True, access, S, t_end, seed, dev); off = sample_plain(m, k, False, access, S, t_end, seed, dev)
-        cells = {}
+def decomp(m, modes, train_access, S, reps, seed, dev="cpu"):
+    """Configs: t_end ∈ {1.0, 0.5} × inference access ∈ {read, zero} (read-trained) or {zero} (zero-trained).
+    Per cell and target j it stores j's mode (−1/0/1). It also stores the reference neighbour modes (from the O1N1F1
+    run; red-team #1) and the actual neighbour modes (secondary, joint outcome)."""
+    K = len(modes); k = torch.arange(K, device=dev).repeat(reps); res = {}
+    inf_acc = ("read", "zero") if train_access == "read" else ("zero",)
+    for t_end, ia in itertools.product((1.0, 0.5), inf_acc):
+        dr = ia == "read"
+        on, on_pre = sample_plain(m, k, True, dr, S, t_end, seed, dev); off, _ = sample_plain(m, k, False, dr, S, t_end, seed, dev)
+        cfg = {"cells": {}, "nb_actual": {}, "ident_min": 1.0}
+        ref_modes = modes_of(on, k, modes)                       # reference = the O1N1F1 (= SC-on) run, same noise
+        cfg["ref_modes"] = ref_modes.tolist()
         for j in range(L):
             for O, N, Fc in itertools.product((0, 1), repeat=3):
-                y = sample_cell(m, k, j, O, N, Fc, access, S, t_end, seed, dev)
-                if (O, N, Fc) in ((1, 1, 1), (0, 0, 0)):          # identities (float-level: allow rare argmax ties)
+                y = sample_cell(m, k, j, O, N, Fc, dr, S, t_end, seed, dev)
+                if (O, N, Fc) in ((1, 1, 1), (0, 0, 0)):
                     ref = on if (O, N, Fc) == (1, 1, 1) else off; agree = (y == ref).float().mean().item()
-                    ident.setdefault(str(t_end), []).append(agree)
+                    cfg["ident_min"] = min(cfg["ident_min"], agree)
                     assert agree >= 0.999, f"identity O{O}N{N}F{Fc} agreement {agree}"
-                cells.setdefault(f"O{O}N{N}F{Fc}", []).append(coh(y, k, modes, j).tolist())
-        valid = lambda yy: sum(1 for r, kk in zip(yy.tolist(), k.tolist()) if r in (modes[kk][0], modes[kk][1])) / len(k)
-        res[str(t_end)] = {"cells": cells, "valid_on": valid(on), "valid_off": valid(off), "identity_agreement_min": min(ident[str(t_end)])}
+                ym = modes_of(y, k, modes)
+                cfg["cells"].setdefault(f"O{O}N{N}F{Fc}", []).append(ym[:, j].tolist())
+                cfg["nb_actual"].setdefault(f"O{O}N{N}F{Fc}", []).append(ym.tolist())
+        # manipulation check (red-team #2): how often the decode pass changes the token implied by the last flow estimate
+        cfg["commit_at_decode"] = (on != on_pre).float().mean().item()
+        cfg["prompt"] = k.tolist()
+        res[f"{t_end}|{ia}"] = cfg
     return res
 
 
@@ -233,12 +251,12 @@ if __name__ == "__main__":
         print(f"saved {p} ({time.time()-t0:.0f}s)")
     elif a.cmd == "decomp":
         ck = torch.load(a.ckpt); m = Toy(V_DEF, K_DEF, ck["form"]); m.load_state_dict(ck["state"]); m.eval()
-        t0 = time.time(); r = decomp(m, make_modes(V_DEF, K_DEF), ck["access"], a.S, [1.0, 0.5], a.reps, 99 + ck["seed"])
-        r["meta"] = {k: ck[k] for k in ("access", "form", "seed", "steps")} | {"S": a.S, "reps": a.reps}
+        t0 = time.time(); r = decomp(m, make_modes(V_DEF, K_DEF, ck["seed"]), ck["access"], a.S, a.reps, 99 + ck["seed"])
+        r["meta"] = {k: ck[k] for k in ("access", "form", "seed", "steps")} | {"S": a.S, "reps": a.reps, "version": 2}
         json.dump(r, open(a.ckpt.replace(".pt", "_decomp.json"), "w")); print(f"decomp done ({time.time()-t0:.0f}s)")
     else:
         for acc, form in itertools.product(("read", "zero"), ("exp", "cont")):
             t0 = time.time(); m, modes = train(acc, form, 0, 300); m.eval(); t1 = time.time()
-            r = decomp(m, modes, acc, 4, [1.0, 0.5], 2, 7); t2 = time.time()
-            print(f"smoke {acc}/{form}: identities OK; train 300 it {t1-t0:.1f}s; decomp(S=4, reps=2) {t2-t1:.1f}s; valid_on {r['1.0']['valid_on']:.2f}", flush=True)
+            r = decomp(m, modes, acc, 4, 2, 7); t2 = time.time()
+            print(f"smoke {acc}/{form}: identities OK; train 300 it {t1-t0:.1f}s; decomp(S=4, reps=2) {t2-t1:.1f}s; configs {list(r)}", flush=True)
         print("SMOKE PASS")
