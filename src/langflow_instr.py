@@ -8,7 +8,7 @@ j iff O). S attends S and F attends F; O-row queries read key q from O if q == q
 S (N = 0). Neighbours take their estimate from F (F = 1) or S; target j from O. Applied at every step and at the final
 forward. No prefix (unconditional generation).
 Identities: O1N1F1 = SC-on sampling and O0N0F0 = SC-off sampling (checked by the callers)."""
-import sys
+import os, sys
 import einops
 import torch
 import torch.nn.functional as F_
@@ -17,10 +17,22 @@ ROUTE = None
 _ORIG = None
 
 
+FP32 = os.environ.get("MF_FP32", "1") == "1"   # bf16 breaks routed/plain identity (0.92 vs 1.000 in fp32; 2026-11-20)
+
+
+class _TorchNoAutocast:
+    """Stands in for `torch` inside LangFlow's module so its hard-coded bf16 autocast is disabled (fp32 everywhere)."""
+    def __getattr__(self, k): return getattr(torch, k)
+    def autocast(self, *a, **k): return torch.autocast(device_type="cuda", enabled=False)
+
+
 def load_langflow(path, device, dtype=torch.float32):
     from transformers import AutoModelForMaskedLM
+    if FP32: torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     model = AutoModelForMaskedLM.from_pretrained(path, trust_remote_code=True, torch_dtype=dtype).to(device).eval()
-    _install(sys.modules[type(model).__module__])
+    mod = sys.modules[type(model).__module__]
+    if FP32: mod.torch = _TorchNoAutocast()
+    _install(mod)
     return model
 
 

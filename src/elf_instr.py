@@ -16,6 +16,11 @@ import torch.nn.functional as F_
 
 ROUTE = None          # {"P": prefix length, "j": target seq index, "n": 0/1}
 _ORIG = None
+# Precision (2026-11-20): bf16 autocast on GPU breaks token identity of routed vs plain sampling over long trajectories
+# (LangFlow: 0.92 in bf16 vs 1.000 in fp32 with TF32 off). All instrumented runs use fp32 unless MF_FP32=0.
+FP32 = os.environ.get("MF_FP32", "1") == "1"
+if FP32:
+    torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
 
 
 def load_elf(hcfrl_root, ckpt_dir, L, device):
@@ -94,7 +99,7 @@ def run_cell(model, cfg, z0, t_steps, j, O, N, F, w=1.0, autocast=True):
     dev = z0.device
     z = z0.clone(); xprev = torch.zeros_like(z)
     wt = torch.full((3 * B,), float(w), device=dev)
-    ctx = torch.amp.autocast("cuda", dtype=torch.bfloat16, enabled=autocast and dev.type == "cuda")
+    ctx = torch.amp.autocast("cuda", dtype=torch.bfloat16, enabled=autocast and dev.type == "cuda" and not FP32)
     with ctx:
         for i in range(len(t_steps) - 1):
             t, tn = t_steps[i].item(), t_steps[i + 1].item()
@@ -123,7 +128,7 @@ def run_plain(model, cfg, z0, t_steps, sc_on, w=1.0, autocast=True):
     """Reference ELF sampling loop (no routing): SC on = previous x-prediction, off = zeros."""
     B = z0.shape[0]; dev = z0.device; z = z0.clone(); xp = torch.zeros_like(z)
     wt = torch.full((B,), float(w), device=dev)
-    with torch.amp.autocast("cuda", dtype=torch.bfloat16, enabled=autocast and dev.type == "cuda"):
+    with torch.amp.autocast("cuda", dtype=torch.bfloat16, enabled=autocast and dev.type == "cuda" and not FP32):
         for i in range(len(t_steps) - 1):
             t, tn = t_steps[i].item(), t_steps[i + 1].item()
             tb = torch.full((B,), t, device=dev)
@@ -146,7 +151,7 @@ def run_cell_x(model, cfg, z0, t_steps, j, O, N, F, w=1.0, autocast=True):
     global ROUTE
     B, L, Cd = z0.shape; dev = z0.device
     z = z0.clone(); xprev = torch.zeros_like(z); wt = torch.full((3 * B,), float(w), device=dev)
-    ctx = torch.amp.autocast("cuda", dtype=torch.bfloat16, enabled=autocast and dev.type == "cuda")
+    ctx = torch.amp.autocast("cuda", dtype=torch.bfloat16, enabled=autocast and dev.type == "cuda" and not FP32)
     with ctx:
         for i in range(len(t_steps) - 1):
             t, tn = t_steps[i].item(), t_steps[i + 1].item(); zero = torch.zeros_like(z); o_in = zero.clone()
@@ -165,7 +170,7 @@ def run_cell_x(model, cfg, z0, t_steps, j, O, N, F, w=1.0, autocast=True):
 @torch.no_grad()
 def run_plain_x(model, cfg, z0, t_steps, sc_on, w=1.0, autocast=True):
     B = z0.shape[0]; dev = z0.device; z = z0.clone(); xp = torch.zeros_like(z); wt = torch.full((B,), float(w), device=dev)
-    with torch.amp.autocast("cuda", dtype=torch.bfloat16, enabled=autocast and dev.type == "cuda"):
+    with torch.amp.autocast("cuda", dtype=torch.bfloat16, enabled=autocast and dev.type == "cuda" and not FP32):
         for i in range(len(t_steps) - 1):
             t, tn = t_steps[i].item(), t_steps[i + 1].item(); tb = torch.full((B,), t, device=dev)
             out = model(torch.cat([z, xp], -1), tb, deterministic=True, self_cond_cfg_scale=wt)
@@ -176,7 +181,7 @@ def run_plain_x(model, cfg, z0, t_steps, sc_on, w=1.0, autocast=True):
 def _dec_logits(model, inp, w):
     B = inp.shape[0]; dev = inp.device
     tf = torch.ones((B,), device=dev, dtype=inp.dtype); sc = torch.full((B,), float(w), device=dev, dtype=inp.dtype)
-    with torch.amp.autocast("cuda", dtype=torch.bfloat16, enabled=dev.type == "cuda"):
+    with torch.amp.autocast("cuda", dtype=torch.bfloat16, enabled=dev.type == "cuda" and not FP32):
         _, lg = model(inp, tf, deterministic=True, self_cond_cfg_scale=sc, decoder_step_active=torch.ones((B,), device=dev, dtype=inp.dtype))
     return lg
 

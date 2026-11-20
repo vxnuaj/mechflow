@@ -6,7 +6,7 @@ training), or a shuffled estimate (batch rolled by 1). Fixed corruption seed 11.
 import argparse, json, os, sys
 import torch, torch.nn.functional as F
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from elf_instr import load_elf, _dec_logits, _vx
+from elf_instr import load_elf, _dec_logits, _vx, FP32
 ap = argparse.ArgumentParser(); ap.add_argument("--hcfrl", required=True); ap.add_argument("--ckpt", required=True)
 ap.add_argument("--data", required=True); ap.add_argument("--out", required=True); ap.add_argument("--rows", type=int, default=2048)
 ap.add_argument("--bs", type=int, default=16); ap.add_argument("--L", type=int, default=128); ap.add_argument("--device", default="cuda")
@@ -24,13 +24,13 @@ with torch.no_grad():
         ids = [r[:a.L] + [pad] * max(0, a.L - len(r)) for r in rows[b:b + a.bs]["input_ids"]]
         ids = torch.tensor(ids, device=dev); am = (ids != pad).float()
         x0 = encode_text(input_ids=ids, attention_mask=am, encoder=enc, latent_mean=cfg.latent_mean, latent_std=cfg.latent_std,
-                         use_bf16=dev.type == "cuda").float()
+                         use_bf16=dev.type == "cuda" and not FP32).float()
         B = ids.shape[0]
         lam = torch.sigmoid(torch.randn((B, a.L, 1), generator=g) * cfg.decoder_p_std + cfg.decoder_p_mean).to(dev)
         e = torch.randn(x0.shape, generator=g).to(dev) * cfg.decoder_noise_scale
         z = lam * x0 + (1 - lam) * e
         tdec = lam.mean(dim=(1, 2))
-        with torch.amp.autocast("cuda", dtype=torch.bfloat16, enabled=dev.type == "cuda"):
+        with torch.amp.autocast("cuda", dtype=torch.bfloat16, enabled=dev.type == "cuda" and not FP32):
             out = model(torch.cat([z, torch.zeros_like(z)], -1), tdec, deterministic=True, self_cond_cfg_scale=torch.ones((B,), device=dev))
         _, xh = _vx(out, z, tdec, cfg.t_eps)
         for k, sc in (("zero", torch.zeros_like(z)), ("sc", xh), ("shuf", torch.roll(xh, 1, 0))):
