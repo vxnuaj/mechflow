@@ -1,5 +1,5 @@
 """Prereg §2.16 (B1 human validation; written before any ratings). Usage (on CARC, where the key lives):
-  python analysis/b1.py ratings/key.json ratings/sheet_<rater1>.md [ratings/sheet_<rater2>.md]
+  python analysis/b1.py ratings/key.json ratings/sheet_<rater1>.md [ratings/sheet_<rater2>.md ...]   (N raters)
 Agreement = the fraction of non-tie human answers matching the LM preference (higher coh_2 + coh_3). Wilson 95% interval.
 Corroborated iff the point is ≥ 0.70 and the Wilson LB > 0.50; undermined iff the Wilson UB < 0.50; else inconclusive.
 Reported per rater and pooled, plus the SC-on preference rate, tie rate and Cohen's κ between raters."""
@@ -27,17 +27,18 @@ def score(ans, label):
     return v
 R = [answers(p) for p in sys.argv[2:]]
 for p, a in zip(sys.argv[2:], R): score(a, p)
-if len(R) == 2:
-    pooled = {}
-    for i in key:
-        for r_i, a in enumerate(R):
-            if i in a: pooled[(i, r_i)] = a[i]
+if len(R) >= 2:   # pooled over all raters (each rater-item answer counts once) + pairwise Cohen's κ
     agree = n = 0
-    for (i, r_i), a in pooled.items():
-        if a == "T": continue
-        n += 1; agree += ((a == "A") == key[i]["A_is_sc_on"]) == (key[i]["lm_on"] > key[i]["lm_off"])
-    p, lo, hi = wilson(agree, n); print(f"pooled: {agree}/{n} = {p:.3f} [{lo:.3f}, {hi:.3f}] → " + ("CORROBORATED" if (p >= 0.70 and lo > 0.50) else "UNDERMINED" if hi < 0.50 else "INCONCLUSIVE"))
-    both = [i for i in key if i in R[0] and i in R[1]]; cats = "ABT"
-    po = sum(R[0][i] == R[1][i] for i in both) / max(1, len(both))
-    pe = sum((sum(R[0][i] == c for i in both) / len(both)) * (sum(R[1][i] == c for i in both) / len(both)) for c in cats) if both else 0
-    print(f"inter-rater: {len(both)} items, raw agreement {po:.3f}, Cohen's κ {(po - pe) / (1 - pe) if pe < 1 else float('nan'):.3f}")
+    for a in R:
+        for i, x in a.items():
+            if x == "T": continue
+            n += 1; agree += ((x == "A") == key[i]["A_is_sc_on"]) == (key[i]["lm_on"] > key[i]["lm_off"])
+    p, lo, hi = wilson(agree, n)
+    print(f"pooled ({len(R)} raters): {agree}/{n} = {p:.3f} [{lo:.3f}, {hi:.3f}] → " + ("CORROBORATED" if (p >= 0.70 and lo > 0.50) else "UNDERMINED" if hi < 0.50 else "INCONCLUSIVE"))
+    for x in range(len(R)):
+        for y in range(x + 1, len(R)):
+            both = [i for i in key if i in R[x] and i in R[y]]
+            if not both: continue
+            po = sum(R[x][i] == R[y][i] for i in both) / len(both)
+            pe = sum((sum(R[x][i] == c for i in both) / len(both)) * (sum(R[y][i] == c for i in both) / len(both)) for c in "ABT")
+            print(f"κ({sys.argv[2 + x]}, {sys.argv[2 + y]}): {len(both)} items, raw {po:.3f}, κ {(po - pe) / (1 - pe) if pe < 1 else float('nan'):.3f}")
