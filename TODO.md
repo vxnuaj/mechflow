@@ -409,6 +409,10 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
      - [x] `src/langflow_decomp.py` written (reuses elf_judge_fixedctx.py via T5_PATH = GPT-2 tokenizer + REF_FILE).
      - **Plaid decision (2026-11-20):** it needs apex + flash-attn v1 + mup + fused-MLP kernels, so a pure-PyTorch port with weight remapping is required. It is validated by reproducing Plaid's reported likelihood before any decomposition. Deferred to a second Prime session; the first session runs E4 + LangFlow.
      - [~] LangFlow calibration running (CARC CPU) → then pre-register family G (LangFlow) with predictions conditioned on the measured regime (lesson from family T).
+   - [x] 3c-iv-a. Pod files written: `pod/requirements_e4.txt` (pinned to the hcfrl env), `pod/setup_e4.sh` (revision-pinned downloads; all repos ungated and SHAs verified), `pod/run_e4.sh` (flock single driver; stages A–D; LangFlow calibration on the pod; LangFlow decomposition gated on ~/LF_GO).
+   - [ ] 3c-iv-b. Launch when GPUs are available (no A6000 at 2026-11-20 ~03:00).
+     - From the laptop: create the pod; rsync the repo at the pinned commit + hcfrl_min (hcfrl/elf_path.py + hcfrl/elf) via a CARC → laptop → pod stream; run setup + driver under nohup.
+     - **Kill timer under `caffeinate -i`** (the last timer failed while the Mac slept); verify termination.
    - [ ] 3c-iv. Prime session: fine-tunes (readable, zeroed; 3,000 steps each) → decompositions (n_steps {32, 24} × access {read, zero} for readable; zero for zeroed; n = 256, seed 2) → Mistral fixed-context judge, plus LangFlow and Plaid. Verified-termination timer.
    - [ ] 3c. Pre-register the design: fine-tune readable vs zeroed × sampling t_end {1.0, truncated} × inference access, interaction prediction (insights §26). Predictions from 3a; rule checked on synthetic scenarios incl. partial identifiability; fixed-context outcome; fluency validity ≤ 20% drop; within-model readable-vs-zeroed-at-inference contrast). GPT red-team. GPU run (~6 GPU-h; Prime or CARC, the user's choice).
    - **Validity:** decode fluency drop ≤ 20% vs the matched control.
