@@ -434,3 +434,10 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
     - (i) the toy commits at step 0 at every σ (62–78% committed before any feedback exists; the pure-noise state's direction breaks the symmetry);
     - (ii) with an ELF-style decode pass, SC barely matters (SC-off valid 0.78–0.99 vs SC-on 0.98–1.00). The bidirectional decode pass itself coordinates the positions, which is consistent with ELF's design but leaves little SC effect to decompose.
 - **Decision (2026-11-20):** stop tuning the toy for the access test. Further redesign would be a garden of forking paths, with auxiliaries failing repeatedly. The access question moves to the real model where SC matters: the ELF decode-access manipulation (Phase 13 step 3; SC effect there is ≈ 4 nats). Family T is reported as: refuted as pre-registered, the auxiliary false, the access question untested in the toy.
+
+## 26. ELF decode-pass informativeness (exploratory, from existing E3/E3b tokens; 2026-11-20)
+- For target j = 64: in the SC-off cell (O0N0F0), j produces the SC-on token only 23–24% of the time. Replacing **only the neighbours' final latents** with the SC-on ones raises this to **77–78%** (both seeds). j's token is unchanged under that swap in only 32–36% of samples.
+- **Reading:** at ELF's decode pass, a position's own final latent does not determine its token. The decode pass decides it mostly from the neighbours' final latents, which is consistent with E3b.
+- **Implication for the access test:** at full t_end the last estimate x̂ ≈ the final latent, so making SC readable at decode adds almost no information (a near-tautological test). A discriminating version decodes from **truncated** trajectories (noisy latents; in-distribution, since ELF's decoder is trained on corrupted z).
+  - Account: N rises in an SC-readable-decode fine-tune **only** at truncated t_end.
+  - Rival "readout access decides": it rises at both.
