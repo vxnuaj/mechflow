@@ -316,8 +316,8 @@ Rule adopted from E3: **decide on absolute route effects (with total T), never o
 
 Experiments (each pre-registered before its data):
 - [ ] **E3b** (running): ELF decode-pass replication, fresh seed.
-- [ ] **C1, Lafa SC-off final readout** (cheapest; separates "readout access decides" from "the decision is made earlier"). Decision-locus account predicts the N effect is unchanged (within 0.15 of T-normalised baseline, plus absolute effect).
-- [ ] **Toy factorial:** readout SC on/off × feedback form (expected embedding vs continuous latent), 3 seeds. Prediction: the route follows readout access, not form.
+- [~] **C1, Lafa SC-off final readout: largely answered by existing data** (E1b: the final step alone carries 0.05 of N; E1c: N = 0 exactly in late steps under `uniform` despite SC at readout). Demoted (`verification_log.md`).
+- [ ] **Toy factorial (now the primary test of the access variable; no external model varies it):** readout SC on/off × feedback form (expected embedding vs continuous latent), 3 seeds. Prediction: the route follows readout access, not form.
 - [ ] **LangFlow 130M** (`Continuous-Rivals-Discrete/langflow-owt`, verified: expected-embedding SC via concat projection, SC present at final readout, full sequence, L = 1024). Prediction: N-dominant, O ≈ 0. Block-locality rival: N small.
 - [ ] **Plaid 1B** (verified release; expected-embedding SC, SC at readout, full sequence). Second external test.
 - [ ] Stretch: **DiffusionGemma 26B-A4B** (masked/discrete); high cost; adaptive-acceptance confound.
