@@ -332,9 +332,26 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
    - [x] 2b. Smoke test on CARC CPU (tiny steps): identity checks pass, and the cost per seed is measured. Result: pass (step-0 stream diff < 1e-4); ~18 min to train and ~7 min to decompose per model (8 CPUs).
    - [x] 2c. Pre-register as prereg §2.12. Decision rule written out for "account true", "readout-alone rival" and "form rival" scenarios; analysis script frozen; hash and push.
    - [x] 2d-i. GPT red-team prompt written → `prompts/gpt_redteam_toy.md`.
-   - [ ] 2d-ii. The user runs it in GPT; Claude verifies each point against the code and folds in the valid ones (logged in prereg §12 before data).
+   - [x] 2d-ii. GPT red-team received and verified against the code (2026-11-19). Decision-rule bugs reproduced.
+     - **Adopted:**
+       - #1 fixed-reference outcome;
+       - #2 measured commitment manipulation check plus a shared step grid;
+       - #3 the rule is rewritten (all mandatory cells required; refutations always reported);
+       - #5 FORM renamed to "estimator recipe";
+       - #7 excess-over-independence and diversity as secondary outcomes;
+       - #9 10 seeds with seed-specific tasks and seed-level inference;
+       - #11 CI-based P4/P5;
+       - #12 RNG matched;
+       - plus an inference-time access factor.
+     - **Not adopted, with reasons (in prereg §12):** #4 (substitution is already tested in Lafa family R; the toy scope is access), #6 (the hybrid world is the intended estimand, as in Lafa), #10 (same-state SC training is standard practice in Lafa and ELF).
+   - [ ] 2d-iii. Implement T v2 (code + analysis):
+     - synthetic rule tests incl. partial-identifiability cases;
+     - log the deviation in prereg §12;
+     - hash and push;
+     - discard the v1 trainings (never decomposed).
+   - [ ] 2e-iii. Train 40 models (2 access × 2 recipes × 10 seeds) on CARC CPU, then decompose.
    - [x] 2e-i. 12 trainings done 2026-11-19 (13–23 min each; final losses: denoise 0.03–0.09, decode 0.04–0.10). Design check (weights only, no outcomes): embedding norms 11.8–12.2 vs noise norm 11.3, so no embedding inflation and the noise is not trivially defeated.
-   - [ ] 2e-ii. Run the decompositions after 2d-ii (the data).
+   - [~] 2e-ii. Superseded by v2 (the v1 checkpoints were never decomposed, so no data was seen).
    - [ ] 2f. Run the frozen analysis; record in prereg §12, insights and TODO.
    - **Prediction:** the route follows access, not form (SC-readable → N; SC-zeroed readout → F), on absolute effects.
    - **Fail** (the route follows form) → the core account is refuted; reinterpret steps 3–5 before running them.
@@ -358,6 +375,9 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 2. Run a 16-sample microbenchmark to measure real cost.
 3. **GPT red-team:** the user sends the draft rules to GPT with a "find flaws" prompt (Claude writes it).
 4. Fold in valid criticism, hash and push, then launch.
+
+**Robustness item from the red-team (Lafa):**
+- [ ] The Lafa N claim uses coh_j against the *actual* context y_<j, which N can shift slightly via j's state. Rescore the H2-N confirmation cells with a fixed context (cell O1N1F1's y_<j), as already done for ELF. First check whether per-cell tokens were saved; exploratory robustness.
 
 **Threat checks in every run:**
 - sham swaps;
