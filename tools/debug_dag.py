@@ -16,7 +16,7 @@ import json, os, subprocess, sys
 D = json.loads(sys.argv[1]); out = {"done": [], "queued": []}
 for n, p in D:
     if os.path.exists(os.path.expandvars(p)): out["done"].append(n)
-q = subprocess.run(["squeue", "-u", os.environ["USER"], "-h", "-o", "%j|%P"], capture_output=True, text=True).stdout.split()
+q = subprocess.run(["squeue", "-u", os.environ["USER"], "-h", "-o", "%j|%P"], stdout=subprocess.PIPE, universal_newlines=True).stdout.split()   # py3.6 on CARC login
 out["queued"] = [x.split("|")[0] for x in q]; out["n_debug"] = sum(1 for x in q if x.endswith("|debug"))
 print(json.dumps(out))
 '''
@@ -30,7 +30,8 @@ def ssh(cmd, timeout=120):
 def status():
     arg = json.dumps([[t["name"], t["done"]] for t in D])
     out, rc = ssh(f"python3 -c {shlex.quote(STATUS)} {shlex.quote(arg)}")
-    return json.loads(out) if rc == 0 and out else None
+    if rc != 0 or not out: return None
+    return json.loads(out)
 
 
 def submit(t):
@@ -44,10 +45,17 @@ def submit(t):
     return out if rc == 0 else None
 
 
+fails = 0
 while True:
-    st = status()
+    try:
+        st = status()
+    except Exception as e:
+        st = None; print(f"{time.strftime('%H:%M')} status error: {e}", flush=True)
     if st is None:
+        fails += 1
+        if fails in (1, 3) or fails % 20 == 0: print(f"{time.strftime('%H:%M')} WARNING: status check failed ({fails}x)", flush=True)
         time.sleep(90); continue
+    fails = 0
     done, queued = set(st["done"]), set(st["queued"]); nsub = st["n_debug"]
     remaining = [t for t in D if t["name"] not in done]
     if not remaining:
