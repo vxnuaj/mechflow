@@ -1,0 +1,20 @@
+[load] noise_schedule: 3 tensors, 3,072 params, missing=[] unexpected=[]
+[load] gamma_bounds: 2 tensors, 2 params, missing=[] unexpected=[]
+[load] embedding_matrix: 1 tensors, 524,288 params, missing=[] unexpected=[]
+[load] model: 151 tensors, 1,275,398,144 params, missing=[] unexpected=[]
+=== ELBO [owt owt-0000.parquet L=256 K=4 SC=on fp32=True] ===
+{
+ "n_seqs": 32,
+ "n_tokens": 8192,
+ "total_nats": 24240.965172006487,
+ "nats_per_token": 2.959102193848448,
+ "se": 0.04852439866707075,
+ "bits_per_token": 4.269082060548809,
+ "components": {
+  "reconst": 0.16930122370831668,
+  "diffusion": 2.772862617648425,
+  "prior": 0.01693835249170661
+ },
+ "seconds": 410.3442223072052
+}
+DONE

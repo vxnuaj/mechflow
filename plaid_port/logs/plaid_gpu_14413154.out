@@ -1,0 +1,127 @@
+[load] noise_schedule: 3 tensors, 3,072 params, missing=[] unexpected=[]
+[load] gamma_bounds: 2 tensors, 2 params, missing=[] unexpected=[]
+[load] embedding_matrix: 1 tensors, 524,288 params, missing=[] unexpected=[]
+[load] model: 151 tensors, 1,275,398,144 params, missing=[] unexpected=[]
+NVIDIA A40
+=== ELBO [wikitext wikitext-103-v1-test.parquet L=1024 K=8 SC=on fp32=False] ===
+{
+ "n_seqs": 275,
+ "n_tokens": 281061,
+ "total_nats": 804504.7917589371,
+ "nats_per_token": 2.8623850045326,
+ "se": 0.016467626103225233,
+ "bits_per_token": 4.129548651154115,
+ "components": {
+  "reconst": 0.21346139805226777,
+  "diffusion": 2.6319852540722923,
+  "prior": 0.01693835240803997
+ },
+ "total_words": 245569,
+ "total_tokens_full": 281061,
+ "words_per_token": 0.8737213629781435,
+ "seconds": 265.1148262023926,
+ "word_ppl": 26.471918410530733,
+ "word_ppl_lo": 25.977656476822478,
+ "word_ppl_hi": 26.97558438187152
+}
+=== ELBO [wikitext wikitext-2-v1-test.parquet L=1024 K=8 SC=on fp32=False] ===
+{
+ "n_seqs": 283,
+ "n_tokens": 289033,
+ "total_nats": 816758.627388088,
+ "nats_per_token": 2.8258317471987215,
+ "se": 0.01584880610585457,
+ "bits_per_token": 4.07681344807019,
+ "components": {
+  "reconst": 0.27852200771158203,
+  "diffusion": 2.5303713816034508,
+  "prior": 0.016938357883688703
+ },
+ "total_words": 245569,
+ "total_tokens_full": 289033,
+ "words_per_token": 0.8496227074417108,
+ "seconds": 270.1040894985199,
+ "word_ppl": 27.826373401242417,
+ "word_ppl_lo": 27.31211345962487,
+ "word_ppl_hi": 28.350316346262222
+}
+=== ELBO [owt owt-0000.parquet L=256 K=16 SC=on fp32=False] ===
+{
+ "n_seqs": 64,
+ "n_tokens": 16384,
+ "total_nats": 48392.85928299612,
+ "nats_per_token": 2.953665727721931,
+ "se": 0.04400154341081324,
+ "bits_per_token": 4.261238897828122,
+ "components": {
+  "reconst": 0.16980510362191126,
+  "diffusion": 2.7669222719284554,
+  "prior": 0.016938352171564475
+ },
+ "seconds": 28.335136651992798
+}
+=== ELBO [owt owt-0000.parquet L=256 K=16 SC=on fp32=True] ===
+{
+ "n_seqs": 64,
+ "n_tokens": 16384,
+ "total_nats": 48396.117298113495,
+ "nats_per_token": 2.953864581183685,
+ "se": 0.0439712846741817,
+ "bits_per_token": 4.261525782731257,
+ "components": {
+  "reconst": 0.16985788266174495,
+  "diffusion": 2.7670683463503756,
+  "prior": 0.016938352171564475
+ },
+ "seconds": 91.65133357048035
+}
+=== ELBO [owt owt-0000.parquet L=256 K=16 SC=off fp32=False] ===
+{
+ "n_seqs": 64,
+ "n_tokens": 16384,
+ "total_nats": 49571.94184248247,
+ "nats_per_token": 3.0256312159718304,
+ "se": 0.04304898769437161,
+ "bits_per_token": 4.365063150841404,
+ "components": {
+  "reconst": 0.17714925325708464,
+  "diffusion": 2.8315436105431813,
+  "prior": 0.016938352171564475
+ },
+ "seconds": 14.303005456924438
+}
+=== ELBO [owt owt-0000.parquet L=1024 K=8 SC=on fp32=False] ===
+{
+ "n_seqs": 32,
+ "n_tokens": 32768,
+ "total_nats": 90325.30697305899,
+ "nats_per_token": 2.756509612214935,
+ "se": 0.04072374551934923,
+ "bits_per_token": 3.9768027477052463,
+ "components": {
+  "reconst": 0.16223483462817967,
+  "diffusion": 2.577336424978634,
+  "prior": 0.01693835260812193
+ },
+ "seconds": 30.598277807235718
+}
+=== samples [SC=on steps=256 seq_len=256 seed=0 fp32=False] (18.0s) ===
+ Balakrishnan had said on March 8 in a press conference that the genome sequence of the novel coronavirus will be sequenced at the Institute of Shanghai. He had said there is no proof yet that the virus is present in any host species but it is possible it could have been transmitted to susceptible species. Meanwhile the Health Ministry has launched an online campaign to increase awareness on the pandemic and the education ministry has also launched social media campaign. Any initiatives being taken by various state governments are being acted upon in coordination with the Ministry of Parliamentary Affairs to assist state governments in respect of lockdown compliance for Coronavirus Management, a spokesperson for the ministry said.↵↵The World Health Organisation had in a report on March 6 been pessimistic about India’s potential shift from a 2019-nCoV-like scenario into ‘moderate risk’ or ‘probable’ categories from ‘vulnerable’ category.↵↵India has recorded the highest number of confirmed cases per population among all countries in Asia since the first outbreak in December 2019, it noted.↵↵This development comes as China appears to have suffered a large number of imported cases of the virus with the WHO now suggesting widespread transmission within the country. According to the new analysis of the virus by the WHO, the Chinese authorities and
+---
+ cousin, was silent. If the person on the other end came in, he would get cornered. She would run back home. Long closed her eyes, sucked hard and nibbled at a hard vegetable root that hung down from the tree. Before Joseph was born, the family scrapbook said he had died in a workplace accident in France just after World War II.↵↵With relief, Little drooled out her tongue, sat back and sucked it in as lingering rage pushed her into a vomit seat. This just shouldn’t have happened, she thought. Over the years, she had been on at least four different assembly lines. Several had shut down on short notice and low pay. Little had been shunned by her supervisors. On one occasion, her older brother had come to the job site break room and excused himself for duty, breathless and disoriented. He had died of cancer a few years later.↵↵Over the phone, Little said she had tried to help the women on the other end of the line through hardships, encouraging them to sign up for work when it meant low pay. She had spent time dropping out of their lives, catching up with them when she didn’t have any. But in the end, if
+---
+ Increased Stress Attacker usage. CDR: 1440, DAC: 41, LUC1b: 383↵↵^Normally only on 3-zoom stances. ‡ Also has a 1-zoom effect↵↵Skippy Position : Does 15% of stake advantage per second and grows closer to stun for a total of 60% for 5 seconds (added in 3.3.1) CDR: 1450, DAC: 107, LUC1b: 621↵↵^Normally only on 3-zoom stances. ‡ Also has a 1-zoom effect↵↵Slow Travel Stance : Deals 3% of stake influence per moment and lasts for 10 seconds gaining 5% every second (added in 3.3.1) CDR: 1500, DAC: 96, LUC1b: 544↵↵^Normally only on 3-zoom stances. ‡ Also has a 1-zoom effect↵↵Single neck stance : Gives a 4.2 second stun immunity at a slow pace regenerating up to 6% shock impact for 4 seconds (added in 3.3.1) CDR: 4400,
+---
+ hörte, dass ein niedrigen Gemüsshäuser und Erfolgehäuser vielführt. Dennoch ist geraos, das in einer modernen Abschichte dafang.Struktigkeiten sind nicht vor einem Gesundheit - in der konkurischen Handbrauch, wo kommt es kinderkunerdem, hier nehmen der klassischen Schule - und zu laufen. Besonders herregt eine neue Mehrheit: Veruchsmeisterniste zu vollgeschichten - es finde eine einige klar politale Menschheitproruktur. Die Verfähigkeit steht dann nur einer zunehmend verwandte Formakte der Rasse. Aktuetig wird führend wirklich der kleinen Hoffnung verbindiges ihnen sei, sondern auch nicht.Sagte die verzügenden Probe, die mit Linksh
+---
+=== samples [SC=off steps=256 seq_len=256 seed=0 fp32=False] (18.0s) ===
+ Mevdahlem did not give a timeline on the event confirming that the true urgency of their covert incursion is mutemic in the East of Ukraine. It is possible there is a serious case that the plane was diverted in some defensive way but they have crashed and may have been subjected to deliberate destruction.↵↵The plane subsequently sent a satellite contact by air traffic in the vicinity and a search and rescue operation is currently taking place. This exercise is linked with various other intelligence assessments being worked on in cooperation with the Department of Homeland Security to protect American citizens in anticipation of terror attack by Islamic State, Turkish authorities and their local supporters.↵↵The Sunday National Telegraph retarded the condemnation of Turkey with clichés about Turkey’s strategic cooperation with the USA/NATO/European Union on ‘parign actions’ and ‘protective’ missions with ‘impeccable’ results.↵↵Russia has conducted a significant number of safety drills by military during internal flights in Turkey after the tragic incident of Airlines Flight 17 last year.↵↵This covert intervention by Russia seems to have provoked a sudden wave of mass discontent of the population against the NATO occupation and military presence in the country. Indeed after the official denial of the incident by the US, the Turkish authorities and
+---
+ close, was fragile. If the air from the site came rushing in, she would stay charformed. Her next mantra was simple: Hope opened her mouth, sucking hard and munching on every hard fuel cell that floated down from the surface. Once Hope was prepared, her distant subconscious knew she was heading for a parallel dimension within Sirius known as the Golden Quad.↵↵Without reservation, Hope coaxed back her breath, sat back and held it in as intense wind turned her into a rubbery piece. This just can’t be right, she breathed through a knowing, she was supposed to be dead a few seconds later. Little flames erupted out of each breath and changed shape. Hard plasma bodies bulded from her chest. In a moment, she reached the short path to the power station living room and readied herself for combat, breathless and transfixed. She was set to enter a whole new dimension.↵↵Without a breath, Hope used her back hand to rip the disk of the sun out of the air in midair, causing it to drift away as easily as it made first contact. She recalled other shapes coming out of the darkness, folding in upon themselves until she couldn’t see anything. But in the darkness, Hope
+---
+ intracellular antibody activity. Amerc Radid Sci. 2015 Jun;39(7):771, 803.↵↵Marian Wenzel, Eran Michpp. Infining Communication in the ADHD with Speech Scale.↵↵Werke BL, Lambert C Dynamics of adaptive control of narrative and sign language in children with autism. 2016;14:1475–1482. doi.info/10.1137/1475-038.↵↵Werke BL, Warnig A, Degenvegh D, Gueron L, Vink J, Mielowiej S, Brouwer P et al. Discursive analyses of description features in autism related autism. Autism Behavior Spectrum. 2017;35:319-318. https://doi.org/10.1371/ij.pere.13544.↵↵Werzel BL, Giorgi-Rei M, Warnig A, Vink J, Degenvegh D, Guelik L, Mielowiej S, Bauwer P (2018) ADHD variability in patient sign assessments using structured verbal reading. 2017 NIOS Regional Neurological Simulation-
+---
+ jajlah – Pulanggan, Cakang, Gemahjunangsa, Sekapurna dan Pohjunangsa. Gundanggi atau mampu maerahari yang semua pertabannya dapat berjadi Ketutjudi yang hari dalam yang sesihatan tangan jadi.↵↵Guranggi yang klasali di mensekunerai, Gundanggi atau pemilik Iban – melalah beramai. Kesirkan Gurangsa yang baik Gurangsha, Gurangkan, Gurangkan sana jumlah jumlah, sum telah secah apusun dua sedang di menjehihalkan yang. Selaputikanan yang baik dua sendiri yang ditukang memseataan penagahkan Rama. Pemapunan atau sesiapa sehingga di kurah Gundangsa menundaruh Ipak lagi, kuram tengan jadi. Gundangsa di menjehijadakan yang, belum andi
+---
+DONE
+DONE

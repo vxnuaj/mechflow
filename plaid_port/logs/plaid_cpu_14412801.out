@@ -1,0 +1,28 @@
+== unit checks (max abs diff) ==
+  rmsnorm_fp32: 0.0
+  rmsnorm_bf16_dtype: torch.bfloat16
+  rmsnorm_bf16_vs_apex_manual: 0.03125
+  rotary_vs_torchscript_fp32: 0.0
+  rotary_vs_flash_formula_fp32: 0.0
+  rotary_vs_flash_formula_bf16: 0.0
+  sdpa_vs_varlen_ref: 4.76837158203125e-07
+  mlp_vs_fused_mlp_fallback: 0.0
+== (a) load ==
+[load] noise_schedule: 3 tensors, 3,072 params, missing=[] unexpected=[]
+[load] gamma_bounds: 2 tensors, 2 params, missing=[] unexpected=[]
+[load] embedding_matrix: 1 tensors, 524,288 params, missing=[] unexpected=[]
+[load] model: 151 tensors, 1,275,398,144 params, missing=[] unexpected=[]
+strict load OK (no missing/unexpected keys): True
+model keys (first 12): ['input_linear.weight', 'selfcond_linear.weight', 'gamma_linear.weight', 'rotary_emb.inv_freq', 'blocks.0.rmsnorm1.weight', 'blocks.0.attn_qkv.weight', 'blocks.0.attn_out.weight', 'blocks.0.rmsnorm2.weight', 'blocks.0.mlp.fc1.weight', 'blocks.0.mlp.fc2.weight', 'blocks.1.rmsnorm1.weight', 'blocks.1.attn_qkv.weight']
+n params model: 1275398144
+width_mult: 8.0 output_mult: 1.0 residual_scale: 0.20412414523193154
+gamma_0, gamma_1: -6.803601264953613 3.560208320617676
+rotary inv_freq matches recomputed: True
+normalized gamma(t) at t=0,.25,.5,.75,1: [3.431227977394032e-15, 0.2852835389754961, 0.4774494575547489, 0.5978808145859058, 1.0]
+embedding rows norm (min,max): 0.9999998211860657 1.0000001192092896
+== tiny real-weight forward, t=0 (reconstruction) ==
+n tokens: 43 roundtrip: True
+  amp(bf16)=False: CE=0.0566 nats/token, argmax acc=0.977, finite=True
+  amp(bf16)=True: CE=0.0565 nats/token, argmax acc=0.977, finite=True
+  max |logits_bf16 - logits_fp32|: 0.3203125
+DONE

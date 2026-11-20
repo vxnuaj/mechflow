@@ -326,7 +326,11 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
   - Prediction: feedback raises the decodability of the neighbours' committed tokens exactly in the window where N matters.
   - Pre-register; GPU (debug partition).
 - [ ] **14.3 Text-type generality** (D4): an H2-N decomposition on code and math prompts (0.5B). Exploratory pilot, then a pre-registered confirmation on fresh prompts. GPU.
-- [ ] **14.4 Second external model: Plaid 1B.** Pure-PyTorch port (apex / flash-attn v1 / mup removed), validated by reproducing Plaid's reported likelihood; then calibrate the regime first, pre-register, decompose.
+- [~] **14.4 Plaid 1B: port done (2026-11-21; `plaid_port/`).**
+  - Weights load strict (1.28B params, no remap); kernel checks vs references written from the original are 0–5e-7 (fp32); samples are fluent; SC-off costs 0.07 nats/token (OWT).
+  - **Open caveat:** WikiText-103/2 PPL 26.47 / 27.83 vs paper 28.28 / 29.42 (≈ 6% better, ≈ 4.7 SE). The direction argues against a port bug (a bug should lose likelihood); the cause is unknown (checkpoint vs paper eval). Report as a caveat.
+  - Next: routed O/N/F instrumentation (SDPA patch in `plaid_torch.py`, as for LangFlow) → regime calibration first → pre-register → decompose (fp32).
+- Earlier: **14.4 Second external model: Plaid 1B.** Pure-PyTorch port (apex / flash-attn v1 / mup removed), validated by reproducing Plaid's reported likelihood; then calibrate the regime first, pre-register, decompose.
 - [~] **14.5 Own feedback at 7B (7%):** exploratory (insights §27): the O share is flat by token class but depends on position (j = 2: 0.28, j = 3: 0.11). Next: pre-register a monotone-decrease prediction with j ∈ {1, 2, 3} on fresh 7B docs (task ids 600000+), run on GPU. Original plan: test candidate accounts on existing 7B cells (which tokens / steps carry O), then pre-register on fresh data.
 
 ### Phase 13 — Generalization programme (2026-11-19; merged Claude search + GPT review → `generalization_search.md`; every external fact verified → `verification_log.md`)
