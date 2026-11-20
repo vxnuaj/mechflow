@@ -27,7 +27,7 @@ for s in range(8):
                           done=f"{d}/cells_judged_fixedctx.json", deps=[dn, "e4_base"], gres=GPU, mem="64G"))
     if s < 8:
         st = 32 * s; cn = f"lf_c{st}"; lf_chunks.append(cn)
-        T.append(dict(name=cn, cmd=f"{PH} langflow_decomp.py --path {LFP} --out {L}/chunk_{st} --start {st} --count 32 --bs 16 --seed 2 --device cuda",
+        T.append(dict(name=cn, cmd=f"{PH} langflow_decomp.py --path {LFP} --out {L}/chunk_{st} --start {st} --count 32 --bs 4 --seed 2 --device cuda",
                       done=f"{L}/chunk_{st}/meta.json", deps=[], gres=GPU, mem="64G"))
 ce = [t["name"] for t in T if t["name"].startswith("e4ce_")]
 T.append(dict(name="e4_analysis", cmd=f"cd .. && {PM} analysis/elf_access.py {R}/e4 > {R}/E4_final.txt 2>&1", done=f"{R}/E4_final.txt", deps=judges + ce, gres="", mem="16G"))
