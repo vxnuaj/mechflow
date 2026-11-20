@@ -239,6 +239,48 @@ Platform: CARC CPU (main partition).
 
 **Exploratory value on E3 (seed 0) data:** φ_F = 0.819 [0.735, 0.897].
 
+
+### 2.12 Family T: toy access × form factorial (added 2026-11-19, before any of its data; basis: Phase 13, `verification_log.md`)
+**Account under test (H-clean + access):** a position reads its neighbours' fed-back predictions as a substitute for their states while those states are uninformative, and only where the feedback is readable in the computation where the token commits.
+
+**Design (`toy/toy_access.py`):**
+- **Task:** the two-mode toy (K = 64 prompts, V = 64, 4-token answers differing at every position).
+- **Model:** Lafa-like rectified flow on token embeddings; the prompt is a causal prefix; tokens are read out by an ELF-style decode pass.
+- **Training factors:**
+  - ACCESS: the decode pass receives the last step's SC (`read`) or zero SC (`zero`, as in ELF);
+  - FORM: feedback = expected embedding with CE denoise loss (`exp`), or a regression-head estimate with MSE (`cont`);
+  - 3 seeds (0, 1, 2) and 12,000 steps each.
+- **Sampling factor:** t_end ∈ {1.0, 0.5}, i.e. the state is clean or still noisy at decode. S = 16 Euler steps; 64 prompts × 32 draws.
+- **Decomposition:** 2 × 2 × 2 O/N/F over the whole trajectory and the decode pass (three-stream routing), averaged over targets j = 0..3.
+  - Outcome: coh_j = the fraction of neighbours whose token comes from the same mode as y_j.
+  - Identities checked in every run: O1N1F1 = SC-on and O0N0F0 = SC-off sampling, ≥ 99.9% token agreement.
+- **Smoke test** (300 training steps, not data): identities pass; step-0 stream differences < 1e-4.
+
+**Analysis:** `analysis/toy_access.py` (frozen with this entry). Absolute Shapley O, N, F and total T. D = N − F with a 95% bootstrap CI (10,000, within seed, averaged over seeds) and per-seed signs. A cell is identifiable iff the pooled T 2.5th percentile > 0 and T > 0 in all 3 seeds.
+
+**Predictions:**
+- **P1** (read, both t_end): D > 0.
+- **P2** (zero, t_end 0.5): D < 0.
+- **P3** (zero, t_end 1.0): D > 0.
+- **P4:** the form does not flip the sign of D.
+- **P5:** |O| ≤ 0.15·T.
+
+A prediction holds when the CI excludes 0 in the predicted direction and all 3 seeds agree; it fails when the CI excludes 0 in the opposite direction.
+
+**Decision:**
+- **SUPPORTED:** P1–P3 hold in every identifiable cell (with at least one identifiable cell each), P4 holds, and P5 holds.
+- **REFUTED:** any of P1–P3 fails, or P4 fails.
+- **NOT IDENTIFIABLE:** no identifiable P2 cell.
+- **INCONCLUSIVE:** otherwise.
+
+**Rival readings:** "readout access alone decides" ⇔ P3 fails; "form decides" ⇔ P4 fails.
+
+**Rule check before freezing:** on synthetic data the rule returns SUPPORTED under the account, REFUTED (P3) under readout-alone, REFUTED (P4) under form-decides, and NOT IDENTIFIABLE with no effect.
+
+**Scope:** the toy shows whether the access principle *can* govern the route under matched training. It does not show that Lafa or ELF use it (that is Phase 13 steps 3–5).
+
+**Platform:** CARC CPU (main partition). Trainings may start before the GPT red-team; the decompositions (the data) start after it, and any design change is logged here before data.
+
 ## 3. Metrics
 - **Primary:** dep_j (positions 2–3); the hybrid rate; μ_j.
 - **Co-requirement:** external-judge and own-AR coh_j.

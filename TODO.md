@@ -323,14 +323,14 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 1. [ ] **E3b** (running, CARC CPU job 14391603, ~10:30 pm 2026-11-19): ELF decode-pass replication, fresh seed; φ_F lower bound > 0.5.
    - **Fail** → the ELF explanation is wrong; rethink before step 3.
 2. [ ] **Toy factorial** (primary test of access; no external model varies it): readout SC on/off × feedback form (expected embedding vs continuous latent), 3 seeds each, with matched data, architecture and budget.
-   - [ ] 2a. Write `toy/toy_access.py`:
+   - [x] 2a. Write `toy/toy_access.py`:
      - ELF-style decode pass (SC readable vs zeroed);
      - expected-embedding vs regression-head feedback;
      - prompt as a causal prefix;
      - three-stream routed sampler for O/N/F over the whole trajectory and the decode pass;
      - built-in identity checks (O1N1F1 = SC-on sampling, O0N0F0 = SC-off).
-   - [ ] 2b. Smoke test on CARC CPU (tiny steps): identity checks pass, and the cost per seed is measured.
-   - [ ] 2c. Pre-register as prereg §2.12. Decision rule written out for "account true", "readout-alone rival" and "form rival" scenarios; analysis script frozen; hash and push.
+   - [x] 2b. Smoke test on CARC CPU (tiny steps): identity checks pass, and the cost per seed is measured. Result: pass (step-0 stream diff < 1e-4); ~18 min to train and ~7 min to decompose per model (8 CPUs).
+   - [x] 2c. Pre-register as prereg §2.12. Decision rule written out for "account true", "readout-alone rival" and "form rival" scenarios; analysis script frozen; hash and push.
    - [ ] 2d. GPT red-team prompt for §2.12 → `prompts/gpt_redteam_toy.md`; the user runs it; fold in valid points before launch.
    - [ ] 2e. Launch the 12 trainings (2 access × 2 form × 3 seeds) plus decompositions at t_end ∈ {1.0, 0.5} on CARC CPU.
    - [ ] 2f. Run the frozen analysis; record in prereg §12, insights and TODO.
