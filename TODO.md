@@ -313,7 +313,16 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [~] **14.1 Human coherence ratings** (B1). Pre-registered as §2.16. Sheet built: `ratings/sheet.md` (100 blinded items). The key is on CARC only (hash in prereg_hashes.log); scoring is `analysis/b1.py`. **Waiting on the user + co-author ratings:** each copies the sheet to `ratings/sheet_<name>.md` and fills in A/B/T.
   - Claude prepares ~100 stratified output pairs (SC-on vs SC-off and route cuts; blinded and randomized) as a rating sheet; the user (+ co-author) rate them (~30 min).
   - Pre-register: human preference agrees with both LM judges at ≥ 70%, LB > 50%.
-- [ ] **14.2 Message content probe** (D6, the core of the explanation): on exploration docs (0.5B), a linear probe of each neighbour's *final* token from the target position's hidden state, with vs without neighbour feedback, per step.
+- [~] **14.2 Message content probe:** design (2026-11-21).
+  - Lafa 0.5B, MR, exploration docs (tasks_h2n_expl_300; never confirmation data).
+  - At each step k and layer ℓ ∈ {3, 8, 15, 19} (the E1b/L1 layers), record target j's residual state h_j(k, ℓ) under (a) normal SC-on and (b) the N-cut (j reads neighbours' K/V from the no-feedback pass; everything else identical).
+  - Ridge probe (fit on 200 docs, test on 100 held-out docs): h_j → E[y_i^final] for each neighbour i. Metric: rank of the true neighbour token among the full vocabulary by cosine (median rank, top-10 accuracy).
+  - **Predictions (to pre-register after a 20-doc smoke test):**
+    - (P1) decodability(SC-on) − decodability(N-cut) > 0 only in the window where N matters (warp: steps 24–31), ≈ 0 at steps 0–15;
+    - (P2) under `uniform` the gap moves earlier (steps 8–15), mirroring E1c.
+  - P2 is the risky, hard-to-vary part: the content must track the schedule.
+  - Needs a hook in `lafa_instr` for per-layer residuals in the two-pass sampler; GPU (debug).
+- Earlier: **14.2 Message content probe** (D6, the core of the explanation): on exploration docs (0.5B), a linear probe of each neighbour's *final* token from the target position's hidden state, with vs without neighbour feedback, per step.
   - Prediction: feedback raises the decodability of the neighbours' committed tokens exactly in the window where N matters.
   - Pre-register; GPU (debug partition).
 - [ ] **14.3 Text-type generality** (D4): an H2-N decomposition on code and math prompts (0.5B). Exploratory pilot, then a pre-registered confirmation on fresh prompts. GPU.
