@@ -386,6 +386,20 @@ A prediction holds when the CI excludes 0 in the predicted direction and all 3 s
 
 Also reported: the human preference rate for SC-on, inter-rater agreement (Cohen's κ), and tie rates. The answer key stays in a separate file that is not shown to raters.
 
+
+### 2.17 Family P: message-content probe (added 2026-11-21, before the full probe data; Phase 14.2; assumption D6)
+**Question:** do the neighbours' fed-back predictions carry information about what the neighbours will *finally write*, into the target's state, in the window where neighbour reading is causally necessary?
+
+**Design:** `src/jobs_probe.py` (CPU, fp32; smoke test: identity true on 3/3 docs, about 20 s/doc). On normal SC-on trajectories of the 300 exploration docs (never the confirmation data), under the warp and uniform grids:
+- at every step, j's residual state (layers 3, 8, 15, 19) in pass A (neighbours with feedback) and pass B (the same states, neighbours without feedback);
+- a ridge probe (fit on 200 docs' pass-A states) to the neighbours' final-token embeddings, applied identically to pass A and pass B on 100 test docs.
+
+**Analysis and decision:** `analysis/probe.py` (frozen; docstring = rule). Metric: top-10 accuracy among 2,048 candidates.
+- **Q1 (warp):** the A − B gap is larger in steps 24–31 than in steps 0–15, and > 0 late.
+- **Q2 (uniform):** the gap is larger in steps 8–15 than in steps 24–31. The content moves with the schedule, as the causal effect does (E1c). This is the risky part.
+
+SUPPORTED iff both hold; REFUTED iff either fails; validity requires the identity on every doc and last-step probe accuracy ≥ 0.2. The rule was checked on 4 synthetic gap patterns (account → SUPPORTED; no gap → INCONCLUSIVE; early gap → REFUTED; gap not moving → REFUTED).
+
 ## 3. Metrics
 - **Primary:** dep_j (positions 2–3); the hybrid rate; μ_j.
 - **Co-requirement:** external-judge and own-AR coh_j.

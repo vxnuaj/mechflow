@@ -313,7 +313,7 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [~] **14.1 Human coherence ratings** (B1). Pre-registered as §2.16. Sheet built: `ratings/sheet.md` (100 blinded items). The key is on CARC only (hash in prereg_hashes.log); scoring is `analysis/b1.py`. **Waiting on the user + co-author ratings:** each copies the sheet to `ratings/sheet_<name>.md` and fills in A/B/T.
   - Claude prepares ~100 stratified output pairs (SC-on vs SC-off and route cuts; blinded and randomized) as a rating sheet; the user (+ co-author) rate them (~30 min).
   - Pre-register: human preference agrees with both LM judges at ≥ 70%, LB > 50%.
-- [~] **14.2 Message content probe:** design (2026-11-21).
+- [~] **14.2 Message content probe:** pre-registered as §2.17. Smoke test passed (identity 3/3, about 20 s/doc on CPU, so no GPU needed). Full collection: CPU arrays on CARC main (warp + uniform × 300 docs), then the frozen analysis job. Design (2026-11-21):
   - Lafa 0.5B, MR, exploration docs (tasks_h2n_expl_300; never confirmation data).
   - At each step k and layer ℓ ∈ {3, 8, 15, 19} (the E1b/L1 layers), record target j's residual state h_j(k, ℓ) under (a) normal SC-on and (b) the N-cut (j reads neighbours' K/V from the no-feedback pass; everything else identical).
   - Ridge probe (fit on 200 docs, test on 100 held-out docs): h_j → E[y_i^final] for each neighbour i. Metric: rank of the true neighbour token among the full vocabulary by cosine (median rank, top-10 accuracy).
