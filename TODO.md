@@ -365,7 +365,13 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
    - **Prediction:** the route follows access, not form (SC-readable → N; SC-zeroed readout → F), on absolute effects.
    - **Fail** (the route follows form) → the core account is refuted; reinterpret steps 3–5 before running them.
 3. [ ] **ELF decode-access manipulation (now the primary access test):** a brief fine-tune that lets the decode pass read SC (vs a matched fine-tune that keeps it zeroed).
-   - **Prediction:** N rises.
+   - **Prediction (revised 2026-11-20, lesson from family T):** depends on how informative the neighbour states are at ELF's decode pass.
+     - Account (H-clean + access): N rises **only if** neighbour states are uninformative at decode. If the final latents are already informative, N does **not** rise.
+     - Rival ("readout access decides"): N rises regardless.
+     - The test discriminates only once state informativeness at decode is measured **first**.
+   - [ ] 3a. (Exploratory, CPU) Measure neighbour-state informativeness at ELF-B's decode pass: linear-probe / nearest-token decodability of each position's final token from its final latent vs from its feedback (x̂_prev), on 256 samples. Also commit-at-decode (the decoded token vs the token implied by the last flow estimate).
+   - [ ] 3b. Check whether ELF's OWT training data and `hcfrl/elf/train_step.py` support a short decoder-branch fine-tune (SC readable at decode w.p. 0.5 vs a zeroed control; same data, steps and seed).
+   - [ ] 3c. Pre-register (predictions from 3a; rule checked on synthetic scenarios incl. partial identifiability; fixed-context outcome; fluency validity ≤ 20% drop; within-model readable-vs-zeroed-at-inference contrast). GPT red-team. GPU run (~6 GPU-h; Prime or CARC, the user's choice).
    - **Validity:** decode fluency drop ≤ 20% vs the matched control.
    - ~6 GPU-h.
 3.9 [ ] **Prep for steps 4–5 (not data; can run now):**
