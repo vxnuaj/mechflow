@@ -409,7 +409,10 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
      - [x] `src/langflow_decomp.py` written (reuses elf_judge_fixedctx.py via T5_PATH = GPT-2 tokenizer + REF_FILE).
      - **Plaid decision (2026-11-20):** it needs apex + flash-attn v1 + mup + fused-MLP kernels, so a pure-PyTorch port with weight remapping is required. It is validated by reproducing Plaid's reported likelihood before any decomposition. Deferred to a second Prime session; the first session runs E4 + LangFlow.
      - LangFlow calibration attempt 1 failed: mechflow env transformers 5.3.0 is incompatible with LangFlow's remote code (`all_tied_weights_keys`). Rerun with the hcfrl env (transformers 4.44.2, the same as the pod pins): job 14403590. **All LangFlow jobs use the hcfrl env.**
-     - [~] LangFlow calibration running (CARC CPU) → then pre-register family G (LangFlow) with predictions conditioned on the measured regime (lesson from family T).
+     - [x] LangFlow calibration done: N-predicting regime (state 7% vs feedback 53% at 50% committed). The routed identity failed in bf16 (0.92), so everything now runs fp32 (1.000).
+     - [x] Family G pre-registered (prereg §2.15; `analysis/langflow.py`).
+     - [~] LangFlow decomposition + judge + analysis submitted on CARC GPU.
+     - Earlier: LangFlow calibration running (CARC CPU) → then pre-register family G (LangFlow) with predictions conditioned on the measured regime (lesson from family T).
    - [x] 3c-iv-a. Pod files written: `pod/requirements_e4.txt` (pinned to the hcfrl env), `pod/setup_e4.sh` (revision-pinned downloads; all repos ungated and SHAs verified), `pod/run_e4.sh` (flock single driver; stages A–D; LangFlow calibration on the pod; LangFlow decomposition gated on ~/LF_GO).
    - [x] 3c-iv-b0. Prime API lists **zero GPU resources of any type** (2026-11-20 ~03:30), even after upgrading the CLI 0.5.38 → 0.22.1. Either an outage or the account balance (the CLI cannot show it; the user can check the web UI).
      - **Fallback submitted:** the full E4 chain on CARC GPUs (`tools/carc_e4.sh`; A40/A100/L40S; 16 fine-tunes → 16 decompositions + CE → 56 judge jobs → frozen analysis job 14400976 → `/scratch1/<user>/mechflow/e4run/E4_final.txt`). 91 jobs pending.

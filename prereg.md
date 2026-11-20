@@ -350,6 +350,24 @@ A prediction holds when the CI excludes 0 in the predicted direction and all 3 s
 
 **Platform:** CARC GPU.
 
+
+### 2.15 Family G: LangFlow generality test (added 2026-11-20, before any of its data; basis: Phase 13 step 4, `src/results/langflow_calib.json`)
+**Model:** LangFlow (2604.11748; HF `Continuous-Rivals-Discrete/langflow-owt` @ a08f933d): full-sequence continuous diffusion, 12 layers, expected-embedding SC, SC present at the final forward. This is a different group and architecture family from Lafa (blockwise) and ELF (T5 latents + SC-free decode).
+
+**Regime (measured first, the family T lesson):** commitment rises gradually over steps 0–120. At 50% committed (step 48), the state→final-token log-prob is −10.7 vs feedback −2.5 (acc 0.07 vs 0.53). So commitment happens while states are uninformative and the feedback is readable, and the account predicts N-dominance. Full-length SC-on vs SC-off tokens disagree on 66%.
+
+**Design:** `src/langflow_decomp.py` (fp32, TF32 off): routed O/N/F over all 128 Euler-EDM steps and the final forward; L = 1024 (native); target j = 512; n = 256; noise seed 2.
+
+**Outcome:** Mistral span log-prob of token j against a common reference context (the SC-on tokens for the same noise), via `src/elf_judge_fixedctx.py` with the GPT-2 tokenizer.
+
+**Analysis:** `analysis/langflow.py` (frozen).
+- Mandatory: G1 D = N − F > 0; G2 N − 0.5·T > 0.
+- Subsidiary: G3 |mean O| − 0.15·mean T < 0.
+- Gates: identity ≥ 0.99, T > 0, missingness ≤ 5%.
+- Rule checked on 6 synthetic scenarios (account → SUPPORTED; block-locality rival → REFUTED; others → INCONCLUSIVE / NOT TESTABLE). A G3 bug (per-sample |O|) was found and fixed in that check, before data.
+
+**Platform:** CARC GPU (or Prime if available).
+
 ## 3. Metrics
 - **Primary:** dep_j (positions 2–3); the hybrid rate; μ_j.
 - **Co-requirement:** external-judge and own-AR coh_j.
