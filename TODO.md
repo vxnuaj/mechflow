@@ -342,6 +342,9 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
    - **Prediction:** N rises.
    - **Validity:** decode fluency drop ≤ 20% vs the matched control.
    - ~6 GPU-h.
+3.9 [ ] **Prep for steps 4–5 (not data; can run now):**
+   - [ ] Download LangFlow (`Continuous-Rivals-Discrete/langflow-owt`) and Plaid 1B weights to CARC scratch (CPU job).
+   - [ ] Write the LangFlow decomposition (`src/langflow_decomp.py`, three-stream routing as in ELF) after family T's verdict (stopping rule).
 4. [ ] **LangFlow 130M** (`Continuous-Rivals-Discrete/langflow-owt`; verified: expected-embedding SC, SC at readout, full sequence, L = 1024).
    - **Prediction:** N-dominant, O ≈ 0; timing tracks when neighbour states become decodable (measured on a separate calibration split).
    - **Block-locality rival:** N small.
