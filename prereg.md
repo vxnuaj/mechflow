@@ -445,6 +445,10 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | **GO** (user decision, 2026-11-16), reframed around the coordination mechanism (`phase8_memo.md`). Primary = {P1, P2, H2-N}, Holm over 3 | 2026-11-16 |
 
 ## 12. Deviations / Change Log
+- **2026-11-19: E3b outcome (ELF decoder hypothesis, absolute measure, fresh seed 1, n = 195 paired; frozen `analysis/elf_e3b.py`): SUPPORTED.**
+  - φ_F = 0.891 [0.805, 0.971]: the lower bound exceeds 0.5.
+  - Fixing neighbours' final latents at the decode pass removes 89% of the F route's absolute effect and 89% of the total SC effect (T 4.14 → 0.47).
+  - It replicates the seed-0 exploratory value (0.819).
 - **2026-11-19: E3 outcome (ELF decoder test, seed 0, n = 190 complete): REFUTED under its pre-registered rule.**
   - F Shapley share in the swap variant = 0.843 (≥ 0.5). Own-variant shares reproduce family E: N 0.18, O 0.01, F 0.82.
   - **Exploratory (not pre-registered), paired:** fixing neighbours' final latents at decode removes 83% of the total SC effect on token j (T 4.51 → 0.77; 0.829 [0.737, 0.913]) and 82% of F's absolute effect (0.819 [0.735, 0.897]).

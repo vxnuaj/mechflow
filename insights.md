@@ -410,3 +410,8 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
 - **Pre-registered rule: refuted.** The F share within the swap variant is 0.84.
 - **But the share criterion was the wrong quantity.** Fixing neighbours' final latents at decode removes **83% of SC's whole effect on token j** (T 4.51 → 0.77) and **82% of the F route's absolute effect** [0.74, 0.90] (exploratory). The remaining 17% keeps the same F-dominated split, which is why the share did not move.
 - **Reading:** in ELF, neighbours' feedback improves their final latents, and token j reads those latents at the decode pass, where SC is zeroed by design (2605.10938). This is the hypothesis; E3b (§2.11, fresh seed) is its pre-registered test.
+
+## 24. E3b (2026-11-19): ELF decoder hypothesis confirmed (pre-registered, fresh seed)
+- Freezing neighbours' final latents at ELF's decode pass removes **89% [81%, 97%]** of the state route's absolute effect (and 89% of SC's whole effect on token j).
+- **Confirmed reading:** in ELF, feedback improves the neighbours' final latents, and token j reads them at the SC-free decode pass. That is where j commits.
+- This turns the ELF "difference" into a specific, confirmed mechanism, consistent with the access account: the route follows where the feedback is readable at commitment.

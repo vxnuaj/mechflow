@@ -1,0 +1,5 @@
+paired n 195; F_own +3.208 → estimable
+T: own +4.144 swap +0.470 phi 0.887 [0.811, 0.957]
+N: own +1.101 swap +0.257 phi 0.767 [0.606, 0.915]
+F: own +3.208 swap +0.351 phi 0.891 [0.805, 0.971]
+E3b: SUPPORTED

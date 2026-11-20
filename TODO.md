@@ -320,7 +320,7 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - Already shown: the strong "readout access alone decides" version is refuted by E1c (N = 0 in late steps under `uniform` despite SC at readout); E1b: the final step alone carries 0.05.
 
 **Run order (stop and rethink on failure):**
-1. [ ] **E3b** (running, CARC CPU job 14391603; it started late, ETA ~11:30 pm 2026-11-19): ELF decode-pass replication, fresh seed; φ_F lower bound > 0.5.
+1. [x] **E3b: SUPPORTED (2026-11-19)**, φ_F 0.891 [0.805, 0.971] (CARC CPU job 14391603): ELF decode-pass replication, fresh seed; φ_F lower bound > 0.5.
    - **Fail** → the ELF explanation is wrong; rethink before step 3.
 2. [ ] **Toy factorial** (primary test of access; no external model varies it): readout SC on/off × feedback form (expected embedding vs continuous latent), 3 seeds each, with matched data, architecture and budget.
    - [x] 2a. Write `toy/toy_access.py`:
@@ -343,7 +343,7 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
    - **Validity:** decode fluency drop ≤ 20% vs the matched control.
    - ~6 GPU-h.
 3.9 [ ] **Prep for steps 4–5 (not data; can run now):**
-   - [ ] Download LangFlow (`Continuous-Rivals-Discrete/langflow-owt`) and Plaid 1B weights to CARC scratch (CPU job).
+   - [x] Downloaded LangFlow (HF cache) and Plaid 1B weights (`/scratch1/<user>/models/plaid/plaid1b_weights`) to CARC scratch.
    - [ ] Write the LangFlow decomposition (`src/langflow_decomp.py`, three-stream routing as in ELF) after family T's verdict (stopping rule).
 4. [ ] **LangFlow 130M** (`Continuous-Rivals-Discrete/langflow-owt`; verified: expected-embedding SC, SC at readout, full sequence, L = 1024).
    - **Prediction:** N-dominant, O ≈ 0; timing tracks when neighbour states become decodable (measured on a separate calibration split).
