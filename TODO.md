@@ -349,10 +349,10 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
      - log the deviation in prereg §12;
      - hash and push;
      - discard the v1 trainings (never decomposed).
-   - [ ] 2e-iii. Train 40 models (2 access × 2 recipes × 10 seeds) on CARC CPU, then decompose.
+   - [x] 2e-iii. Submitted 40 train+decompose jobs (CARC CPU 14396920–59) plus the dependent frozen analysis (job 14396960 → `toy/runs_T2/T_final.txt`). v2 smoke test passed.
    - [x] 2e-i. 12 trainings done 2026-11-19 (13–23 min each; final losses: denoise 0.03–0.09, decode 0.04–0.10). Design check (weights only, no outcomes): embedding norms 11.8–12.2 vs noise norm 11.3, so no embedding inflation and the noise is not trivially defeated.
    - [~] 2e-ii. Superseded by v2 (the v1 checkpoints were never decomposed, so no data was seen).
-   - [ ] 2f. Run the frozen analysis; record in prereg §12, insights and TODO.
+   - [ ] 2f. When job 14396960 finishes: copy T_final.txt, record in prereg §12 (hash), insights and TODO; push.
    - **Prediction:** the route follows access, not form (SC-readable → N; SC-zeroed readout → F), on absolute effects.
    - **Fail** (the route follows form) → the core account is refuted; reinterpret steps 3–5 before running them.
 3. [ ] **ELF decode-access manipulation:** a brief fine-tune that lets the decode pass read SC (vs a matched fine-tune that keeps it zeroed).
