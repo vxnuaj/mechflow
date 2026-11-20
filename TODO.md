@@ -309,6 +309,17 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [x] **E4 steering (2026-11-18):** neighbour-feedback transplant flips j to the donor mode in 39.5% vs 0.5% (control); late window only; 77/79 flips are hybrids (insights §15.1).
 - [x] **G-b external judge:** Mistral N share 0.80 / 1.04; O −0.09 (insights §16).
 
+### Phase 14 — Close the remaining gaps (decided 2026-11-21: these are REQUIRED, not optional; by the hard-to-vary standard each tests a weak assumption or a known gap; ordered by dependency and cost)
+- [ ] **14.1 Human coherence ratings** (assumption B1, the weakest):
+  - Claude prepares ~100 stratified output pairs (SC-on vs SC-off and route cuts; blinded and randomized) as a rating sheet; the user (+ co-author) rate them (~30 min).
+  - Pre-register: human preference agrees with both LM judges at ≥ 70%, LB > 50%.
+- [ ] **14.2 Message content probe** (D6, the core of the explanation): on exploration docs (0.5B), a linear probe of each neighbour's *final* token from the target position's hidden state, with vs without neighbour feedback, per step.
+  - Prediction: feedback raises the decodability of the neighbours' committed tokens exactly in the window where N matters.
+  - Pre-register; GPU (debug partition).
+- [ ] **14.3 Text-type generality** (D4): an H2-N decomposition on code and math prompts (0.5B). Exploratory pilot, then a pre-registered confirmation on fresh prompts. GPU.
+- [ ] **14.4 Second external model: Plaid 1B.** Pure-PyTorch port (apex / flash-attn v1 / mup removed), validated by reproducing Plaid's reported likelihood; then calibrate the regime first, pre-register, decompose.
+- [ ] **14.5 Own feedback at 7B (7%):** test candidate accounts on existing 7B cells (which tokens / steps carry O), then pre-register on fresh data.
+
 ### Phase 13 — Generalization programme (2026-11-19; merged Claude search + GPT review → `generalization_search.md`; every external fact verified → `verification_log.md`)
 **Rules:**
 - Decide on absolute route effects (with total T), never on shares alone (lesson from E3).
