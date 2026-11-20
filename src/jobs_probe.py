@@ -12,7 +12,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 import load
-from lafa_instr import BlockCfg, run_block_two_pass
+from lafa_instr import BlockCfg, run_block_headcut
 
 LAYERS = [int(x) for x in os.environ.get("PROBE_LAYERS", "3,8,15,19").split(",")]
 GRID = os.environ.get("PROBE_GRID", "warp"); OUTDIR = os.environ.get("PROBE_OUT", "results/probe")
@@ -32,6 +32,7 @@ def _two_pass_capture(S, cache, L, cfg, j):
     try:
         torch.manual_seed(cfg.seed)
         grid = m._get_generation_time_grid(cfg.num_steps, dev, grid_mode=cfg.grid_mode, t_max=0.2); K = grid.shape[-1] - 1
+        if grid.dim() == 1: grid = grid[None].expand(bd, -1)          # uniform grids: same times for every position (as lafa_instr L367)
         pos_ids = torch.arange(L, L + bd, device=dev).unsqueeze(0); cache_len = cache.get_seq_length()
         base_mask = torch.zeros(1, 1, bd, cache_len + bd, dtype=dt, device=dev)
         e_t = torch.randn(1, bd, m._d_model, device=dev, dtype=dt) * m._noise_sigma * m.noise_scale_mult
@@ -63,8 +64,8 @@ def probe_task(task, ctx):
     rng = random.Random(task["task_id"]); cut = 4 * rng.randint(0, max(0, (len(r_ids) - 8) // 4))
     prefix = p_ids + r_ids[:cut]; cache, L = S.prefill(prefix)
     # identity reference: S.run_block mirrors only the warp grid; for other grids use the validated two-pass primitive
-    # with SC everywhere (fbA = all, take = all A), the reference E1c used under `uniform`
-    ref = S.run_block(cache, L, CFG).tokens if GRID == "warp" else run_block_two_pass(S, cache, L, CFG, fbA={0, 1, 2, 3}, fbB=set(), take=["A"] * 4)[0]
+    # (the head-cut sampler with no cuts = normal SC sampling; the path E1c used under `uniform`)
+    ref = S.run_block(cache, L, CFG).tokens if GRID == "warp" else run_block_headcut(S, cache, L, CFG, 2, {})[0]
     hAs, hBs, ys = [], [], []
     for j in (2, 3):
         y, hA, hB, K = _two_pass_capture(S, cache, L, CFG, j); ys.append(y); hAs.append(hA); hBs.append(hB)
