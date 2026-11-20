@@ -353,8 +353,12 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
    - [x] 2e-i. 12 trainings done 2026-11-19 (13–23 min each; final losses: denoise 0.03–0.09, decode 0.04–0.10). Design check (weights only, no outcomes): embedding norms 11.8–12.2 vs noise norm 11.3, so no embedding inflation and the noise is not trivially defeated.
    - [~] 2e-ii. Superseded by v2 (the v1 checkpoints were never decomposed, so no data was seen).
    - [x] 2f. **Outcome: REFUTED (P1)**; manipulation check failed everywhere, so the access factor was inert (prereg §12; `toy/results_T2/T_final.txt`).
-   - [ ] 2g. Diagnose the failed auxiliary (exploratory, existing checkpoints): per step, the decodability of each position's final mode from its state vs from its feedback, in SC-on sampling. Does the toy commit while neighbour states are already informative? (CARC CPU)
-   - [ ] 2h. Decide on a v3 only from 2g. If the states are informative before commitment, design a low-SNR toy (noise scale as in Lafa MR) with a *state-decodability* manipulation check (red-team #4, now adopted). Pre-register, red-team and run. If the states were uninformative, the account's P1 is refuted outright → revise the account before steps 3–5.
+   - [x] 2g. **Done:** the toy commits at step 0–1 from the noise itself (step-0 estimate matches the final mode 78–85%; 99% committed by t = 0.25). P1's auxiliary was false, so the account was untested (insights §25). Diagnosed the failed auxiliary (exploratory, existing checkpoints): per step, the decodability of each position's final mode from its state vs from its feedback, in SC-on sampling. Does the toy commit while neighbour states are already informative? (CARC CPU)
+   - [ ] 2h. **v3 (decided from 2g): low-SNR toy.**
+     - Add a noise-scale σ (Lafa MR uses 4.0).
+     - **Calibration** on separate seeds (100–101), using regime diagnostics only and no O/N/F data. Choose the smallest σ ∈ {2, 4, 8} such that SC-on commitment reaches 0.9 only at t ≥ 0.3 and neighbour state accuracy is < 0.8 when 50% of positions have committed. Choose t_end such that zero-access commit-at-decode ≥ 0.2.
+     - Pre-register v3 with **state-decodability manipulation checks (M0)** plus M; red-team; then 10 test seeds (0–9).
+     - Previously: decide on a v3 only from 2g. If the states are informative before commitment, design a low-SNR toy (noise scale as in Lafa MR) with a *state-decodability* manipulation check (red-team #4, now adopted). Pre-register, red-team and run. If the states were uninformative, the account's P1 is refuted outright → revise the account before steps 3–5.
    - [ ] 2i. Stopping rule: steps 3–5 stay paused until 2g/2h are resolved.
    - **Prediction:** the route follows access, not form (SC-readable → N; SC-zeroed readout → F), on absolute effects.
    - **Fail** (the route follows form) → the core account is refuted; reinterpret steps 3–5 before running them.

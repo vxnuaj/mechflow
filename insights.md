@@ -423,3 +423,8 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
   - "Readable feedback at commitment" is not *sufficient* for N-dominance, at least in this toy.
   - Whether that refutes the account or only the unmeasured assumption that toy states are uninformative at commitment is **undetermined**. The red-team's objection #4 (measure state informativeness), which I did not adopt, was the right one.
 - Next: measure state decodability over steps (2g) before designing anything else.
+- **2g diagnostic (exploratory, `toy/results_T2/diag_2g.txt`, 40 models):** the toy commits at the **first step**. Before any feedback exists, the step-0 estimate already matches the final mode 78–85% of the time, and 99% of positions have committed by t = 0.25, when states alone predict the final mode at 93%.
+  - So the decision is made from the noise itself (a symmetry-breaker), before SC can act. This explains the small SC effect (T 0.06–0.08) and the inert decode-access factor.
+  - **P1's auxiliary ("toy states uninformative at commitment, feedback available") was false.** The account was not tested by family T.
+  - Cause: two candidate answers in a 128-d embedding space make the mode decodable from a tiny signal, so the effective SNR is far above Lafa's (150k vocabulary, noise 4.0).
+  - Red-team #4 (measure state informativeness) was correct; not adopting it was my error.
