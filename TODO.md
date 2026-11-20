@@ -358,6 +358,8 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
      - Add a noise-scale σ (Lafa MR uses 4.0).
      - **Calibration** on separate seeds (100–101), using regime diagnostics only and no O/N/F data. Choose the smallest σ ∈ {2, 4, 8} such that SC-on commitment reaches 0.9 only at t ≥ 0.3 and neighbour state accuracy is < 0.8 when 50% of positions have committed. Choose t_end such that zero-access commit-at-decode ≥ 0.2.
      - Pre-register v3 with **state-decodability manipulation checks (M0)** plus M; red-team; then 10 test seeds (0–9).
+     - [x] Code: σ and configurable t_end added to `toy/toy_access.py`; calibration script `toy/toy_calib.py`.
+     - [ ] Calibration: train σ ∈ {2, 4, 8} × access × recipe × seeds {100, 101} (24 models, CARC CPU), then run `toy_calib.py`.
      - Previously: decide on a v3 only from 2g. If the states are informative before commitment, design a low-SNR toy (noise scale as in Lafa MR) with a *state-decodability* manipulation check (red-team #4, now adopted). Pre-register, red-team and run. If the states were uninformative, the account's P1 is refuted outright → revise the account before steps 3–5.
    - [ ] 2i. Stopping rule: steps 3–5 stay paused until 2g/2h are resolved.
    - **Prediction:** the route follows access, not form (SC-readable → N; SC-zeroed readout → F), on absolute effects.

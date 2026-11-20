@@ -128,7 +128,7 @@ def make_modes(V, K, seed):
     return modes
 
 
-def train(access, form, seed, steps, V=V_DEF, K=K_DEF, dev="cpu", log=None):
+def train(access, form, seed, steps, V=V_DEF, K=K_DEF, dev="cpu", log=None, sigma=1.0):
     torch.manual_seed(seed); g = torch.Generator().manual_seed(seed); rr = random.Random(seed * 100003)
     modes = make_modes(V, K, seed)
     mt = torch.tensor(modes)                                     # [K, 2, L]
@@ -138,14 +138,14 @@ def train(access, form, seed, steps, V=V_DEF, K=K_DEF, dev="cpu", log=None):
         y = mt[k, w].to(dev); k = k.to(dev)
         clean = m.E(y)
         u_den, u_dec = rr.random(), rr.random()                  # v2: both draws always made (red-team #12)
-        t = torch.rand(256, generator=g).to(dev); e = torch.randn(clean.shape, generator=g).to(dev)
+        t = torch.rand(256, generator=g).to(dev); e = torch.randn(clean.shape, generator=g).to(dev) * sigma
         x = (1 - t[:, None, None]) * e + t[:, None, None] * clean
         fb = None
         if u_den < 0.5:
             with torch.no_grad(): fb = m(k, x, t)[1]
         lg, est = m(k, x, t, fb)
         l_den = F.cross_entropy(lg.reshape(-1, V), y.reshape(-1)) if form == "exp" else F.mse_loss(est, clean.detach())
-        t2 = torch.rand(256, generator=g).to(dev); e2 = torch.randn(clean.shape, generator=g).to(dev)
+        t2 = torch.rand(256, generator=g).to(dev); e2 = torch.randn(clean.shape, generator=g).to(dev) * sigma
         z = (1 - t2[:, None, None]) * e2 + t2[:, None, None] * clean
         fb2 = None
         if access == "read" and u_dec < 0.5:
@@ -168,10 +168,10 @@ def est_tokens(m, est):
 
 
 @torch.no_grad()
-def sample_plain(m, k, sc, dec_read, S, t_end, seed, dev="cpu"):
+def sample_plain(m, k, sc, dec_read, S, t_end, seed, dev="cpu", sigma=1.0):
     """Returns (decoded tokens, tokens implied by the last flow estimate). dec_read: decode pass receives SC."""
     g = torch.Generator().manual_seed(seed); B = k.shape[0]; d = m.E.weight.shape[1]
-    x = torch.randn(B, L, d, generator=g).to(dev); grid = torch.linspace(0, 1, S + 1); fb = None; est = None
+    x = (torch.randn(B, L, d, generator=g) * sigma).to(dev); grid = torch.linspace(0, 1, S + 1); fb = None; est = None
     for i in range(nsteps(S, t_end)):
         t0, t1 = grid[i].item(), grid[i + 1].item()
         _, est = m(k, x, torch.full((B,), t0, device=dev), fb if sc else None)
@@ -182,11 +182,11 @@ def sample_plain(m, k, sc, dec_read, S, t_end, seed, dev="cpu"):
 
 
 @torch.no_grad()
-def sample_cell(m, k, j, O, N, Fc, dec_read, S, t_end, seed, dev="cpu"):
+def sample_cell(m, k, j, O, N, Fc, dec_read, S, t_end, seed, dev="cpu", sigma=1.0):
     """Routed sampler for target j and cell (O, N, F). Neighbours follow stream F if Fc else S; j follows stream O.
     Estimand (red-team #6): the hybrid world, as in Lafa. All streams read the same assembled state history."""
     g = torch.Generator().manual_seed(seed); B = k.shape[0]; d = m.E.weight.shape[1]
-    x = torch.randn(B, L, d, generator=g).to(dev); grid = torch.linspace(0, 1, S + 1)
+    x = (torch.randn(B, L, d, generator=g) * sigma).to(dev); grid = torch.linspace(0, 1, S + 1)
     fb = torch.zeros_like(x)
     for i in range(nsteps(S, t_end)):
         t0, t1 = grid[i].item(), grid[i + 1].item()
@@ -209,21 +209,21 @@ def modes_of(y, k, modes):
     return torch.where(y == mt[:, 0], 0, torch.where(y == mt[:, 1], 1, -1))
 
 
-def decomp(m, modes, train_access, S, reps, seed, dev="cpu"):
+def decomp(m, modes, train_access, S, reps, seed, dev="cpu", sigma=1.0, t_ends=(1.0, 0.5)):
     """Configs: t_end ∈ {1.0, 0.5} × inference access ∈ {read, zero} (read-trained) or {zero} (zero-trained).
     Per cell and target j it stores j's mode (−1/0/1). It also stores the reference neighbour modes (from the O1N1F1
     run; red-team #1) and the actual neighbour modes (secondary, joint outcome)."""
     K = len(modes); k = torch.arange(K, device=dev).repeat(reps); res = {}
     inf_acc = ("read", "zero") if train_access == "read" else ("zero",)
-    for t_end, ia in itertools.product((1.0, 0.5), inf_acc):
+    for t_end, ia in itertools.product(t_ends, inf_acc):
         dr = ia == "read"
-        on, on_pre = sample_plain(m, k, True, dr, S, t_end, seed, dev); off, _ = sample_plain(m, k, False, dr, S, t_end, seed, dev)
+        on, on_pre = sample_plain(m, k, True, dr, S, t_end, seed, dev, sigma); off, _ = sample_plain(m, k, False, dr, S, t_end, seed, dev, sigma)
         cfg = {"cells": {}, "nb_actual": {}, "ident_min": 1.0}
         ref_modes = modes_of(on, k, modes)                       # reference = the O1N1F1 (= SC-on) run, same noise
         cfg["ref_modes"] = ref_modes.tolist()
         for j in range(L):
             for O, N, Fc in itertools.product((0, 1), repeat=3):
-                y = sample_cell(m, k, j, O, N, Fc, dr, S, t_end, seed, dev)
+                y = sample_cell(m, k, j, O, N, Fc, dr, S, t_end, seed, dev, sigma)
                 if (O, N, Fc) in ((1, 1, 1), (0, 0, 0)):
                     ref = on if (O, N, Fc) == (1, 1, 1) else off; agree = (y == ref).float().mean().item()
                     cfg["ident_min"] = min(cfg["ident_min"], agree)
@@ -242,17 +242,19 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("cmd", choices=["train", "decomp", "smoke"])
     ap.add_argument("--access", default="read"); ap.add_argument("--form", default="exp"); ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--steps", type=int, default=12000); ap.add_argument("--S", type=int, default=16); ap.add_argument("--reps", type=int, default=32)
-    ap.add_argument("--ckpt"); ap.add_argument("--out", default="runs")
+    ap.add_argument("--ckpt"); ap.add_argument("--out", default="runs"); ap.add_argument("--sigma", type=float, default=1.0)
+    ap.add_argument("--t_ends", default="1.0,0.5")
     a = ap.parse_args(); torch.set_num_threads(int(os.environ.get("SLURM_CPUS_PER_TASK", "4"))); os.makedirs(a.out, exist_ok=True)
     if a.cmd == "train":
-        t0 = time.time(); m, modes = train(a.access, a.form, a.seed, a.steps, log=True)
+        t0 = time.time(); m, modes = train(a.access, a.form, a.seed, a.steps, log=True, sigma=a.sigma)
         p = f"{a.out}/{a.access}_{a.form}_s{a.seed}.pt"
-        torch.save({"state": m.state_dict(), "access": a.access, "form": a.form, "seed": a.seed, "steps": a.steps}, p)
+        torch.save({"state": m.state_dict(), "access": a.access, "form": a.form, "seed": a.seed, "steps": a.steps, "sigma": a.sigma}, p)
         print(f"saved {p} ({time.time()-t0:.0f}s)")
     elif a.cmd == "decomp":
         ck = torch.load(a.ckpt); m = Toy(V_DEF, K_DEF, ck["form"]); m.load_state_dict(ck["state"]); m.eval()
-        t0 = time.time(); r = decomp(m, make_modes(V_DEF, K_DEF, ck["seed"]), ck["access"], a.S, a.reps, 99 + ck["seed"])
-        r["meta"] = {k: ck[k] for k in ("access", "form", "seed", "steps")} | {"S": a.S, "reps": a.reps, "version": 2}
+        te = tuple(float(x) for x in a.t_ends.split(",")); sg = ck.get("sigma", 1.0)
+        t0 = time.time(); r = decomp(m, make_modes(V_DEF, K_DEF, ck["seed"]), ck["access"], a.S, a.reps, 99 + ck["seed"], sigma=sg, t_ends=te)
+        r["meta"] = {k: ck[k] for k in ("access", "form", "seed", "steps")} | {"S": a.S, "reps": a.reps, "version": 3, "sigma": sg, "t_ends": list(te)}
         json.dump(r, open(a.ckpt.replace(".pt", "_decomp.json"), "w")); print(f"decomp done ({time.time()-t0:.0f}s)")
     else:
         for acc, form in itertools.product(("read", "zero"), ("exp", "cont")):
