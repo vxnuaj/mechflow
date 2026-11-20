@@ -415,3 +415,11 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
 - Freezing neighbours' final latents at ELF's decode pass removes **89% [81%, 97%]** of the state route's absolute effect (and 89% of SC's whole effect on token j).
 - **Confirmed reading:** in ELF, feedback improves the neighbours' final latents, and token j reads them at the SC-free decode pass. That is where j commits.
 - This turns the ELF "difference" into a specific, confirmed mechanism, consistent with the access account: the route follows where the feedback is readable at commitment.
+
+## 25. Family T v2 (toy access factorial): REFUTED as pre-registered (2026-11-19)
+- In the toy, the route is F ≥ N in every condition, even where SC is readable at commitment. The decode-pass access manipulation was inert: the toy commits during the flow (the decode pass changes ≤ 0.5% of tokens), even at t_end = 0.5.
+- So the access question was **not tested**, and P1 ("readable feedback at commitment → N dominates") failed.
+- **What this does and does not show:**
+  - "Readable feedback at commitment" is not *sufficient* for N-dominance, at least in this toy.
+  - Whether that refutes the account or only the unmeasured assumption that toy states are uninformative at commitment is **undetermined**. The red-team's objection #4 (measure state informativeness), which I did not adopt, was the right one.
+- Next: measure state decodability over steps (2g) before designing anything else.

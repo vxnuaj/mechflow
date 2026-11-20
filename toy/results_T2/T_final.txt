@@ -1,0 +1,49 @@
+train inf  t_end recipe n |       T       O       N       F | D [95% CI]            | joint D  excess D  cad   div
+read  read 0.5   cont   10| +0.060 +0.004 +0.016 +0.040 | -0.024 [-0.026,-0.021] | -0.000  -0.020  0.004 0.154
+      8 cells (O,N,F): 000=0.923  001=0.966  010=0.938  011=0.978  100=0.927  101=0.964  110=0.944  111=0.983
+read  read 0.5   exp    10| +0.079 +0.020 +0.028 +0.031 | -0.003 [-0.006,-0.000] | -0.028  -0.003  0.002 0.168
+      8 cells (O,N,F): 000=0.909  001=0.931  010=0.938  011=0.963  100=0.925  101=0.960  110=0.946  111=0.989
+read  read 1.0   cont   10| +0.060 +0.004 +0.017 +0.039 | -0.022 [-0.024,-0.020] | -0.000  -0.018  0.000 0.154
+      8 cells (O,N,F): 000=0.920  001=0.961  010=0.935  011=0.975  100=0.924  101=0.960  110=0.942  111=0.980
+read  read 1.0   exp    10| +0.081 +0.020 +0.030 +0.031 | -0.002 [-0.005,+0.001] | -0.027  -0.002  0.000 0.168
+      8 cells (O,N,F): 000=0.907  001=0.929  010=0.937  011=0.962  100=0.923  101=0.956  110=0.945  111=0.988
+read  zero 0.5   cont   10| +0.060 +0.004 +0.015 +0.040 | -0.025 [-0.027,-0.022] | -0.001  -0.021  0.004 0.154
+      8 cells (O,N,F): 000=0.923  001=0.966  010=0.938  011=0.978  100=0.928  101=0.966  110=0.944  111=0.983
+read  zero 0.5   exp    10| +0.078 +0.019 +0.028 +0.031 | -0.002 [-0.005,+0.001] | -0.026  -0.002  0.001 0.168
+      8 cells (O,N,F): 000=0.909  001=0.931  010=0.937  011=0.962  100=0.924  101=0.956  110=0.946  111=0.987
+read  zero 1.0   cont   10| +0.060 +0.004 +0.017 +0.039 | -0.022 [-0.024,-0.020] | -0.000  -0.018  0.000 0.154
+      8 cells (O,N,F): 000=0.920  001=0.961  010=0.935  011=0.975  100=0.924  101=0.960  110=0.942  111=0.980
+read  zero 1.0   exp    10| +0.081 +0.020 +0.030 +0.031 | -0.002 [-0.005,+0.001] | -0.027  -0.002  0.000 0.168
+      8 cells (O,N,F): 000=0.907  001=0.929  010=0.937  011=0.962  100=0.923  101=0.956  110=0.945  111=0.988
+zero  zero 0.5   cont   10| +0.071 +0.002 +0.021 +0.048 | -0.027 [-0.030,-0.024] | +0.008  -0.019  0.005 0.170
+      8 cells (O,N,F): 000=0.903  001=0.956  010=0.920  011=0.971  100=0.907  101=0.946  110=0.928  111=0.974
+zero  zero 0.5   exp    10| +0.063 +0.013 +0.018 +0.032 | -0.015 [-0.016,-0.013] | -0.015  -0.013  0.001 0.167
+      8 cells (O,N,F): 000=0.924  001=0.951  010=0.941  011=0.968  100=0.933  101=0.968  110=0.949  111=0.987
+zero  zero 1.0   cont   10| +0.071 +0.001 +0.024 +0.045 | -0.021 [-0.024,-0.018] | +0.011  -0.014  0.000 0.171
+      8 cells (O,N,F): 000=0.898  001=0.949  010=0.916  011=0.967  100=0.901  101=0.936  110=0.926  111=0.969
+zero  zero 1.0   exp    10| +0.065 +0.014 +0.018 +0.032 | -0.014 [-0.016,-0.012] | -0.016  -0.012  0.000 0.167
+      8 cells (O,N,F): 000=0.922  001=0.950  010=0.941  011=0.968  100=0.932  101=0.968  110=0.948  111=0.987
+  M (read-trained, inference zero, exp): Δcad +0.001 [+0.001,+0.001] → FAILS (P2/P3 not testable)
+  M (read-trained, inference zero, cont): Δcad +0.004 [+0.003,+0.004] → FAILS (P2/P3 not testable)
+  M (zero-trained, inference zero, exp): Δcad +0.001 [+0.001,+0.001] → FAILS (P2/P3 not testable)
+  M (zero-trained, inference zero, cont): Δcad +0.005 [+0.004,+0.006] → FAILS (P2/P3 not testable)
+  P1  read/read/1.0/exp: undetermined
+  P1  read/read/0.5/exp: FAILS
+  P2  zero/zero/0.5/exp: n/a (not testable: M failed)
+  P2w read/zero/0.5/exp: n/a (not testable: M failed)
+  P3  zero/zero/1.0/exp: n/a (not testable: M failed)
+  P3w read/zero/1.0/exp: n/a (not testable: M failed)
+  P1  read/read/1.0/cont: FAILS
+  P1  read/read/0.5/cont: FAILS
+  P2  zero/zero/0.5/cont: n/a (not testable: M failed)
+  P2w read/zero/0.5/cont: n/a (not testable: M failed)
+  P3  zero/zero/1.0/cont: n/a (not testable: M failed)
+  P3w read/zero/1.0/cont: n/a (not testable: M failed)
+  P4 read/read/0.5: Δ(D_exp − D_cont) +0.020 [+0.016,+0.025] no flip
+  P4 read/read/1.0: Δ(D_exp − D_cont) +0.020 [+0.016,+0.025] no flip
+  P4 read/zero/0.5: Δ(D_exp − D_cont) +0.023 [+0.018,+0.027] no flip
+  P4 read/zero/1.0: Δ(D_exp − D_cont) +0.020 [+0.016,+0.025] no flip
+  P4 zero/zero/0.5: Δ(D_exp − D_cont) +0.013 [+0.009,+0.016] no flip
+  P4 zero/zero/1.0: Δ(D_exp − D_cont) +0.007 [+0.003,+0.011] no flip
+  P5 (own ≈ 0, subsidiary): fails
+TOY ACCESS DECISION: REFUTED (P1  read/read/0.5/exp, P1  read/read/1.0/cont, P1  read/read/0.5/cont) 

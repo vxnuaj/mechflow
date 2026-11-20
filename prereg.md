@@ -462,6 +462,11 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | **GO** (user decision, 2026-11-16), reframed around the coordination mechanism (`phase8_memo.md`). Primary = {P1, P2, H2-N}, Holm over 3 | 2026-11-16 |
 
 ## 12. Deviations / Change Log
+- **2026-11-19: family T v2 outcome (40 models, 10 seeds; frozen `analysis/toy_access.py` v2): REFUTED** (P1 fails in read/read/0.5/exp, read/read/1.0/cont and read/read/0.5/cont; read/read/1.0/exp is undetermined).
+  - In every condition F ≥ N, even with SC readable at commitment. D: exp −0.002 to −0.015; cont −0.021 to −0.027.
+  - **Manipulation check M failed in all 4 families** (commit-at-decode ≤ 0.005 at both t_end): the toy commits during the flow and never at the decode pass. So P2, P2w, P3 and P3w were NOT TESTABLE, and **the access manipulation was inert**: read and zero rows are near-identical.
+  - The SC effect is small (T 0.06–0.08; SC-off coherence 0.90–0.92, near ceiling). P5 (own ≈ 0) fails: O ≈ 0.02 ≈ 25% of T in `exp`.
+  - **Interpretation (recorded, not a re-analysis):** P1 assumed the toy commits while neighbour states are uninformative. That auxiliary was not measured (red-team #4, which was not adopted). The refutation therefore falls on the conjunction (account + "toy states uninformative at commitment"); which conjunct is false is undetermined. The verdict stands.
 - **2026-11-19: family T revised to v2 before data** (see the §2.12 v2 amendment): the GPT red-team found two decision-rule bugs (reproduced) and an outcome confound.
 - **2026-11-19: E3b outcome (ELF decoder hypothesis, absolute measure, fresh seed 1, n = 195 paired; frozen `analysis/elf_e3b.py`): SUPPORTED.**
   - φ_F = 0.891 [0.805, 0.971]: the lower bound exceeds 0.5.
