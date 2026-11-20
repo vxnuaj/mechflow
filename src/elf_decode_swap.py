@@ -10,12 +10,12 @@ from elf_instr import load_elf, run_cell, decode
 ap = argparse.ArgumentParser(); ap.add_argument("--hcfrl", required=True); ap.add_argument("--ckpt", required=True)
 ap.add_argument("--n", type=int, default=256); ap.add_argument("--L", type=int, default=128); ap.add_argument("--steps", type=int, default=32)
 ap.add_argument("--bs", type=int, default=32); ap.add_argument("--device", default="cpu"); ap.add_argument("--j", type=int, default=64)
-ap.add_argument("--outdir", default="results/elf_swap")
+ap.add_argument("--outdir", default="results/elf_swap"); ap.add_argument("--seed", type=int, default=0)
 a = ap.parse_args(); dev = torch.device(a.device); torch.set_num_threads(int(os.environ.get("SLURM_CPUS_PER_TASK", "8")))
 model, cfg, tok = load_elf(a.hcfrl, a.ckpt, a.L, dev)
 from utils.sampling_utils import get_sampling_steps
 torch.manual_seed(1); t_steps = get_sampling_steps(a.steps, time_schedule="logit_normal").to(dev)
-z0 = torch.randn((a.n, a.L, model.text_encoder_dim), generator=torch.Generator().manual_seed(0)) * cfg.denoiser_noise_scale
+z0 = torch.randn((a.n, a.L, model.text_encoder_dim), generator=torch.Generator().manual_seed(a.seed)) * cfg.denoiser_noise_scale
 cells = [(o, n, f) for o in (0, 1) for n in (0, 1) for f in (0, 1)]
 own = {f"O{o}N{n}F{f}": [] for o, n, f in cells}; swap = {k: [] for k in own}
 for b in range(0, a.n, a.bs):

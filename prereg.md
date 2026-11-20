@@ -222,6 +222,23 @@ Outcome: Mistral span log-prob of token j. Mac MPS (as family E).
 
 Platform: CARC CPU (main partition).
 
+
+### 2.11 Family E3b: ELF decoder hypothesis, absolute measure (added 2026-11-19 18:20, after E3's data; basis: E3 outcome, §12)
+**Why:** E3's pre-registered criterion used the F *share* within the swap variant. Shares are normalised by that variant's own total, which itself shrank 83%, so the criterion did not measure what the hypothesis claims (where F's effect arises). E3 stays REFUTED under its own rule. This is a new test on fresh data, not a re-analysis.
+
+**Hypothesis:** most of the F route's absolute effect on token j arises at ELF's cross-position decode pass (which receives zeroed SC).
+
+**Test:** identical to E3, with **fresh noise seed 1** (E3 used seed 0), target j = 64, n = 256, the same judge and the same fixed context.
+
+**Analysis:** `analysis/elf_e3b.py` (frozen with this entry). φ = 1 − mean F_swap / mean F_own, paired by sample.
+
+**Decision:**
+- 2.5th pct > 0.5 → SUPPORTED;
+- 97.5th pct < 0.25 → REFUTED;
+- otherwise INCONCLUSIVE.
+
+**Exploratory value on E3 (seed 0) data:** φ_F = 0.819 [0.735, 0.897].
+
 ## 3. Metrics
 - **Primary:** dep_j (positions 2–3); the hybrid rate; μ_j.
 - **Co-requirement:** external-judge and own-AR coh_j.
@@ -386,6 +403,10 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | **GO** (user decision, 2026-11-16), reframed around the coordination mechanism (`phase8_memo.md`). Primary = {P1, P2, H2-N}, Holm over 3 | 2026-11-16 |
 
 ## 12. Deviations / Change Log
+- **2026-11-19: E3 outcome (ELF decoder test, seed 0, n = 190 complete): REFUTED under its pre-registered rule.**
+  - F Shapley share in the swap variant = 0.843 (≥ 0.5). Own-variant shares reproduce family E: N 0.18, O 0.01, F 0.82.
+  - **Exploratory (not pre-registered), paired:** fixing neighbours' final latents at decode removes 83% of the total SC effect on token j (T 4.51 → 0.77; 0.829 [0.737, 0.913]) and 82% of F's absolute effect (0.819 [0.735, 0.897]).
+  - The share criterion was mis-specified for the hypothesis, so a new test on fresh data is pre-registered as §2.11 (E3b). E3's verdict is not changed.
 - **2026-11-19: S7 outcome (7B, 500 untouched confirmation docs; frozen `analysis/s7b.py`): S7-1, S7-2, S7-3 all SUPPORTED (Holm).**
   - T(coh) = +2.167; Shapley N share 0.856, O share 0.066.
   - S7-1 +1.012 [0.765, 1.261]; S7-2 +0.772 [0.601, 0.949], Mistral co-requirement N share 0.757 (met); S7-3 +0.143 [−0.024, 0.311], p = 0.0455 (supported at the third Holm step, α = 0.05).

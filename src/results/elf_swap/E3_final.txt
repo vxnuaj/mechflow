@@ -1,0 +1,14 @@
+== own
+n samples 190; T = +4.509 [+3.695,+5.350] → estimable
+Shapley shares: N 0.179, O 0.006, F 0.815; Möbius N -0.060
+E-1: -1.171 [-1.607,-0.746] p=1
+E-2: -1.447 [-1.826,-1.085] p=1
+  E-1: not supported (Holm)
+  E-2: not supported (Holm)
+== swap
+n samples 211; T = +0.723 [+0.364,+1.119] → estimable
+Shapley shares: N 0.348, O -0.191, F 0.843; Möbius N 0.004
+E-1: -0.142 [-0.441,+0.138] p=0.827
+E-2: -0.110 [-0.334,+0.105] p=0.839
+  E-1: not supported (Holm)
+  E-2: not supported (Holm)
