@@ -1,6 +1,44 @@
-# Coherence ratings (blind)
+# Text continuation rating task
 
-For each item, read the context, then the two continuations. Which continuation fits the context more naturally and coherently? Write **A**, **B**, or **T** (tie / can't tell) after `Answer:`. Don't overthink; ~15 s per item. Continuations are 4 tokens, so they may start or end mid-word.
+Thanks for helping! This takes about **25 minutes**. You don't need any background knowledge.
+
+## What you're doing
+
+Each of the 100 items below shows:
+
+- a **Context**: the end of a piece of text (an answer, a story, a recipe, an explanation, …);
+- two possible **continuations**, labelled **A** and **B**. Each is a very short snippet (about 4 "tokens"; a token is a word or part of a word), so a snippet may start or end in the middle of a word. That is normal.
+
+Your job is to decide **which continuation fits the context more naturally and coherently**, as if it were the next few words of the same text.
+
+## How to answer
+
+Under each item, after `Answer:`, type exactly one letter:
+
+- **A** if A fits better;
+- **B** if B fits better;
+- **T** (tie) if they fit equally well or you genuinely can't tell.
+
+Example:
+
+```
+Answer: B
+```
+
+## Tips
+
+- **Go with your first impression.** About 10–20 seconds per item is plenty.
+- Judge **fit and coherence with the context**: grammar, meaning, and whether the words make sense together. Ignore formatting, spacing, and punctuation quirks unless they change the meaning.
+- One option is not always "correct". Sometimes both are fine (use T), and sometimes both are odd (pick the less odd one, or T).
+- **Don't look anything up**, and don't use any tool or AI.
+- **Work alone**, and don't discuss items with anyone else who is rating.
+- It's fine to skip an item you can't judge, but please answer as many as you can.
+
+## When you're done
+
+Save the file **with your name in it**, e.g. `sheet_alex.md`, and send it back (or push it to `ratings/` if you have access). Please don't change anything except the letters after `Answer:`.
+
+---
 
 ## 1
 
