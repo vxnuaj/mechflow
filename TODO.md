@@ -371,13 +371,17 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
      - The test discriminates only once state informativeness at decode is measured **first**.
    - [x] 3a-i. From existing E3 tokens: j's token at decode is driven mostly by the neighbours' final latents (23% → 77% SC-on-token when only the neighbours are swapped), so x̂ ≈ the final latent at full t_end, and a full-t_end access test would be near-tautological (insights §26).
    - [ ] 3a-ii. (Exploratory, CPU) Measure neighbour-state informativeness at ELF-B's decode pass: linear-probe / nearest-token decodability of each position's final token from its final latent vs from its feedback (x̂_prev), on 256 samples. Also commit-at-decode (the decoded token vs the token implied by the last flow estimate).
-   - [~] 3a-iii. Calibrate a truncated t_end for ELF-B (regime diagnostics only; noise seed 7, unused elsewhere): `src/elf_trunc_calib.py` (CARC CPU).
+   - [x] 3a-iii. **Pick: n_steps = 24 (t = 0.35)**: state → full-token 13%, feedback → full-token 87%, disagreement 0.87 (`src/results/elf_trunc_calib.json`). Calibrate a truncated t_end for ELF-B (regime diagnostics only; noise seed 7, unused elsewhere): `src/elf_trunc_calib.py` (CARC CPU).
      - **Pre-set rule (revised before running; replaces the swap-agreement wording):** truncated t_end = the largest t_n with P(decode(state) ≠ decode(feedback)) ≥ 0.2.
    - **GPU platform decided (user, 2026-11-20): Prime.** Start the pod only once all GPU jobs (step 3 fine-tune + decomposition, step 4 LangFlow, step 5 Plaid) are coded, smoke-tested on CPU and pre-registered; run them in one session with verified-termination timers.
    - [x] 3b. Data: 2 of 75 shards of `embedded-language-flows/openwebtext-t5` on CARC (`/scratch1/<user>/data/owt_t5`; state.json restricted to them, original kept as state_all75.json).
      - Fine-tune runner `src/elf_ft_decode.py`: patches hcfrl's train_step in memory, so hcfrl itself is untouched. Smoke test passed for both arms; init_from loaded ELF-B (step 95085).
      - Decomposition `src/elf_access_decomp.py` plus routed decode in `elf_instr.py`: smoke test passed, identities 1.0000 at n_steps 32/16 × access read/zero.
    - Original note: OWT data is NOT on CARC (only game24/countdown in hcfrl/data). Download an OWT shard for the fine-tune. Check whether ELF's OWT training data and `hcfrl/elf/train_step.py` support a short decoder-branch fine-tune (SC readable at decode w.p. 0.5 vs a zeroed control; same data, steps and seed).
+   - [ ] 3c-i. Write `analysis/elf_access.py` (frozen rule) and test it on synthetic scenarios (account true; readout-access-alone; training adaptation; partial identifiability; failed manipulation check).
+   - [ ] 3c-ii. Write prereg §2.13 and the GPT red-team prompt (`prompts/gpt_redteam_elf_access.md`); the user runs it.
+   - [ ] 3c-iii. Code and smoke-test steps 4 (LangFlow) and 5 (Plaid) decompositions on CPU so that one Prime session runs everything.
+   - [ ] 3c-iv. Prime session: fine-tunes (readable, zeroed; 3,000 steps each) → decompositions (n_steps {32, 24} × access {read, zero} for readable; zero for zeroed; n = 256, seed 2) → Mistral fixed-context judge, plus LangFlow and Plaid. Verified-termination timer.
    - [ ] 3c. Pre-register the design: fine-tune readable vs zeroed × sampling t_end {1.0, truncated} × inference access, interaction prediction (insights §26). Predictions from 3a; rule checked on synthetic scenarios incl. partial identifiability; fixed-context outcome; fluency validity ≤ 20% drop; within-model readable-vs-zeroed-at-inference contrast). GPT red-team. GPU run (~6 GPU-h; Prime or CARC, the user's choice).
    - **Validity:** decode fluency drop ≤ 20% vs the matched control.
    - ~6 GPU-h.
