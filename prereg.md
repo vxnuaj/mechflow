@@ -415,6 +415,7 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
   - dep: H\* share 0.495 vs random 0.042; θ = 0.453 [0.391, 0.519]; one-sided LB (α = 0.025) 0.391 > 0.30.
   - coh: θ = 0.424 [0.385, 0.463].
   - **This resolves the inconclusive L1.**
+  - Duplicate check (2026-11-19, after outcome): every duplicated task row is identical to its copy except the wall-clock field `sec` (L1-R 1,955; S7 gen 210; S7 judge 23), so deduplication cannot have changed any result.
   - Operations: Prime 4× A6000; shard 3 split into two halves; 1,957 duplicate rows from a duplicated driver were dropped by task_id.
 - **2026-11-19 (S7, before shard 1's remaining data): memory-only chunked AR scoring for S7 shard 1.**
   - One long confirmation document in S7 shard 1 runs out of memory when the 16 predecessor samples are scored in one 7B batch (11 GB attention; this also stalled the shard on CARC).
