@@ -401,10 +401,12 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
      - `src/elf_heldout_ce.py` (fluency/uptake on held-out OWT);
      - analysis v2 + synthetic/boundary tests;
      - prereg amendment; hash; push.
-   - [ ] 3c-ii-d. Optional second red-team pass on v2 (the user's call).
+   - [x] 3c-ii-d. Second red-team pass skipped (2026-11-20; the user delegated): all valid points adopted, diminishing returns.
    - [ ] 3c-iii. Code and smoke-test steps 4 (LangFlow) and 5 (Plaid) decompositions on CPU so that one Prime session runs everything.
      - LangFlow: attention is the module-level `regular_attention_multi_headed`, so the same three-stream patch applies. SC = softmax(logits) @ E via `_embed_tokens`; Euler-EDM over a Gumbel-proposal gamma schedule (128 steps); the final forward uses SC.
      - Plaid: custom repo (`lib/models.py`); check the flash-attn dependency.
+     - [x] `src/langflow_instr.py` (routed attention patch + plain/routed samplers) and `src/langflow_calib.py` (regime diagnostics, seed 7, + identity smoke) written; einops added to the CARC env and requirements.lock.
+     - [~] LangFlow calibration running (CARC CPU) → then pre-register family G (LangFlow) with predictions conditioned on the measured regime (lesson from family T).
    - [ ] 3c-iv. Prime session: fine-tunes (readable, zeroed; 3,000 steps each) → decompositions (n_steps {32, 24} × access {read, zero} for readable; zero for zeroed; n = 256, seed 2) → Mistral fixed-context judge, plus LangFlow and Plaid. Verified-termination timer.
    - [ ] 3c. Pre-register the design: fine-tune readable vs zeroed × sampling t_end {1.0, truncated} × inference access, interaction prediction (insights §26). Predictions from 3a; rule checked on synthetic scenarios incl. partial identifiability; fixed-context outcome; fluency validity ≤ 20% drop; within-model readable-vs-zeroed-at-inference contrast). GPT red-team. GPU run (~6 GPU-h; Prime or CARC, the user's choice).
    - **Validity:** decode fluency drop ≤ 20% vs the matched control.
