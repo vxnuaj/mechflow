@@ -310,7 +310,7 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - [x] **G-b external judge:** Mistral N share 0.80 / 1.04; O −0.09 (insights §16).
 
 ### Phase 14 — Close the remaining gaps (decided 2026-11-21: these are REQUIRED, not optional; by the hard-to-vary standard each tests a weak assumption or a known gap; ordered by dependency and cost)
-- [ ] **14.1 Human coherence ratings** (assumption B1, the weakest):
+- [~] **14.1 Human coherence ratings** (B1). Pre-registered as §2.16. Sheet built: `ratings/sheet.md` (100 blinded items). The key is on CARC only (hash in prereg_hashes.log); scoring is `analysis/b1.py`. **Waiting on the user + co-author ratings:** each copies the sheet to `ratings/sheet_<name>.md` and fills in A/B/T.
   - Claude prepares ~100 stratified output pairs (SC-on vs SC-off and route cuts; blinded and randomized) as a rating sheet; the user (+ co-author) rate them (~30 min).
   - Pre-register: human preference agrees with both LM judges at ≥ 70%, LB > 50%.
 - [ ] **14.2 Message content probe** (D6, the core of the explanation): on exploration docs (0.5B), a linear probe of each neighbour's *final* token from the target position's hidden state, with vs without neighbour feedback, per step.

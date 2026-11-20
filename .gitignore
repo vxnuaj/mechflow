@@ -17,3 +17,4 @@ third_party/
 results_local/
 data/natural_docs.jsonl
 *.npz
+ratings/key.json

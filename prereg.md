@@ -368,6 +368,24 @@ A prediction holds when the CI excludes 0 in the predicted direction and all 3 s
 
 **Platform:** CARC GPU (or Prime if available).
 
+
+### 2.16 B1: human validation of the coherence measure (added 2026-11-21, before any ratings; assumptions.md B1)
+**Assumption under test:** log-probability under Lafa's own AR head (coh) tracks human-judged coherence.
+
+**Items:** 100 confirmation documents (conf_h2n), chosen by sorting task_ids by SHA-256(task_id) and taking the first 100 whose SC-on (O1N1F1) and SC-off (O0N0F0) blocks differ.
+- Each item shows the last ~60 tokens of context, then continuations A and B (SC-on vs SC-off, side randomized with seed 20261121).
+- Raters choose which continuation fits the context more coherently, or "tie". Raters are blind to the condition and the LM scores.
+- Raters: the user and the co-author, independently.
+
+**LM preference:** the block with the higher coh_2 + coh_3 (existing values; no new computation).
+
+**Decision (per rater, and pooled over raters):**
+- **Corroborated** iff the human–LM agreement on non-tie items is ≥ 70% with a 95% Wilson lower bound > 50%.
+- **Undermined** iff the Wilson upper bound < 50%.
+- Otherwise **inconclusive**.
+
+Also reported: the human preference rate for SC-on, inter-rater agreement (Cohen's κ), and tie rates. The answer key stays in a separate file that is not shown to raters.
+
 ## 3. Metrics
 - **Primary:** dep_j (positions 2–3); the hybrid rate; μ_j.
 - **Co-requirement:** external-judge and own-AR coh_j.
