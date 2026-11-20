@@ -455,3 +455,11 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
 - **Revised statement:** a position's own feedback contributes nothing; its neighbours' information arrives through both channels, direct reading of their feedback (N) and their feedback-improved states (F), in roughly equal measure under target-mediated scoring. This is the two-channel account (family R).
 - It unifies Lafa with ELF: ELF only has F at decode because its decode pass zeroes SC.
 - **For the paper:** report both scorings. Actual-context = the joint coherence of the block; fixed-context = target-mediated routes. E4 and G already use target-mediated (common-reference) scoring.
+
+## 29. Message-content probe (family P, 2026-11-21): INCONCLUSIVE as pre-registered; the schedule prediction held
+- What neighbour feedback adds to j's state = the information about the neighbours' FINAL tokens (ridge probe, same readout for both passes).
+  - **uniform:** peaks at steps 6–11 (gap ≈ 0.10) and fades to ≈ 0.015 once states are clean (Q2 holds).
+  - **warp:** present throughout (0.04 → 0.084), with the states noisy until the end.
+- The content tracks *state informativeness*: the feedback carries neighbour-commitment information exactly while the neighbours' states can't. This directly supports the substitution part of the two-channel account at the representational level.
+- **New distinction:** availability ≠ causal use. Under warp the information is there from step 0, but N is causally decisive only late (E1), when tokens commit. Q1 conflated the two and came out undetermined.
+- **For the account:** feedback provides neighbour content whenever states are uninformative; it matters causally where commitment happens. This is the same "commitment locus" idea that explains ELF.
