@@ -417,6 +417,7 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
    - [x] 3c-iv-b0. Prime API lists **zero GPU resources of any type** (2026-11-20 ~03:30), even after upgrading the CLI 0.5.38 → 0.22.1. Either an outage or the account balance (the CLI cannot show it; the user can check the web UI).
      - **Fallback submitted:** the full E4 chain on CARC GPUs (`tools/carc_e4.sh`; A40/A100/L40S; 16 fine-tunes → 16 decompositions + CE → 56 judge jobs → frozen analysis job 14400976 → `/scratch1/<user>/mechflow/e4run/E4_final.txt`). 91 jobs pending.
      - If Prime returns first: run `pod/run_e4.sh` there and cancel the CARC chain (never both).
+     - 2026-11-21 11:30: Prime API still `{}` 8 h after the top-up, and no CARC gpu job started overnight. **Ask the user** to check the Prime web dashboard (is any GPU listed? any account notice/verification?).
      - **User topped up (2026-11-20): use Prime.** The Prime API itself still returns `{}` for availability (raw REST call), so the problem is on Prime's side, not the CLI or the balance. A laptop watcher polls every 15 min (≤ 24 h) and exits on availability. Then: launch `pod/run_e4.sh`, verify it is running, and only then cancel the CARC chain (never both).
      - Earlier note: **Prime balance $3.94 (user, 2026-11-20)**: likely why availability is empty; insufficient for E4 (~$5–10). Decision: stay on CARC unless the user tops up. LangFlow calibration moved to the CARC GPU queue.
    - [ ] 3c-iv-b. Launch when GPUs are available (no A6000 at 2026-11-20 ~03:00).
@@ -444,7 +445,7 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 4. Fold in valid criticism, hash and push, then launch.
 
 **Robustness item from the red-team (Lafa):**
-- [x] R-FC pre-registered (prereg §2.14). Toggling N changes y_<j in 10.6% of pairs; the analysis reproduces H2-N exactly on the original data. Re-score job submitted on CARC GPU → `src/results/conf_h2n_fx`, then `python analysis/fixctx.py src/results`.
+- [x] R-FC pre-registered (prereg §2.14). 2026-11-21: nothing started on the CARC gpu partition in 8 h (priority 4834), so moved to the debug partition via `tools/debug_sched.py tools/units_fixctx.json` (8 resumable units, ≤ 5 submitted). Toggling N changes y_<j in 10.6% of pairs; the analysis reproduces H2-N exactly on the original data. Re-score job submitted on CARC GPU → `src/results/conf_h2n_fx`, then `python analysis/fixctx.py src/results`.
 - [ ] (original item) The Lafa N claim uses coh_j against the *actual* context y_<j, which N can shift slightly via j's state. Rescore the H2-N confirmation cells with a fixed context (cell O1N1F1's y_<j), as already done for ELF. First check whether per-cell tokens were saved; exploratory robustness.
 
 **Threat checks in every run:**
