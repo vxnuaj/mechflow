@@ -32,12 +32,12 @@ echo "Q $(squeue -u $USER -h -o %j | tr "\n" " ")"' 2>/dev/null | tr "\n" " ")
   if [ "$a0$a1$a2$a3" = 1111 ]; then
     i=0; for d in $c0 $c1; do [ "$d" = 0 ] && ! grep -q " mf_s7j_$i " <<< "$Q" && sub mf_s7j_$i tasks_conf7b.jsonl jobs_judge_h2n:judge_task results/conf7b_judge $i 2 ",JUDGE_SRC=conf7b_h2n$AL" 04:00:00; i=$((i+1)); done
     if [ "$c0$c1" = 11 ] && [ $s7_done = 0 ]; then
-      for d in conf7b_h2n conf7b_judge; do mkdir -p src/results/$d; rsync -az --delete carc:/scratch1/verajuan/mechflow/src/results/$d/ src/results/$d/; done
+      for d in conf7b_h2n conf7b_judge; do mkdir -p src/results/$d; rsync -az --delete carc:/scratch1/$USER/mechflow/src/results/$d/ src/results/$d/; done
       python3 analysis/s7b.py src/results > src/results/s7_final.txt 2>&1; echo "S7 ANALYSIS DONE"; cat src/results/s7_final.txt; s7_done=1
     fi
   fi
   if [ "$b0$b1$b2$b3$b4$b5" = 111111 ] && [ $l1r_done = 0 ]; then
-    mkdir -p src/results/l1r; rsync -az --delete carc:/scratch1/verajuan/mechflow/src/results/l1r/ src/results/l1r/
+    mkdir -p src/results/l1r; rsync -az --delete carc:/scratch1/$USER/mechflow/src/results/l1r/ src/results/l1r/
     python3 analysis/l1.py src/results/l1r > src/results/l1r_final.txt 2>&1; echo "L1R ANALYSIS DONE"; cat src/results/l1r_final.txt; l1r_done=1
   fi
   [ $s7_done = 1 ] && [ $l1r_done = 1 ] && { echo "ALL DONE"; exit 0; }

@@ -6,7 +6,7 @@ import glob, json, os, subprocess, time
 
 P = "c86ebe07431e4ab48b3b7a0d65134d40"; IP = "ubuntu@150.136.39.93"
 ROOT = "/Users/vxuaj/Documents/code/research/icml-attempts/mechflow"
-CARC_RES = "carc:/scratch1/verajuan/mechflow/src/results/gc_warp/"
+CARC_RES = "carc:/scratch1/$USER/mechflow/src/results/gc_warp/"
 os.chdir(ROOT)
 os.environ["PRIME_DISABLE_VERSION_CHECK"] = "1"
 

@@ -1,6 +1,6 @@
 {
  "config": {
-  "weights_path": "/scratch1/verajuan/models/plaid/plaid1b_weights",
+  "weights_path": "/scratch1/$USER/models/plaid/plaid1b_weights",
   "device": "cuda",
   "seed": 0,
   "n_samples": 4,
@@ -12,7 +12,7 @@
   "no_selfcond": false,
   "fp32": false,
   "batch_size": 0,
-  "out": "/scratch1/verajuan/mechflow/plaid_port/results/samples_SCon.json"
+  "out": "/scratch1/$USER/mechflow/plaid_port/results/samples_SCon.json"
  },
  "seconds": 18.036176443099976,
  "tokens": [

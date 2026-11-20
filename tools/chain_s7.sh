@@ -6,6 +6,6 @@ python3 -u tools/debug_sched.py tools/units_s7.json
 echo "$(date +%H:%M) S7 generation complete ($(cnt conf7b_h2n))"
 python3 -u tools/debug_sched.py tools/units_s7_judge.json
 echo "$(date +%H:%M) S7 judge complete ($(cnt conf7b_judge))"
-for d in conf7b_h2n conf7b_judge; do mkdir -p src/results/$d; rsync -az --delete carc:/scratch1/verajuan/mechflow/src/results/$d/ src/results/$d/; done
+for d in conf7b_h2n conf7b_judge; do mkdir -p src/results/$d; rsync -az --delete carc:/scratch1/$USER/mechflow/src/results/$d/ src/results/$d/; done
 python3 analysis/s7b.py src/results | tee src/results/s7_final.txt
 echo "S7 DONE"

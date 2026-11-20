@@ -1,8 +1,8 @@
 {
  "config": {
-  "weights_path": "/scratch1/verajuan/models/plaid/plaid1b_weights",
+  "weights_path": "/scratch1/$USER/models/plaid/plaid1b_weights",
   "data": "owt",
-  "parquet": "/scratch1/verajuan/data/plaid_eval/owt-0000.parquet",
+  "parquet": "/scratch1/$USER/data/plaid_eval/owt-0000.parquet",
   "seq_len": 256,
   "n_seqs": 32,
   "max_seqs": 0,
@@ -12,7 +12,7 @@
   "fp32": true,
   "seed": 0,
   "device": "cpu",
-  "out": "/scratch1/verajuan/mechflow/plaid_port/results/elbo_owt_L256_cpu_fp32.json"
+  "out": "/scratch1/$USER/mechflow/plaid_port/results/elbo_owt_L256_cpu_fp32.json"
  },
  "summary": {
   "n_seqs": 32,
