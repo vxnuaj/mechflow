@@ -1,0 +1,27 @@
+== sigma 2.0 (8 models)  t90 = 0.125  acc_state at 50% committed (step 0, t 0.0) = 0.639444182772873
+   committed by step: 0.78 0.88 0.92 0.95 0.97 0.98 0.99 0.99 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00
+   acc_state by step: 0.64 0.66 0.71 0.76 0.83 0.89 0.93 0.96 0.98 0.99 0.99 1.00 1.00 1.00 1.00 1.00
+   commit-at-decode (decode SC zeroed) t_end 0.25: read/cont 0.043  read/cont 0.042  read/exp 0.042  read/exp 0.051  zero/cont 0.039  zero/cont 0.043  zero/exp 0.030  zero/exp 0.029
+   commit-at-decode (decode SC zeroed) t_end 0.375: read/cont 0.010  read/cont 0.012  read/exp 0.012  read/exp 0.017  zero/cont 0.011  zero/cont 0.013  zero/exp 0.008  zero/exp 0.009
+   commit-at-decode (decode SC zeroed) t_end 0.5: read/cont 0.002  read/cont 0.004  read/exp 0.004  read/exp 0.005  zero/cont 0.004  zero/cont 0.005  zero/exp 0.004  zero/exp 0.004
+   commit-at-decode (decode SC zeroed) t_end 0.75: read/cont 0.001  read/cont 0.001  read/exp 0.000  read/exp 0.000  zero/cont 0.001  zero/cont 0.002  zero/exp 0.001  zero/exp 0.001
+   commit-at-decode (decode SC zeroed) t_end 1.0: read/cont 0.000  read/cont 0.000  read/exp 0.000  read/exp 0.000  zero/cont 0.000  zero/cont 0.001  zero/exp 0.000  zero/exp 0.000
+   valid SC-on / SC-off: read/cont 1.00/0.99  read/cont 0.99/0.99  read/exp 0.98/0.83  read/exp 0.98/0.80  zero/cont 0.99/0.98  zero/cont 1.00/0.99  zero/exp 0.98/0.90  zero/exp 0.98/0.88
+== sigma 4.0 (8 models)  t90 = 0.1875  acc_state at 50% committed (step 0, t 0.0) = 0.6340760381455797
+   committed by step: 0.70 0.80 0.85 0.90 0.93 0.96 0.97 0.98 0.99 0.99 0.99 1.00 1.00 1.00 1.00 1.00
+   acc_state by step: 0.63 0.64 0.66 0.68 0.71 0.75 0.81 0.86 0.91 0.95 0.97 0.99 0.99 1.00 1.00 1.00
+   commit-at-decode (decode SC zeroed) t_end 0.25: read/cont 0.109  read/cont 0.097  read/exp 0.092  read/exp 0.090  zero/cont 0.102  zero/cont 0.091  zero/exp 0.056  zero/exp 0.057
+   commit-at-decode (decode SC zeroed) t_end 0.375: read/cont 0.039  read/cont 0.034  read/exp 0.059  read/exp 0.058  zero/cont 0.036  zero/cont 0.034  zero/exp 0.031  zero/exp 0.035
+   commit-at-decode (decode SC zeroed) t_end 0.5: read/cont 0.009  read/cont 0.009  read/exp 0.026  read/exp 0.021  zero/cont 0.007  zero/cont 0.011  zero/exp 0.011  zero/exp 0.012
+   commit-at-decode (decode SC zeroed) t_end 0.75: read/cont 0.000  read/cont 0.001  read/exp 0.004  read/exp 0.002  zero/cont 0.001  zero/cont 0.002  zero/exp 0.001  zero/exp 0.001
+   commit-at-decode (decode SC zeroed) t_end 1.0: read/cont 0.000  read/cont 0.000  read/exp 0.000  read/exp 0.000  zero/cont 0.000  zero/cont 0.001  zero/exp 0.000  zero/exp 0.001
+   valid SC-on / SC-off: read/cont 1.00/1.00  read/cont 1.00/1.00  read/exp 0.99/0.78  read/exp 0.99/0.83  zero/cont 1.00/1.00  zero/cont 1.00/1.00  zero/exp 1.00/0.91  zero/exp 0.99/0.93
+== sigma 8.0 (8 models)  t90 = 0.375  acc_state at 50% committed (step 0, t 0.0) = 0.6243614245404231
+   committed by step: 0.62 0.70 0.74 0.80 0.83 0.87 0.90 0.93 0.95 0.97 0.98 0.98 0.99 0.99 1.00 1.00
+   acc_state by step: 0.62 0.63 0.63 0.64 0.65 0.66 0.68 0.71 0.75 0.80 0.86 0.92 0.96 0.98 0.99 1.00
+   commit-at-decode (decode SC zeroed) t_end 0.25: read/cont 0.194  read/cont 0.192  read/exp 0.137  read/exp 0.142  zero/cont 0.193  zero/cont 0.188  zero/exp 0.090  zero/exp 0.087
+   commit-at-decode (decode SC zeroed) t_end 0.375: read/cont 0.121  read/cont 0.124  read/exp 0.109  read/exp 0.117  zero/cont 0.119  zero/cont 0.119  zero/exp 0.064  zero/exp 0.065
+   commit-at-decode (decode SC zeroed) t_end 0.5: read/cont 0.063  read/cont 0.065  read/exp 0.087  read/exp 0.085  zero/cont 0.055  zero/cont 0.057  zero/exp 0.053  zero/exp 0.051
+   commit-at-decode (decode SC zeroed) t_end 0.75: read/cont 0.004  read/cont 0.005  read/exp 0.023  read/exp 0.015  zero/cont 0.004  zero/cont 0.007  zero/exp 0.006  zero/exp 0.007
+   commit-at-decode (decode SC zeroed) t_end 1.0: read/cont 0.001  read/cont 0.002  read/exp 0.002  read/exp 0.001  zero/cont 0.001  zero/cont 0.004  zero/exp 0.001  zero/exp 0.001
+   valid SC-on / SC-off: read/cont 1.00/0.99  read/cont 1.00/0.99  read/exp 0.99/0.79  read/exp 0.99/0.78  zero/cont 0.99/0.99  zero/cont 0.99/0.99  zero/exp 1.00/0.91  zero/exp 0.99/0.91

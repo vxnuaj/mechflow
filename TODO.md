@@ -359,12 +359,12 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
      - **Calibration** on separate seeds (100–101), using regime diagnostics only and no O/N/F data. Choose the smallest σ ∈ {2, 4, 8} such that SC-on commitment reaches 0.9 only at t ≥ 0.3 and neighbour state accuracy is < 0.8 when 50% of positions have committed. Choose t_end such that zero-access commit-at-decode ≥ 0.2.
      - Pre-register v3 with **state-decodability manipulation checks (M0)** plus M; red-team; then 10 test seeds (0–9).
      - [x] Code: σ and configurable t_end added to `toy/toy_access.py`; calibration script `toy/toy_calib.py`.
-     - [~] Calibration: submitted 24 models (CARC CPU) plus a dependent report (job 14397686 → `toy/runs_cal/calib.txt`). Next: pick σ and t_end by the rule above, then pre-register v3 and send the red-team.
+     - [x] Calibration done: **the rule is not met at any σ** (commitment at step 0 at every σ; the decode pass coordinates by itself, so the SC effect is small). v3 not built (insights §25).
      - Previously: decide on a v3 only from 2g. If the states are informative before commitment, design a low-SNR toy (noise scale as in Lafa MR) with a *state-decodability* manipulation check (red-team #4, now adopted). Pre-register, red-team and run. If the states were uninformative, the account's P1 is refuted outright → revise the account before steps 3–5.
-   - [ ] 2i. Stopping rule: steps 3–5 stay paused until 2g/2h are resolved.
+   - [x] 2i. Resolved 2026-11-20: the toy line for access is closed (the auxiliary failed; access untested, not refuted). Steps 3–5 are unpaused; the access test moves to step 3 (ELF).
    - **Prediction:** the route follows access, not form (SC-readable → N; SC-zeroed readout → F), on absolute effects.
    - **Fail** (the route follows form) → the core account is refuted; reinterpret steps 3–5 before running them.
-3. [ ] **ELF decode-access manipulation:** a brief fine-tune that lets the decode pass read SC (vs a matched fine-tune that keeps it zeroed).
+3. [ ] **ELF decode-access manipulation (now the primary access test):** a brief fine-tune that lets the decode pass read SC (vs a matched fine-tune that keeps it zeroed).
    - **Prediction:** N rises.
    - **Validity:** decode fluency drop ≤ 20% vs the matched control.
    - ~6 GPU-h.

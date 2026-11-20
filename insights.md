@@ -428,3 +428,9 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
   - **P1's auxiliary ("toy states uninformative at commitment, feedback available") was false.** The account was not tested by family T.
   - Cause: two candidate answers in a 128-d embedding space make the mode decodable from a tiny signal, so the effective SNR is far above Lafa's (150k vocabulary, noise 4.0).
   - Red-team #4 (measure state informativeness) was correct; not adopting it was my error.
+- **v3 calibration (regime diagnostics only, seeds 100–101, σ ∈ {2, 4, 8}; `toy/results_T2/calib_v3.txt`): the pre-set rule is not met at any σ.**
+  - σ = 8 meets t90 ≥ 0.3 (0.375) and acc_state < 0.8 at 50% committed (0.62), but the decode-zeroed commit-at-decode peaks at 0.19 (cont) / 0.14 (exp) at t_end 0.25, below 0.2.
+  - Two structural findings:
+    - (i) the toy commits at step 0 at every σ (62–78% committed before any feedback exists; the pure-noise state's direction breaks the symmetry);
+    - (ii) with an ELF-style decode pass, SC barely matters (SC-off valid 0.78–0.99 vs SC-on 0.98–1.00). The bidirectional decode pass itself coordinates the positions, which is consistent with ELF's design but leaves little SC effect to decompose.
+- **Decision (2026-11-20):** stop tuning the toy for the access test. Further redesign would be a garden of forking paths, with auxiliaries failing repeatedly. The access question moves to the real model where SC matters: the ELF decode-access manipulation (Phase 13 step 3; SC effect there is ≈ 4 nats). Family T is reported as: refuted as pre-registered, the auxiliary false, the access question untested in the toy.
