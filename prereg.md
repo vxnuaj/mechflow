@@ -564,6 +564,12 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | **GO** (user decision, 2026-11-16), reframed around the coordination mechanism (`phase8_memo.md`). Primary = {P1, P2, H2-N}, Holm over 3 | 2026-11-16 |
 
 ## 12. Deviations / Change Log
+- **2026-11-21: E4 / text-type implementation fixes (before any E4 or text-type data):**
+  - (i) Fine-tunes: batch 64 × L 1024 OOMs on an A40, so they use gradient accumulation (micro-batch 16 × 4). The optimizer steps (3,000), effective batch (64), data and lr are unchanged; gradients are identical up to rounding.
+  - (ii) Decompositions and the base reference use sampling batch 16 instead of 64 (fp32 OOM); the noise draw is unchanged, so the results are the same samples.
+  - (iii) Held-out CE batch 8.
+  - (iv) The text-type jobs failed to find the Lafa weights (the scheduler's HF_HUB_CACHE pointed at the ELF cache); the path was fixed.
+  - Partial outputs from the failed attempts were deleted before rerunning.
 - **2026-11-21: family P outcome (prereg §2.17; frozen `analysis/probe.py`; 100 test docs per grid): INCONCLUSIVE** (Q1 undetermined, Q2 holds). Validity ok: identity true; last-step probe accuracy 0.26 / 0.32.
   - **Q2 (uniform; risky):** mid − late gap +0.067 [0.052, 0.083], holds. The A − B gap (what the neighbours' feedback adds to j's decodability of their final tokens) peaks at steps 6–11 (≈ 0.10) and decays to ≈ 0.015 by step 31 as the states become clean.
   - **Q1 (warp):** late > 0 holds (+0.074 [0.060, 0.088]), but late − early is +0.013 [−0.003, +0.029] (undetermined). Under warp the gap is positive from step 0 (0.04) and rises to 0.084 at steps 22–27.

@@ -1,7 +1,7 @@
 [
  {
   "name": "tt_math_x",
-  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=0 SLURM_ARRAY_TASK_COUNT=1 && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_math_explore.jsonl --job jobs_h2n:h2n_task --out results/tt_math_explore --workers-per-gpu 2 --dtype bf16 && test $(cat results/tt_math_explore/shard_*.jsonl | wc -l) -ge 100 && touch results/tt_math_explore/DONE",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=0 SLURM_ARRAY_TASK_COUNT=1 && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_math_explore.jsonl --job jobs_h2n:h2n_task --out results/tt_math_explore --workers-per-gpu 2 --dtype bf16 && test $(cat results/tt_math_explore/shard_*.jsonl | wc -l) -ge 100 && touch results/tt_math_explore/DONE",
   "done": "/scratch1/$USER/mechflow/src/results/tt_math_explore/DONE",
   "deps": [],
   "gres": "gpu:a40:1",
@@ -10,7 +10,7 @@
  },
  {
   "name": "tt_code_x",
-  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=0 SLURM_ARRAY_TASK_COUNT=1 && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_code_explore.jsonl --job jobs_h2n:h2n_task --out results/tt_code_explore --workers-per-gpu 2 --dtype bf16 && test $(cat results/tt_code_explore/shard_*.jsonl | wc -l) -ge 100 && touch results/tt_code_explore/DONE",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=0 SLURM_ARRAY_TASK_COUNT=1 && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_code_explore.jsonl --job jobs_h2n:h2n_task --out results/tt_code_explore --workers-per-gpu 2 --dtype bf16 && test $(cat results/tt_code_explore/shard_*.jsonl | wc -l) -ge 100 && touch results/tt_code_explore/DONE",
   "done": "/scratch1/$USER/mechflow/src/results/tt_code_explore/DONE",
   "deps": [],
   "gres": "gpu:a40:1",

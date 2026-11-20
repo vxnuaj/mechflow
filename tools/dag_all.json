@@ -1,7 +1,7 @@
 [
  {
   "name": "tt_math_x",
-  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=0 SLURM_ARRAY_TASK_COUNT=1 && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_math_explore.jsonl --job jobs_h2n:h2n_task --out results/tt_math_explore --workers-per-gpu 2 --dtype bf16 && test $(cat results/tt_math_explore/shard_*.jsonl | wc -l) -ge 100 && touch results/tt_math_explore/DONE",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=0 SLURM_ARRAY_TASK_COUNT=1 && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_math_explore.jsonl --job jobs_h2n:h2n_task --out results/tt_math_explore --workers-per-gpu 2 --dtype bf16 && test $(cat results/tt_math_explore/shard_*.jsonl | wc -l) -ge 100 && touch results/tt_math_explore/DONE",
   "done": "/scratch1/$USER/mechflow/src/results/tt_math_explore/DONE",
   "deps": [],
   "gres": "gpu:a40:1",
@@ -10,7 +10,7 @@
  },
  {
   "name": "tt_code_x",
-  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=0 SLURM_ARRAY_TASK_COUNT=1 && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_code_explore.jsonl --job jobs_h2n:h2n_task --out results/tt_code_explore --workers-per-gpu 2 --dtype bf16 && test $(cat results/tt_code_explore/shard_*.jsonl | wc -l) -ge 100 && touch results/tt_code_explore/DONE",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=0 SLURM_ARRAY_TASK_COUNT=1 && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_code_explore.jsonl --job jobs_h2n:h2n_task --out results/tt_code_explore --workers-per-gpu 2 --dtype bf16 && test $(cat results/tt_code_explore/shard_*.jsonl | wc -l) -ge 100 && touch results/tt_code_explore/DONE",
   "done": "/scratch1/$USER/mechflow/src/results/tt_code_explore/DONE",
   "deps": [],
   "gres": "gpu:a40:1",
@@ -19,14 +19,14 @@
  },
  {
   "name": "e4_base",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --out /scratch1/$USER/mechflow/e4dbg/base_ref --n_steps 32 --access zero --plain_only --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --out /scratch1/$USER/mechflow/e4dbg/base_ref --n_steps 32 --access zero --plain_only --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/base_ref/32_zero/plain_on.json",
   "deps": [],
   "gres": "gpu:a40:1"
  },
  {
   "name": "e4ft_r0",
-  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 0 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 0 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
   "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s0/checkpoint_3000",
   "deps": [],
   "gres": "gpu:a40:1",
@@ -35,7 +35,7 @@
  },
  {
   "name": "e4ce_r0",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s0/heldout_ce.json",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s0/heldout_ce.json --bs 8",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s0/heldout_ce.json",
   "deps": [
    "e4ft_r0"
@@ -44,7 +44,7 @@
  },
  {
   "name": "e4d_r0_32read",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s0 --n_steps 32 --access read --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s0 --n_steps 32 --access read --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s0/32_read/meta.json",
   "deps": [
    "e4ft_r0"
@@ -64,7 +64,7 @@
  },
  {
   "name": "e4d_r0_32zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s0 --n_steps 32 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s0 --n_steps 32 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s0/32_zero/meta.json",
   "deps": [
    "e4ft_r0"
@@ -84,7 +84,7 @@
  },
  {
   "name": "e4d_r0_24read",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s0 --n_steps 24 --access read --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s0 --n_steps 24 --access read --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s0/24_read/meta.json",
   "deps": [
    "e4ft_r0"
@@ -104,7 +104,7 @@
  },
  {
   "name": "e4d_r0_24zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s0 --n_steps 24 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s0 --n_steps 24 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s0/24_zero/meta.json",
   "deps": [
    "e4ft_r0"
@@ -124,7 +124,7 @@
  },
  {
   "name": "e4d_r0_24shuf",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s0 --n_steps 24 --access shuf --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s0 --n_steps 24 --access shuf --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s0/24_shuf/meta.json",
   "deps": [
    "e4ft_r0"
@@ -144,7 +144,7 @@
  },
  {
   "name": "e4ft_z0",
-  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 0 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s0 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 0 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s0 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
   "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s0/checkpoint_3000",
   "deps": [],
   "gres": "gpu:a40:1",
@@ -153,7 +153,7 @@
  },
  {
   "name": "e4ce_z0",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s0 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s0/heldout_ce.json",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s0 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s0/heldout_ce.json --bs 8",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s0/heldout_ce.json",
   "deps": [
    "e4ft_z0"
@@ -162,7 +162,7 @@
  },
  {
   "name": "e4d_z0_32zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s0 --n_steps 32 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s0 --n_steps 32 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s0/32_zero/meta.json",
   "deps": [
    "e4ft_z0"
@@ -182,7 +182,7 @@
  },
  {
   "name": "e4d_z0_24zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s0 --n_steps 24 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s0 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s0 --n_steps 24 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s0/24_zero/meta.json",
   "deps": [
    "e4ft_z0"
@@ -210,7 +210,7 @@
  },
  {
   "name": "e4ft_r1",
-  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 1 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 1 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
   "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s1/checkpoint_3000",
   "deps": [],
   "gres": "gpu:a40:1",
@@ -219,7 +219,7 @@
  },
  {
   "name": "e4ce_r1",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s1/heldout_ce.json",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s1/heldout_ce.json --bs 8",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s1/heldout_ce.json",
   "deps": [
    "e4ft_r1"
@@ -228,7 +228,7 @@
  },
  {
   "name": "e4d_r1_32read",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s1 --n_steps 32 --access read --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s1 --n_steps 32 --access read --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s1/32_read/meta.json",
   "deps": [
    "e4ft_r1"
@@ -248,7 +248,7 @@
  },
  {
   "name": "e4d_r1_32zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s1 --n_steps 32 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s1 --n_steps 32 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s1/32_zero/meta.json",
   "deps": [
    "e4ft_r1"
@@ -268,7 +268,7 @@
  },
  {
   "name": "e4d_r1_24read",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s1 --n_steps 24 --access read --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s1 --n_steps 24 --access read --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s1/24_read/meta.json",
   "deps": [
    "e4ft_r1"
@@ -288,7 +288,7 @@
  },
  {
   "name": "e4d_r1_24zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s1 --n_steps 24 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s1 --n_steps 24 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s1/24_zero/meta.json",
   "deps": [
    "e4ft_r1"
@@ -308,7 +308,7 @@
  },
  {
   "name": "e4d_r1_24shuf",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s1 --n_steps 24 --access shuf --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s1 --n_steps 24 --access shuf --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s1/24_shuf/meta.json",
   "deps": [
    "e4ft_r1"
@@ -328,7 +328,7 @@
  },
  {
   "name": "e4ft_z1",
-  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 1 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s1 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 1 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s1 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
   "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s1/checkpoint_3000",
   "deps": [],
   "gres": "gpu:a40:1",
@@ -337,7 +337,7 @@
  },
  {
   "name": "e4ce_z1",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s1 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s1/heldout_ce.json",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s1 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s1/heldout_ce.json --bs 8",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s1/heldout_ce.json",
   "deps": [
    "e4ft_z1"
@@ -346,7 +346,7 @@
  },
  {
   "name": "e4d_z1_32zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s1 --n_steps 32 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s1 --n_steps 32 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s1/32_zero/meta.json",
   "deps": [
    "e4ft_z1"
@@ -366,7 +366,7 @@
  },
  {
   "name": "e4d_z1_24zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s1 --n_steps 24 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s1 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s1 --n_steps 24 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s1/24_zero/meta.json",
   "deps": [
    "e4ft_z1"
@@ -394,7 +394,7 @@
  },
  {
   "name": "e4ft_r2",
-  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 2 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 2 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
   "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s2/checkpoint_3000",
   "deps": [],
   "gres": "gpu:a40:1",
@@ -403,7 +403,7 @@
  },
  {
   "name": "e4ce_r2",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s2/heldout_ce.json",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s2/heldout_ce.json --bs 8",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s2/heldout_ce.json",
   "deps": [
    "e4ft_r2"
@@ -412,7 +412,7 @@
  },
  {
   "name": "e4d_r2_32read",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s2 --n_steps 32 --access read --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s2 --n_steps 32 --access read --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s2/32_read/meta.json",
   "deps": [
    "e4ft_r2"
@@ -432,7 +432,7 @@
  },
  {
   "name": "e4d_r2_32zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s2 --n_steps 32 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s2 --n_steps 32 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s2/32_zero/meta.json",
   "deps": [
    "e4ft_r2"
@@ -452,7 +452,7 @@
  },
  {
   "name": "e4d_r2_24read",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s2 --n_steps 24 --access read --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s2 --n_steps 24 --access read --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s2/24_read/meta.json",
   "deps": [
    "e4ft_r2"
@@ -472,7 +472,7 @@
  },
  {
   "name": "e4d_r2_24zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s2 --n_steps 24 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s2 --n_steps 24 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s2/24_zero/meta.json",
   "deps": [
    "e4ft_r2"
@@ -492,7 +492,7 @@
  },
  {
   "name": "e4d_r2_24shuf",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s2 --n_steps 24 --access shuf --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s2 --n_steps 24 --access shuf --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s2/24_shuf/meta.json",
   "deps": [
    "e4ft_r2"
@@ -512,7 +512,7 @@
  },
  {
   "name": "e4ft_z2",
-  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 2 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s2 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 2 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s2 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
   "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s2/checkpoint_3000",
   "deps": [],
   "gres": "gpu:a40:1",
@@ -521,7 +521,7 @@
  },
  {
   "name": "e4ce_z2",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s2 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s2/heldout_ce.json",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s2 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s2/heldout_ce.json --bs 8",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s2/heldout_ce.json",
   "deps": [
    "e4ft_z2"
@@ -530,7 +530,7 @@
  },
  {
   "name": "e4d_z2_32zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s2 --n_steps 32 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s2 --n_steps 32 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s2/32_zero/meta.json",
   "deps": [
    "e4ft_z2"
@@ -550,7 +550,7 @@
  },
  {
   "name": "e4d_z2_24zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s2 --n_steps 24 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s2 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s2 --n_steps 24 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s2/24_zero/meta.json",
   "deps": [
    "e4ft_z2"
@@ -578,7 +578,7 @@
  },
  {
   "name": "e4ft_r3",
-  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 3 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 3 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
   "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s3/checkpoint_3000",
   "deps": [],
   "gres": "gpu:a40:1",
@@ -587,7 +587,7 @@
  },
  {
   "name": "e4ce_r3",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s3/heldout_ce.json",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s3/heldout_ce.json --bs 8",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s3/heldout_ce.json",
   "deps": [
    "e4ft_r3"
@@ -596,7 +596,7 @@
  },
  {
   "name": "e4d_r3_32read",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s3 --n_steps 32 --access read --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s3 --n_steps 32 --access read --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s3/32_read/meta.json",
   "deps": [
    "e4ft_r3"
@@ -616,7 +616,7 @@
  },
  {
   "name": "e4d_r3_32zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s3 --n_steps 32 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s3 --n_steps 32 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s3/32_zero/meta.json",
   "deps": [
    "e4ft_r3"
@@ -636,7 +636,7 @@
  },
  {
   "name": "e4d_r3_24read",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s3 --n_steps 24 --access read --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s3 --n_steps 24 --access read --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s3/24_read/meta.json",
   "deps": [
    "e4ft_r3"
@@ -656,7 +656,7 @@
  },
  {
   "name": "e4d_r3_24zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s3 --n_steps 24 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s3 --n_steps 24 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s3/24_zero/meta.json",
   "deps": [
    "e4ft_r3"
@@ -676,7 +676,7 @@
  },
  {
   "name": "e4d_r3_24shuf",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s3 --n_steps 24 --access shuf --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s3 --n_steps 24 --access shuf --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s3/24_shuf/meta.json",
   "deps": [
    "e4ft_r3"
@@ -696,7 +696,7 @@
  },
  {
   "name": "e4ft_z3",
-  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 3 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s3 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 3 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s3 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
   "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s3/checkpoint_3000",
   "deps": [],
   "gres": "gpu:a40:1",
@@ -705,7 +705,7 @@
  },
  {
   "name": "e4ce_z3",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s3 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s3/heldout_ce.json",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s3 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s3/heldout_ce.json --bs 8",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s3/heldout_ce.json",
   "deps": [
    "e4ft_z3"
@@ -714,7 +714,7 @@
  },
  {
   "name": "e4d_z3_32zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s3 --n_steps 32 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s3 --n_steps 32 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s3/32_zero/meta.json",
   "deps": [
    "e4ft_z3"
@@ -734,7 +734,7 @@
  },
  {
   "name": "e4d_z3_24zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s3 --n_steps 24 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s3 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s3 --n_steps 24 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s3/24_zero/meta.json",
   "deps": [
    "e4ft_z3"
@@ -762,7 +762,7 @@
  },
  {
   "name": "e4ft_r4",
-  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 4 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 4 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
   "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s4/checkpoint_3000",
   "deps": [],
   "gres": "gpu:a40:1",
@@ -771,7 +771,7 @@
  },
  {
   "name": "e4ce_r4",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s4/heldout_ce.json",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s4/heldout_ce.json --bs 8",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s4/heldout_ce.json",
   "deps": [
    "e4ft_r4"
@@ -780,7 +780,7 @@
  },
  {
   "name": "e4d_r4_32read",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s4 --n_steps 32 --access read --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s4 --n_steps 32 --access read --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s4/32_read/meta.json",
   "deps": [
    "e4ft_r4"
@@ -800,7 +800,7 @@
  },
  {
   "name": "e4d_r4_32zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s4 --n_steps 32 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s4 --n_steps 32 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s4/32_zero/meta.json",
   "deps": [
    "e4ft_r4"
@@ -820,7 +820,7 @@
  },
  {
   "name": "e4d_r4_24read",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s4 --n_steps 24 --access read --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s4 --n_steps 24 --access read --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s4/24_read/meta.json",
   "deps": [
    "e4ft_r4"
@@ -840,7 +840,7 @@
  },
  {
   "name": "e4d_r4_24zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s4 --n_steps 24 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s4 --n_steps 24 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s4/24_zero/meta.json",
   "deps": [
    "e4ft_r4"
@@ -860,7 +860,7 @@
  },
  {
   "name": "e4d_r4_24shuf",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s4 --n_steps 24 --access shuf --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s4 --n_steps 24 --access shuf --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s4/24_shuf/meta.json",
   "deps": [
    "e4ft_r4"
@@ -880,7 +880,7 @@
  },
  {
   "name": "e4ft_z4",
-  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 4 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s4 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 4 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s4 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
   "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s4/checkpoint_3000",
   "deps": [],
   "gres": "gpu:a40:1",
@@ -889,7 +889,7 @@
  },
  {
   "name": "e4ce_z4",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s4 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s4/heldout_ce.json",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s4 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s4/heldout_ce.json --bs 8",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s4/heldout_ce.json",
   "deps": [
    "e4ft_z4"
@@ -898,7 +898,7 @@
  },
  {
   "name": "e4d_z4_32zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s4 --n_steps 32 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s4 --n_steps 32 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s4/32_zero/meta.json",
   "deps": [
    "e4ft_z4"
@@ -918,7 +918,7 @@
  },
  {
   "name": "e4d_z4_24zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s4 --n_steps 24 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s4 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s4 --n_steps 24 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s4/24_zero/meta.json",
   "deps": [
    "e4ft_z4"
@@ -946,7 +946,7 @@
  },
  {
   "name": "e4ft_r5",
-  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 5 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 5 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
   "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s5/checkpoint_3000",
   "deps": [],
   "gres": "gpu:a40:1",
@@ -955,7 +955,7 @@
  },
  {
   "name": "e4ce_r5",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s5/heldout_ce.json",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s5/heldout_ce.json --bs 8",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s5/heldout_ce.json",
   "deps": [
    "e4ft_r5"
@@ -964,7 +964,7 @@
  },
  {
   "name": "e4d_r5_32read",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s5 --n_steps 32 --access read --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s5 --n_steps 32 --access read --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s5/32_read/meta.json",
   "deps": [
    "e4ft_r5"
@@ -984,7 +984,7 @@
  },
  {
   "name": "e4d_r5_32zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s5 --n_steps 32 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s5 --n_steps 32 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s5/32_zero/meta.json",
   "deps": [
    "e4ft_r5"
@@ -1004,7 +1004,7 @@
  },
  {
   "name": "e4d_r5_24read",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s5 --n_steps 24 --access read --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s5 --n_steps 24 --access read --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s5/24_read/meta.json",
   "deps": [
    "e4ft_r5"
@@ -1024,7 +1024,7 @@
  },
  {
   "name": "e4d_r5_24zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s5 --n_steps 24 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s5 --n_steps 24 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s5/24_zero/meta.json",
   "deps": [
    "e4ft_r5"
@@ -1044,7 +1044,7 @@
  },
  {
   "name": "e4d_r5_24shuf",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s5 --n_steps 24 --access shuf --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s5 --n_steps 24 --access shuf --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s5/24_shuf/meta.json",
   "deps": [
    "e4ft_r5"
@@ -1064,7 +1064,7 @@
  },
  {
   "name": "e4ft_z5",
-  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 5 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s5 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 5 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s5 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
   "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s5/checkpoint_3000",
   "deps": [],
   "gres": "gpu:a40:1",
@@ -1073,7 +1073,7 @@
  },
  {
   "name": "e4ce_z5",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s5 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s5/heldout_ce.json",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s5 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s5/heldout_ce.json --bs 8",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s5/heldout_ce.json",
   "deps": [
    "e4ft_z5"
@@ -1082,7 +1082,7 @@
  },
  {
   "name": "e4d_z5_32zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s5 --n_steps 32 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s5 --n_steps 32 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s5/32_zero/meta.json",
   "deps": [
    "e4ft_z5"
@@ -1102,7 +1102,7 @@
  },
  {
   "name": "e4d_z5_24zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s5 --n_steps 24 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s5 --n_steps 24 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s5/24_zero/meta.json",
   "deps": [
    "e4ft_z5"
@@ -1130,7 +1130,7 @@
  },
  {
   "name": "e4ft_r6",
-  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 6 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 6 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
   "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s6/checkpoint_3000",
   "deps": [],
   "gres": "gpu:a40:1",
@@ -1139,7 +1139,7 @@
  },
  {
   "name": "e4ce_r6",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s6/heldout_ce.json",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s6/heldout_ce.json --bs 8",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s6/heldout_ce.json",
   "deps": [
    "e4ft_r6"
@@ -1148,7 +1148,7 @@
  },
  {
   "name": "e4d_r6_32read",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s6 --n_steps 32 --access read --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s6 --n_steps 32 --access read --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s6/32_read/meta.json",
   "deps": [
    "e4ft_r6"
@@ -1168,7 +1168,7 @@
  },
  {
   "name": "e4d_r6_32zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s6 --n_steps 32 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s6 --n_steps 32 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s6/32_zero/meta.json",
   "deps": [
    "e4ft_r6"
@@ -1188,7 +1188,7 @@
  },
  {
   "name": "e4d_r6_24read",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s6 --n_steps 24 --access read --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s6 --n_steps 24 --access read --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s6/24_read/meta.json",
   "deps": [
    "e4ft_r6"
@@ -1208,7 +1208,7 @@
  },
  {
   "name": "e4d_r6_24zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s6 --n_steps 24 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s6 --n_steps 24 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s6/24_zero/meta.json",
   "deps": [
    "e4ft_r6"
@@ -1228,7 +1228,7 @@
  },
  {
   "name": "e4d_r6_24shuf",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s6 --n_steps 24 --access shuf --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s6 --n_steps 24 --access shuf --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s6/24_shuf/meta.json",
   "deps": [
    "e4ft_r6"
@@ -1248,7 +1248,7 @@
  },
  {
   "name": "e4ft_z6",
-  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 6 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s6 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 6 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s6 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
   "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s6/checkpoint_3000",
   "deps": [],
   "gres": "gpu:a40:1",
@@ -1257,7 +1257,7 @@
  },
  {
   "name": "e4ce_z6",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s6 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s6/heldout_ce.json",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s6 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s6/heldout_ce.json --bs 8",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s6/heldout_ce.json",
   "deps": [
    "e4ft_z6"
@@ -1266,7 +1266,7 @@
  },
  {
   "name": "e4d_z6_32zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s6 --n_steps 32 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s6 --n_steps 32 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s6/32_zero/meta.json",
   "deps": [
    "e4ft_z6"
@@ -1286,7 +1286,7 @@
  },
  {
   "name": "e4d_z6_24zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s6 --n_steps 24 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s6 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s6 --n_steps 24 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s6/24_zero/meta.json",
   "deps": [
    "e4ft_z6"
@@ -1314,7 +1314,7 @@
  },
  {
   "name": "e4ft_r7",
-  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 7 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 7 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
   "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s7/checkpoint_3000",
   "deps": [],
   "gres": "gpu:a40:1",
@@ -1323,7 +1323,7 @@
  },
  {
   "name": "e4ce_r7",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s7/heldout_ce.json",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s7/heldout_ce.json --bs 8",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s7/heldout_ce.json",
   "deps": [
    "e4ft_r7"
@@ -1332,7 +1332,7 @@
  },
  {
   "name": "e4d_r7_32read",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s7 --n_steps 32 --access read --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s7 --n_steps 32 --access read --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s7/32_read/meta.json",
   "deps": [
    "e4ft_r7"
@@ -1352,7 +1352,7 @@
  },
  {
   "name": "e4d_r7_32zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s7 --n_steps 32 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s7 --n_steps 32 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s7/32_zero/meta.json",
   "deps": [
    "e4ft_r7"
@@ -1372,7 +1372,7 @@
  },
  {
   "name": "e4d_r7_24read",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s7 --n_steps 24 --access read --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s7 --n_steps 24 --access read --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s7/24_read/meta.json",
   "deps": [
    "e4ft_r7"
@@ -1392,7 +1392,7 @@
  },
  {
   "name": "e4d_r7_24zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s7 --n_steps 24 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s7 --n_steps 24 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s7/24_zero/meta.json",
   "deps": [
    "e4ft_r7"
@@ -1412,7 +1412,7 @@
  },
  {
   "name": "e4d_r7_24shuf",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s7 --n_steps 24 --access shuf --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/readable_s7 --n_steps 24 --access shuf --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/readable_s7/24_shuf/meta.json",
   "deps": [
    "e4ft_r7"
@@ -1432,7 +1432,7 @@
  },
  {
   "name": "e4ft_z7",
-  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 7 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s7 --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+  "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 7 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s7 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
   "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s7/checkpoint_3000",
   "deps": [],
   "gres": "gpu:a40:1",
@@ -1441,7 +1441,7 @@
  },
  {
   "name": "e4ce_z7",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s7 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s7/heldout_ce.json",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_heldout_ce.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s7 --data /scratch1/$USER/data/owt_t5 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s7/heldout_ce.json --bs 8",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s7/heldout_ce.json",
   "deps": [
    "e4ft_z7"
@@ -1450,7 +1450,7 @@
  },
  {
   "name": "e4d_z7_32zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s7 --n_steps 32 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s7 --n_steps 32 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s7/32_zero/meta.json",
   "deps": [
    "e4ft_z7"
@@ -1470,7 +1470,7 @@
  },
  {
   "name": "e4d_z7_24zero",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s7 --n_steps 24 --access zero --n 256 --seed 2",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python elf_access_decomp.py --hcfrl /scratch1/$USER/hcfrl --ckpt /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s7 --out /scratch1/$USER/mechflow/e4dbg/e4/zeroed_s7 --n_steps 24 --access zero --n 256 --bs 16 --seed 2",
   "done": "/scratch1/$USER/mechflow/e4dbg/e4/zeroed_s7/24_zero/meta.json",
   "deps": [
    "e4ft_z7"

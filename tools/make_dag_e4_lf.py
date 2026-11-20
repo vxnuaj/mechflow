@@ -7,20 +7,20 @@ MIS = f"$(ls -d {U}/mechflow/hf_home/hub/models--mistralai--Mistral-7B-Instruct-
 LFP = f"$(ls -d {U}/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/)"
 G2 = f"{U}/hf_cache/hub/models--openai-community--gpt2/snapshots/607a30d783dfa663caf39e06633721c8d4cfcd7e"
 R = f"{U}/mechflow/e4dbg"; L = f"{U}/mechflow/lfdbg"; GPU = "gpu:a40:1"
-T = [dict(name="e4_base", cmd=f"{PH} elf_access_decomp.py --hcfrl {HC} --ckpt {ELF} --out {R}/base_ref --n_steps 32 --access zero --plain_only --n 256 --seed 2",
+T = [dict(name="e4_base", cmd=f"{PH} elf_access_decomp.py --hcfrl {HC} --ckpt {ELF} --out {R}/base_ref --n_steps 32 --access zero --plain_only --n 256 --bs 16 --seed 2",
           done=f"{R}/base_ref/32_zero/plain_on.json", deps=[], gres=GPU)]
 judges = []; lf_chunks = []
 for s in range(8):
     for arm in ("readable", "zeroed"):
         ft = f"e4ft_{arm[0]}{s}"; ck = f"{R}/ft/{arm}_s{s}"
-        T.append(dict(name=ft, cmd=f"FT_SAVE_FREQ=0.2 {PH} elf_ft_decode.py --hcfrl {HC} --init {ELF} --data {U}/data/owt_t5 --arm {arm} --seed {s} --out {ck} --steps 3000 --batch 64 --max_length 1024 --lr 2e-5",
+        T.append(dict(name=ft, cmd=f"FT_SAVE_FREQ=0.2 {PH} elf_ft_decode.py --hcfrl {HC} --init {ELF} --data {U}/data/owt_t5 --arm {arm} --seed {s} --out {ck} --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
                       done=f"{ck}/checkpoint_3000", deps=[], gres=GPU, max_tries=10, mem="64G"))
-        T.append(dict(name=f"e4ce_{arm[0]}{s}", cmd=f"{PH} elf_heldout_ce.py --hcfrl {HC} --ckpt {ck} --data {U}/data/owt_t5 --out {R}/e4/{arm}_s{s}/heldout_ce.json",
+        T.append(dict(name=f"e4ce_{arm[0]}{s}", cmd=f"{PH} elf_heldout_ce.py --hcfrl {HC} --ckpt {ck} --data {U}/data/owt_t5 --out {R}/e4/{arm}_s{s}/heldout_ce.json --bs 8",
                       done=f"{R}/e4/{arm}_s{s}/heldout_ce.json", deps=[ft], gres=GPU))
         cfgs = [("32", "read"), ("32", "zero"), ("24", "read"), ("24", "zero"), ("24", "shuf")] if arm == "readable" else [("32", "zero"), ("24", "zero")]
         for n, acc in cfgs:
             dn = f"e4d_{arm[0]}{s}_{n}{acc}"; d = f"{R}/e4/{arm}_s{s}/{n}_{acc}"
-            T.append(dict(name=dn, cmd=f"{PH} elf_access_decomp.py --hcfrl {HC} --ckpt {ck} --out {R}/e4/{arm}_s{s} --n_steps {n} --access {acc} --n 256 --seed 2",
+            T.append(dict(name=dn, cmd=f"{PH} elf_access_decomp.py --hcfrl {HC} --ckpt {ck} --out {R}/e4/{arm}_s{s} --n_steps {n} --access {acc} --n 256 --bs 16 --seed 2",
                           done=f"{d}/meta.json", deps=[ft], gres=GPU))
             jn = f"e4j_{arm[0]}{s}_{n}{acc}"; judges.append(jn)
             T.append(dict(name=jn, cmd=f"T5_PATH={T5} JUDGE_PATH={MIS} JUDGE_DEVICE=cuda REF_FILE={R}/base_ref/32_zero/plain_on.json {PM} elf_judge_fixedctx.py {d}/cells.json",
