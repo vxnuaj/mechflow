@@ -380,7 +380,28 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
    - Original note: OWT data is NOT on CARC (only game24/countdown in hcfrl/data). Download an OWT shard for the fine-tune. Check whether ELF's OWT training data and `hcfrl/elf/train_step.py` support a short decoder-branch fine-tune (SC readable at decode w.p. 0.5 vs a zeroed control; same data, steps and seed).
    - [x] 3c-i. Write `analysis/elf_access.py` (frozen rule) and test it on synthetic scenarios (account true; readout-access-alone; training adaptation; partial identifiability; failed manipulation check).
    - [x] 3c-ii-a. Prereg §2.13 and the GPT red-team prompt written (`prompts/gpt_redteam_elf_access.md`). The rule was checked on 8 synthetic scenarios; M1/M2 failure criteria were added before freezing.
-   - [ ] 3c-ii-b. The user runs the red-team in GPT; Claude verifies each point against the code and logs adopted changes in prereg §12 before data.
+   - [x] 3c-ii-b. GPT red-team received (2026-11-20) and verified against the code.
+     - **Adopted:**
+       - C4 (confirmed: the judge context came from each config's own O1N1F1; now a common reference = base ELF-B SC-on tokens for the same noise);
+       - C5/M12 uptake gate (decode-feedback zeroing changes ≥ 10% of tokens at n = 24, per seed) + M14 shuffled-feedback control (new mandatory M3);
+       - C1 information measure (decoder log-prob of the eventual token, per seed, global and |i − j| ≤ 16);
+       - M5/M15 8 fine-tune seeds per arm (MDE ≈ 0.20 nats from E3b variance vs SESOI 0.41);
+       - M6 joint per-sample contrast; M7 explicit missingness (common sample set; > 5% missing → NOT TESTABLE); M10 minimum effect explicit in M1; M11 Q = Δ32 − 0.5·Δ24 tested directly; M13 positive-T gate dropped;
+       - M3 continuous identity checks (logit max-diff); M9 per-seed regime; M4 neighbour-window regime;
+       - M8 fluency → native decoder CE on held-out OWT;
+       - minor: grid/seed asserts, explicit path parsing, boundary-case tests.
+     - **Rejected:**
+       - C2: the truncated state is in distribution. The decoder is trained on λ·x + (1 − λ)·5·e with λ ~ sigmoid(N(0.8, 0.8)); the flow state at t = 0.35 has noise/signal 3.7 ≈ λ 0.58 ≈ the 27th percentile.
+     - **Partly adopted:**
+       - C3: the account *is* information-dependent use; claim narrowed; the rivals are "access regardless of information" and "any new input" (shuffled control);
+       - M1: same-state SC training is standard; limitation noted; uptake measured at inference;
+       - M2: report all 8 cells + interactions.
+   - [ ] 3c-ii-c. Implement E4 v2:
+     - `elf_judge_fixedctx.py --ref`; decomposition adds access=shuf, regime log-probs, uptake rate, logit identity diffs and base-model reference tokens;
+     - `src/elf_heldout_ce.py` (fluency/uptake on held-out OWT);
+     - analysis v2 + synthetic/boundary tests;
+     - prereg amendment; hash; push.
+   - [ ] 3c-ii-d. Optional second red-team pass on v2 (the user's call).
    - [ ] 3c-iii. Code and smoke-test steps 4 (LangFlow) and 5 (Plaid) decompositions on CPU so that one Prime session runs everything.
    - [ ] 3c-iv. Prime session: fine-tunes (readable, zeroed; 3,000 steps each) → decompositions (n_steps {32, 24} × access {read, zero} for readable; zero for zeroed; n = 256, seed 2) → Mistral fixed-context judge, plus LangFlow and Plaid. Verified-termination timer.
    - [ ] 3c. Pre-register the design: fine-tune readable vs zeroed × sampling t_end {1.0, truncated} × inference access, interaction prediction (insights §26). Predictions from 3a; rule checked on synthetic scenarios incl. partial identifiability; fixed-context outcome; fluency validity ≤ 20% drop; within-model readable-vs-zeroed-at-inference contrast). GPT red-team. GPU run (~6 GPU-h; Prime or CARC, the user's choice).
