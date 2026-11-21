@@ -14,7 +14,7 @@ for s in range(8):
     for arm in ("readable", "zeroed"):
         ft = f"e4ft_{arm[0]}{s}"; ck = f"{R}/ft/{arm}_s{s}"
         T.append(dict(name=ft, cmd=f"FT_SAVE_FREQ=0.2 {PH} elf_ft_decode.py --hcfrl {HC} --init {ELF} --data {U}/data/owt_t5 --arm {arm} --seed {s} --out {ck} --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
-                      done=f"{ck}/checkpoint_3000", deps=[], gres=GPU, max_tries=10, mem="64G"))
+                      done=f"{ck}/checkpoint_12000", deps=[], gres=GPU, max_tries=10, mem="64G"))
         T.append(dict(name=f"e4ce_{arm[0]}{s}", cmd=f"{PH} elf_heldout_ce.py --hcfrl {HC} --ckpt {ck} --data {U}/data/owt_t5 --out {R}/e4/{arm}_s{s}/heldout_ce.json --bs 8",
                       done=f"{R}/e4/{arm}_s{s}/heldout_ce.json", deps=[ft], gres=GPU))
         cfgs = [("32", "read"), ("32", "zero"), ("24", "read"), ("24", "zero"), ("24", "shuf")] if arm == "readable" else [("32", "zero"), ("24", "zero")]

@@ -27,7 +27,7 @@
  {
   "name": "e4ft_r0",
   "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 0 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s0 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
-  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s0/checkpoint_3000",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s0/checkpoint_12000",
   "deps": [],
   "gres": "gpu:a40:1",
   "max_tries": 10,
@@ -145,7 +145,7 @@
  {
   "name": "e4ft_z0",
   "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 0 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s0 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
-  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s0/checkpoint_3000",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s0/checkpoint_12000",
   "deps": [],
   "gres": "gpu:a40:1",
   "max_tries": 10,
@@ -211,7 +211,7 @@
  {
   "name": "e4ft_r1",
   "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 1 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
-  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s1/checkpoint_3000",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s1/checkpoint_12000",
   "deps": [],
   "gres": "gpu:a40:1",
   "max_tries": 10,
@@ -329,7 +329,7 @@
  {
   "name": "e4ft_z1",
   "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 1 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s1 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
-  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s1/checkpoint_3000",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s1/checkpoint_12000",
   "deps": [],
   "gres": "gpu:a40:1",
   "max_tries": 10,
@@ -395,7 +395,7 @@
  {
   "name": "e4ft_r2",
   "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 2 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s2 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
-  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s2/checkpoint_3000",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s2/checkpoint_12000",
   "deps": [],
   "gres": "gpu:a40:1",
   "max_tries": 10,
@@ -513,7 +513,7 @@
  {
   "name": "e4ft_z2",
   "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 2 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s2 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
-  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s2/checkpoint_3000",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s2/checkpoint_12000",
   "deps": [],
   "gres": "gpu:a40:1",
   "max_tries": 10,
@@ -579,7 +579,7 @@
  {
   "name": "e4ft_r3",
   "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 3 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
-  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s3/checkpoint_3000",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s3/checkpoint_12000",
   "deps": [],
   "gres": "gpu:a40:1",
   "max_tries": 10,
@@ -697,7 +697,7 @@
  {
   "name": "e4ft_z3",
   "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 3 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s3 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
-  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s3/checkpoint_3000",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s3/checkpoint_12000",
   "deps": [],
   "gres": "gpu:a40:1",
   "max_tries": 10,
@@ -763,7 +763,7 @@
  {
   "name": "e4ft_r4",
   "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 4 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s4 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
-  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s4/checkpoint_3000",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s4/checkpoint_12000",
   "deps": [],
   "gres": "gpu:a40:1",
   "max_tries": 10,
@@ -881,7 +881,7 @@
  {
   "name": "e4ft_z4",
   "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 4 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s4 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
-  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s4/checkpoint_3000",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s4/checkpoint_12000",
   "deps": [],
   "gres": "gpu:a40:1",
   "max_tries": 10,
@@ -947,7 +947,7 @@
  {
   "name": "e4ft_r5",
   "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 5 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
-  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s5/checkpoint_3000",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s5/checkpoint_12000",
   "deps": [],
   "gres": "gpu:a40:1",
   "max_tries": 10,
@@ -1065,7 +1065,7 @@
  {
   "name": "e4ft_z5",
   "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 5 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s5 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
-  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s5/checkpoint_3000",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s5/checkpoint_12000",
   "deps": [],
   "gres": "gpu:a40:1",
   "max_tries": 10,
@@ -1131,7 +1131,7 @@
  {
   "name": "e4ft_r6",
   "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 6 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s6 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
-  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s6/checkpoint_3000",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s6/checkpoint_12000",
   "deps": [],
   "gres": "gpu:a40:1",
   "max_tries": 10,
@@ -1249,7 +1249,7 @@
  {
   "name": "e4ft_z6",
   "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 6 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s6 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
-  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s6/checkpoint_3000",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s6/checkpoint_12000",
   "deps": [],
   "gres": "gpu:a40:1",
   "max_tries": 10,
@@ -1315,7 +1315,7 @@
  {
   "name": "e4ft_r7",
   "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 7 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
-  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s7/checkpoint_3000",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s7/checkpoint_12000",
   "deps": [],
   "gres": "gpu:a40:1",
   "max_tries": 10,
@@ -1433,7 +1433,7 @@
  {
   "name": "e4ft_z7",
   "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm zeroed --seed 7 --out /scratch1/$USER/mechflow/e4dbg/ft/zeroed_s7 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
-  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s7/checkpoint_3000",
+  "done": "/scratch1/$USER/mechflow/e4dbg/ft/zeroed_s7/checkpoint_12000",
   "deps": [],
   "gres": "gpu:a40:1",
   "max_tries": 10,
