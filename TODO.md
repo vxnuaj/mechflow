@@ -325,7 +325,7 @@ Purpose: confirm the instruments and phenomena on exploration data, and freeze e
 - Earlier: **14.2 Message content probe** (D6, the core of the explanation): on exploration docs (0.5B), a linear probe of each neighbour's *final* token from the target position's hidden state, with vs without neighbour feedback, per step.
   - Prediction: feedback raises the decodability of the neighbours' committed tokens exactly in the window where N matters.
   - Pre-register; GPU (debug partition).
-- [ ] **14.3 Text-type generality** (D4): an H2-N decomposition on code and math prompts (0.5B). Exploratory pilot, then a pre-registered confirmation on fresh prompts. GPU.
+- [x] **14.3 Text-type generality: SUPPORTED for math and code (2026-11-21; prereg §2.18; insights §30).** (D4): an H2-N decomposition on code and math prompts (0.5B). Exploratory pilot, then a pre-registered confirmation on fresh prompts. GPU.
 - [~] **14.4 Plaid 1B: port done (2026-11-21; `plaid_port/`).**
   - Weights load strict (1.28B params, no remap); kernel checks vs references written from the original are 0–5e-7 (fp32); samples are fluent; SC-off costs 0.07 nats/token (OWT).
   - **Open caveat:** WikiText-103/2 PPL 26.47 / 27.83 vs paper 28.28 / 29.42 (≈ 6% better, ≈ 4.7 SE). The direction argues against a port bug (a bug should lose likelihood); the cause is unknown (checkpoint vs paper eval). Report as a caveat.

@@ -463,3 +463,9 @@ Windows: late = steps 24–31, early = steps 8–15. Grids: `uniform`, `warp`. n
 - The content tracks *state informativeness*: the feedback carries neighbour-commitment information exactly while the neighbours' states can't. This directly supports the substitution part of the two-channel account at the representational level.
 - **New distinction:** availability ≠ causal use. Under warp the information is there from step 0, but N is causally decisive only late (E1), when tokens commit. Q1 conflated the two and came out undetermined.
 - **For the account:** feedback provides neighbour content whenever states are uninformative; it matters causally where commitment happens. This is the same "commitment locus" idea that explains ELF.
+
+## 30. Text-type generality (family TT, 2026-11-21): SUPPORTED for math and code
+- On 500 fresh GSM8K solutions and 500 fresh MBPP programs, SC improves coherence (+1.51 / +1.16 nats) and the neighbour routes carry it.
+  - Fixed-context shares: N 0.80 / 0.81, F 0.31 / 0.34. Own feedback is slightly **harmful**: O −0.11 / −0.14.
+- The mechanism is not specific to chat prose: it holds in formal-reasoning text and in code. In both, own feedback hurts and neighbour routes carry > 100% of the net effect.
+- Assumption D4 (beyond chat answers and two-answer prompts) is now tested and holds.

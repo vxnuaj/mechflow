@@ -578,6 +578,11 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 | Phase 8 decision | **GO** (user decision, 2026-11-16), reframed around the coordination mechanism (`phase8_memo.md`). Primary = {P1, P2, H2-N}, Holm over 3 | 2026-11-16 |
 
 ## 12. Deviations / Change Log
+- **2026-11-21: family TT outcome (prereg §2.18; frozen `analysis/tt.py`, hash verified on CARC; 500 + 500 fresh docs): math SUPPORTED, code SUPPORTED** (all 4 Holm tests p ≈ 0).
+  - **Math:** coh T +1.51 [1.23, 1.81]; TT-1 +1.16 [0.93, 1.39]; TT-2 +0.68 [0.54, 0.82]; fixed-context shares O −0.11, N 0.80, F 0.31.
+  - **Code:** T +1.16 [0.88, 1.46]; TT-1 +0.90 [0.70, 1.10]; TT-2 +0.80 [0.62, 0.97]; fixed-context shares O −0.14, N 0.81, F 0.34.
+  - Identity 500/500 for both.
+  - Note: the printed "|O| share" label is stale (it shows the absolute value); the decision uses the signed criterion (line 44), and both O shares are negative, so the verdict is unaffected.
 - **2026-11-21: E4 / text-type implementation fixes (before any E4 or text-type data):**
   - (i) Fine-tunes: batch 64 × L 1024 OOMs on an A40, so they use gradient accumulation (micro-batch 16 × 4). The optimizer steps (3,000), effective batch (64), data and lr are unchanged; gradients are identical up to rounding.
   - (ii) Decompositions and the base reference use sampling batch 16 instead of 64 (fp32 OOM); the noise draw is unchanged, so the results are the same samples.

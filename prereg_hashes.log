@@ -65,3 +65,4 @@
 2026-11-21T05:12:10Z prereg.md §12 accum warmup note sha256=0a026086923d17a8f8b5bf09fa3eb61d3f79fbc506728e1f7e4abee91bdf8eae
 2026-11-21T05:13:16Z prereg.md §2.18 family TT (before confirmation data) sha256=f0097718dc94e617c80ddbcf941023a5a8991fef97d184e02b31d385c3e8e64f; analysis/tt.py sha256=3e42bc7abf5a69e24c88667290a63ab5ce58658ad6a0ddd17f2e63d6481b7a85
 2026-11-21T11:32:40Z prereg.md §12 LF 16-sample chunks sha256=ce41cac94c135b0122f52ac2b512f45a27435a79bd80711c2ece5f83e1cb7dc4
+2026-11-21T11:40:04Z prereg.md §12 TT outcome sha256=8b2c4c8f57bd17048f7560c2dbfb3d9e23de3157f06111cb1daa4217821b9700; TT_final sha256=d55650ef2dfebdcdd8b4f48d49898bbf5e9a2721afba25b1809940ccdab767bd

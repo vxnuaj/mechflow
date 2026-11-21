@@ -1,0 +1,14 @@
+[math] docs 500; identity [500, 500]; T(coh) +1.512 [+1.226, +1.809] (n = 500, p = 0) → estimable
+[math] TT-1 contrast N − 0.2T (actual ctx) +1.155 [+0.932, +1.387] (n = 500, p = 0)
+[math] TT-2 (N + F) − 0.8T (fixed ctx) +0.676 [+0.539, +0.821] (n = 500, p = 0); |O| share 0.111 (≤ 0.2 required)
+[math] shares actual ctx: O -0.10 N +1.09 F +0.01 | fixed ctx: O -0.11 N +0.80 F +0.31
+[code] docs 500; identity [500, 500]; T(coh) +1.163 [+0.875, +1.461] (n = 500, p = 0) → estimable
+[code] TT-1 contrast N − 0.2T (actual ctx) +0.896 [+0.695, +1.102] (n = 500, p = 0)
+[code] TT-2 (N + F) − 0.8T (fixed ctx) +0.796 [+0.624, +0.970] (n = 500, p = 0); |O| share 0.144 (≤ 0.2 required)
+[code] shares actual ctx: O -0.30 N +1.35 F -0.05 | fixed ctx: O -0.14 N +0.81 F +0.34
+  math-TT1: p = 0 → holds (Holm)
+  math-TT2: p = 0 → holds (Holm)
+  code-TT1: p = 0 → holds (Holm)
+  code-TT2: p = 0 → holds (Holm)
+TT DECISION [math]: SUPPORTED
+TT DECISION [code]: SUPPORTED
