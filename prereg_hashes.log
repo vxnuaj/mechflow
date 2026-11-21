@@ -63,3 +63,4 @@
 2026-11-20T23:34:02Z prereg.md §12 E4/tt OOM+path fixes sha256=300c9a92dacf15a4f4af16b786575886eb56d25ffdf430962720afed4bfa32d3; src/elf_ft_decode.py sha256=b761bf4f643e7dbc68bcf988481e0be1643c62fc1b377a104111849ffc449e62
 2026-11-20T23:34:18Z prereg.md §12 LF batch sha256=9af6be566e24076277788ccb95811c5e5b5e0a444daafe6fc2e66ca40aae2a34
 2026-11-21T05:12:10Z prereg.md §12 accum warmup note sha256=0a026086923d17a8f8b5bf09fa3eb61d3f79fbc506728e1f7e4abee91bdf8eae
+2026-11-21T05:13:16Z prereg.md §2.18 family TT (before confirmation data) sha256=f0097718dc94e617c80ddbcf941023a5a8991fef97d184e02b31d385c3e8e64f; analysis/tt.py sha256=3e42bc7abf5a69e24c88667290a63ab5ce58658ad6a0ddd17f2e63d6481b7a85

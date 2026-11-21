@@ -1,0 +1,231 @@
+[
+ {
+  "name": "ttc_math_0",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=0 SLURM_ARRAY_TASK_COUNT=5 FIXCTX_SRC=tt_math_confirm && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_math_confirm.jsonl --job jobs_h2n:h2n_task --out results/tt_math_confirm --workers-per-gpu 2 --dtype bf16 && touch results/tt_math_confirm/DONE_0",
+  "done": "/scratch1/$USER/mechflow/src/results/tt_math_confirm/DONE_0",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 5,
+  "mem": "48G"
+ },
+ {
+  "name": "ttf_math_0",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=0 SLURM_ARRAY_TASK_COUNT=5 FIXCTX_SRC=tt_math_confirm && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_math_confirm.jsonl --job jobs_fixctx:fixctx_task --out results/tt_math_confirm_fx --workers-per-gpu 2 --dtype bf16 && touch results/tt_math_confirm_fx/DONE_0",
+  "done": "/scratch1/$USER/mechflow/src/results/tt_math_confirm_fx/DONE_0",
+  "deps": [
+   "ttc_math_0"
+  ],
+  "gres": "gpu:a40:1",
+  "max_tries": 5,
+  "mem": "48G"
+ },
+ {
+  "name": "ttc_math_1",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=1 SLURM_ARRAY_TASK_COUNT=5 FIXCTX_SRC=tt_math_confirm && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_math_confirm.jsonl --job jobs_h2n:h2n_task --out results/tt_math_confirm --workers-per-gpu 2 --dtype bf16 && touch results/tt_math_confirm/DONE_1",
+  "done": "/scratch1/$USER/mechflow/src/results/tt_math_confirm/DONE_1",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 5,
+  "mem": "48G"
+ },
+ {
+  "name": "ttf_math_1",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=1 SLURM_ARRAY_TASK_COUNT=5 FIXCTX_SRC=tt_math_confirm && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_math_confirm.jsonl --job jobs_fixctx:fixctx_task --out results/tt_math_confirm_fx --workers-per-gpu 2 --dtype bf16 && touch results/tt_math_confirm_fx/DONE_1",
+  "done": "/scratch1/$USER/mechflow/src/results/tt_math_confirm_fx/DONE_1",
+  "deps": [
+   "ttc_math_1"
+  ],
+  "gres": "gpu:a40:1",
+  "max_tries": 5,
+  "mem": "48G"
+ },
+ {
+  "name": "ttc_math_2",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=2 SLURM_ARRAY_TASK_COUNT=5 FIXCTX_SRC=tt_math_confirm && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_math_confirm.jsonl --job jobs_h2n:h2n_task --out results/tt_math_confirm --workers-per-gpu 2 --dtype bf16 && touch results/tt_math_confirm/DONE_2",
+  "done": "/scratch1/$USER/mechflow/src/results/tt_math_confirm/DONE_2",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 5,
+  "mem": "48G"
+ },
+ {
+  "name": "ttf_math_2",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=2 SLURM_ARRAY_TASK_COUNT=5 FIXCTX_SRC=tt_math_confirm && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_math_confirm.jsonl --job jobs_fixctx:fixctx_task --out results/tt_math_confirm_fx --workers-per-gpu 2 --dtype bf16 && touch results/tt_math_confirm_fx/DONE_2",
+  "done": "/scratch1/$USER/mechflow/src/results/tt_math_confirm_fx/DONE_2",
+  "deps": [
+   "ttc_math_2"
+  ],
+  "gres": "gpu:a40:1",
+  "max_tries": 5,
+  "mem": "48G"
+ },
+ {
+  "name": "ttc_math_3",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=3 SLURM_ARRAY_TASK_COUNT=5 FIXCTX_SRC=tt_math_confirm && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_math_confirm.jsonl --job jobs_h2n:h2n_task --out results/tt_math_confirm --workers-per-gpu 2 --dtype bf16 && touch results/tt_math_confirm/DONE_3",
+  "done": "/scratch1/$USER/mechflow/src/results/tt_math_confirm/DONE_3",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 5,
+  "mem": "48G"
+ },
+ {
+  "name": "ttf_math_3",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=3 SLURM_ARRAY_TASK_COUNT=5 FIXCTX_SRC=tt_math_confirm && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_math_confirm.jsonl --job jobs_fixctx:fixctx_task --out results/tt_math_confirm_fx --workers-per-gpu 2 --dtype bf16 && touch results/tt_math_confirm_fx/DONE_3",
+  "done": "/scratch1/$USER/mechflow/src/results/tt_math_confirm_fx/DONE_3",
+  "deps": [
+   "ttc_math_3"
+  ],
+  "gres": "gpu:a40:1",
+  "max_tries": 5,
+  "mem": "48G"
+ },
+ {
+  "name": "ttc_math_4",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=4 SLURM_ARRAY_TASK_COUNT=5 FIXCTX_SRC=tt_math_confirm && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_math_confirm.jsonl --job jobs_h2n:h2n_task --out results/tt_math_confirm --workers-per-gpu 2 --dtype bf16 && touch results/tt_math_confirm/DONE_4",
+  "done": "/scratch1/$USER/mechflow/src/results/tt_math_confirm/DONE_4",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 5,
+  "mem": "48G"
+ },
+ {
+  "name": "ttf_math_4",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=4 SLURM_ARRAY_TASK_COUNT=5 FIXCTX_SRC=tt_math_confirm && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_math_confirm.jsonl --job jobs_fixctx:fixctx_task --out results/tt_math_confirm_fx --workers-per-gpu 2 --dtype bf16 && touch results/tt_math_confirm_fx/DONE_4",
+  "done": "/scratch1/$USER/mechflow/src/results/tt_math_confirm_fx/DONE_4",
+  "deps": [
+   "ttc_math_4"
+  ],
+  "gres": "gpu:a40:1",
+  "max_tries": 5,
+  "mem": "48G"
+ },
+ {
+  "name": "ttc_code_0",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=0 SLURM_ARRAY_TASK_COUNT=5 FIXCTX_SRC=tt_code_confirm && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_code_confirm.jsonl --job jobs_h2n:h2n_task --out results/tt_code_confirm --workers-per-gpu 2 --dtype bf16 && touch results/tt_code_confirm/DONE_0",
+  "done": "/scratch1/$USER/mechflow/src/results/tt_code_confirm/DONE_0",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 5,
+  "mem": "48G"
+ },
+ {
+  "name": "ttf_code_0",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=0 SLURM_ARRAY_TASK_COUNT=5 FIXCTX_SRC=tt_code_confirm && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_code_confirm.jsonl --job jobs_fixctx:fixctx_task --out results/tt_code_confirm_fx --workers-per-gpu 2 --dtype bf16 && touch results/tt_code_confirm_fx/DONE_0",
+  "done": "/scratch1/$USER/mechflow/src/results/tt_code_confirm_fx/DONE_0",
+  "deps": [
+   "ttc_code_0"
+  ],
+  "gres": "gpu:a40:1",
+  "max_tries": 5,
+  "mem": "48G"
+ },
+ {
+  "name": "ttc_code_1",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=1 SLURM_ARRAY_TASK_COUNT=5 FIXCTX_SRC=tt_code_confirm && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_code_confirm.jsonl --job jobs_h2n:h2n_task --out results/tt_code_confirm --workers-per-gpu 2 --dtype bf16 && touch results/tt_code_confirm/DONE_1",
+  "done": "/scratch1/$USER/mechflow/src/results/tt_code_confirm/DONE_1",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 5,
+  "mem": "48G"
+ },
+ {
+  "name": "ttf_code_1",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=1 SLURM_ARRAY_TASK_COUNT=5 FIXCTX_SRC=tt_code_confirm && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_code_confirm.jsonl --job jobs_fixctx:fixctx_task --out results/tt_code_confirm_fx --workers-per-gpu 2 --dtype bf16 && touch results/tt_code_confirm_fx/DONE_1",
+  "done": "/scratch1/$USER/mechflow/src/results/tt_code_confirm_fx/DONE_1",
+  "deps": [
+   "ttc_code_1"
+  ],
+  "gres": "gpu:a40:1",
+  "max_tries": 5,
+  "mem": "48G"
+ },
+ {
+  "name": "ttc_code_2",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=2 SLURM_ARRAY_TASK_COUNT=5 FIXCTX_SRC=tt_code_confirm && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_code_confirm.jsonl --job jobs_h2n:h2n_task --out results/tt_code_confirm --workers-per-gpu 2 --dtype bf16 && touch results/tt_code_confirm/DONE_2",
+  "done": "/scratch1/$USER/mechflow/src/results/tt_code_confirm/DONE_2",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 5,
+  "mem": "48G"
+ },
+ {
+  "name": "ttf_code_2",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=2 SLURM_ARRAY_TASK_COUNT=5 FIXCTX_SRC=tt_code_confirm && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_code_confirm.jsonl --job jobs_fixctx:fixctx_task --out results/tt_code_confirm_fx --workers-per-gpu 2 --dtype bf16 && touch results/tt_code_confirm_fx/DONE_2",
+  "done": "/scratch1/$USER/mechflow/src/results/tt_code_confirm_fx/DONE_2",
+  "deps": [
+   "ttc_code_2"
+  ],
+  "gres": "gpu:a40:1",
+  "max_tries": 5,
+  "mem": "48G"
+ },
+ {
+  "name": "ttc_code_3",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=3 SLURM_ARRAY_TASK_COUNT=5 FIXCTX_SRC=tt_code_confirm && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_code_confirm.jsonl --job jobs_h2n:h2n_task --out results/tt_code_confirm --workers-per-gpu 2 --dtype bf16 && touch results/tt_code_confirm/DONE_3",
+  "done": "/scratch1/$USER/mechflow/src/results/tt_code_confirm/DONE_3",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 5,
+  "mem": "48G"
+ },
+ {
+  "name": "ttf_code_3",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=3 SLURM_ARRAY_TASK_COUNT=5 FIXCTX_SRC=tt_code_confirm && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_code_confirm.jsonl --job jobs_fixctx:fixctx_task --out results/tt_code_confirm_fx --workers-per-gpu 2 --dtype bf16 && touch results/tt_code_confirm_fx/DONE_3",
+  "done": "/scratch1/$USER/mechflow/src/results/tt_code_confirm_fx/DONE_3",
+  "deps": [
+   "ttc_code_3"
+  ],
+  "gres": "gpu:a40:1",
+  "max_tries": 5,
+  "mem": "48G"
+ },
+ {
+  "name": "ttc_code_4",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=4 SLURM_ARRAY_TASK_COUNT=5 FIXCTX_SRC=tt_code_confirm && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_code_confirm.jsonl --job jobs_h2n:h2n_task --out results/tt_code_confirm --workers-per-gpu 2 --dtype bf16 && touch results/tt_code_confirm/DONE_4",
+  "done": "/scratch1/$USER/mechflow/src/results/tt_code_confirm/DONE_4",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "max_tries": 5,
+  "mem": "48G"
+ },
+ {
+  "name": "ttf_code_4",
+  "cmd": "export HF_HOME=/scratch1/$USER/mechflow/hf_home HF_HUB_CACHE=/scratch1/$USER/mechflow/hf_home/hub H2N_REGIME=MR PYTORCH_ALLOC_CONF=expandable_segments:True SLURM_ARRAY_TASK_ID=4 SLURM_ARRAY_TASK_COUNT=5 FIXCTX_SRC=tt_code_confirm && /scratch1/$USER/mechflow/env/bin/python runner.py --tasks tasks_tt_code_confirm.jsonl --job jobs_fixctx:fixctx_task --out results/tt_code_confirm_fx --workers-per-gpu 2 --dtype bf16 && touch results/tt_code_confirm_fx/DONE_4",
+  "done": "/scratch1/$USER/mechflow/src/results/tt_code_confirm_fx/DONE_4",
+  "deps": [
+   "ttc_code_4"
+  ],
+  "gres": "gpu:a40:1",
+  "max_tries": 5,
+  "mem": "48G"
+ },
+ {
+  "name": "tt_analysis",
+  "cmd": "cd .. && /scratch1/$USER/mechflow/env/bin/python analysis/tt.py src/results > src/results/TT_final.txt 2>&1",
+  "done": "/scratch1/$USER/mechflow/src/results/TT_final.txt",
+  "deps": [
+   "ttc_math_0",
+   "ttf_math_0",
+   "ttc_math_1",
+   "ttf_math_1",
+   "ttc_math_2",
+   "ttf_math_2",
+   "ttc_math_3",
+   "ttf_math_3",
+   "ttc_math_4",
+   "ttf_math_4",
+   "ttc_code_0",
+   "ttf_code_0",
+   "ttc_code_1",
+   "ttf_code_1",
+   "ttc_code_2",
+   "ttf_code_2",
+   "ttc_code_3",
+   "ttf_code_3",
+   "ttc_code_4",
+   "ttf_code_4"
+  ],
+  "gres": "",
+  "mem": "16G"
+ }
+]

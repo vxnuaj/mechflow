@@ -400,6 +400,20 @@ Also reported: the human preference rate for SC-on, inter-rater agreement (Cohen
 
 SUPPORTED iff both hold; REFUTED iff either fails; validity requires the identity on every doc and last-step probe accuracy ≥ 0.2. The rule was checked on 4 synthetic gap patterns (account → SUPPORTED; no gap → INCONCLUSIVE; early gap → REFUTED; gap not moving → REFUTED).
 
+
+### 2.18 Family TT: text-type generality (math, code) (added 2026-11-21, before the confirmation data; Phase 14.3; assumption D4)
+**Data:** GSM8K worked solutions (math) and MBPP code (`tools/make_text_type_tasks.py`, seed 20261121). 500 fresh confirmation docs per type (task ids 720000+ / 730000+), disjoint from the 100 exploration docs.
+
+**Exploration (100 docs each, exploratory):** coh T math +1.30 [0.76, 1.88], code +1.18 [0.43, 1.94]; N dominant; identity 100/100. dep was too noisy (T n.s.), so the confirmation uses coh.
+
+**Design:** H2-N (0.5B, MR) on the confirmation docs, then fixed-context re-scoring (`jobs_fixctx`, as R-FC).
+
+**Analysis:** `analysis/tt.py` (frozen; docstring = rule).
+- **TT-1:** actual-context contrast N − 0.2T > 0.
+- **TT-2:** fixed-context (N + F) − 0.8T > 0, with the O share ≤ +0.2 (signed).
+- Holm over 4 tests; a type is SUPPORTED iff both hold.
+- Mechanics were dry-run on the exploration data, which exposed that an |O| criterion would wrongly fail a harmful (negative) own effect. It is now signed, fixed before data.
+
 ## 3. Metrics
 - **Primary:** dep_j (positions 2–3); the hybrid rate; μ_j.
 - **Co-requirement:** external-judge and own-AR coh_j.

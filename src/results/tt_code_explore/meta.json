@@ -1,0 +1,22 @@
+{
+ "code_sha256": "fe5549e8d2729acbf826bef2b51245ef16bee93b4e4f6211152629bdb494abcc",
+ "host": "b11-09.hpc.usc.edu",
+ "python": "3.12.15",
+ "torch": "2.10.0+cu128",
+ "time_utc": "2026-11-20T23:41:23.505217Z",
+ "model": "lafa-hf/lafa-0.5B@18deca3522f7884898a58d0fb2d2afb3fc91f87e",
+ "h2n_regime": "MR",
+ "p2_regime": null,
+ "gpu": "NVIDIA A40",
+ "cuda": "12.8",
+ "driver": "580.159.04",
+ "platform": "carc",
+ "git_commit": null,
+ "cuts": null,
+ "grid": null,
+ "tasks": "tasks_tt_code_explore.jsonl",
+ "job": "jobs_h2n:h2n_task",
+ "out": "results/tt_code_explore",
+ "workers_per_gpu": 2,
+ "dtype": "bf16"
+}
