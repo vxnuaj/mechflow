@@ -25,10 +25,10 @@ for s in range(8):
             jn = f"e4j_{arm[0]}{s}_{n}{acc}"; judges.append(jn)
             T.append(dict(name=jn, cmd=f"T5_PATH={T5} JUDGE_PATH={MIS} JUDGE_DEVICE=cuda REF_FILE={R}/base_ref/32_zero/plain_on.json {PM} elf_judge_fixedctx.py {d}/cells.json",
                           done=f"{d}/cells_judged_fixedctx.json", deps=[dn, "e4_base"], gres=GPU, mem="64G"))
-    if s < 8:
-        st = 32 * s; cn = f"lf_c{st}"; lf_chunks.append(cn)
-        T.append(dict(name=cn, cmd=f"{PH} langflow_decomp.py --path {LFP} --out {L}/chunk_{st} --start {st} --count 32 --bs 4 --seed 2 --device cuda",
-                      done=f"{L}/chunk_{st}/meta.json", deps=[], gres=GPU, mem="64G"))
+for st in range(0, 256, 16):   # 16-sample chunks: ~500 s per batch of 4 in fp32 at L 1024, so ~35 min per chunk (< 55-min limit)
+    cn = f"lf_c{st}"; lf_chunks.append(cn)
+    T.append(dict(name=cn, cmd=f"{PH} langflow_decomp.py --path {LFP} --out {L}/chunk_{st} --start {st} --count 16 --bs 4 --seed 2 --device cuda",
+                  done=f"{L}/chunk_{st}/meta.json", deps=[], gres=GPU, mem="64G"))
 ce = [t["name"] for t in T if t["name"].startswith("e4ce_")]
 T.append(dict(name="e4_analysis", cmd=f"cd .. && {PM} analysis/elf_access.py {R}/e4 > {R}/E4_final.txt 2>&1", done=f"{R}/E4_final.txt", deps=judges + ce, gres="", mem="16G"))
 T.append(dict(name="lf_merge", cmd=f"{PM} langflow_merge.py {L}", done=f"{L}/merged/meta.json", deps=lf_chunks, gres="", mem="16G"))

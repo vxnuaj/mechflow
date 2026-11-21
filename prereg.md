@@ -581,7 +581,7 @@ Legend: ✓ supported, ✗ rejected, ? inconclusive, n/e not estimable or remove
 - **2026-11-21: E4 / text-type implementation fixes (before any E4 or text-type data):**
   - (i) Fine-tunes: batch 64 × L 1024 OOMs on an A40, so they use gradient accumulation (micro-batch 16 × 4). The optimizer steps (3,000), effective batch (64), data and lr are unchanged; gradients are identical up to rounding.
   - (ii) Decompositions and the base reference use sampling batch 16 instead of 64 (fp32 OOM); the noise draw is unchanged, so the results are the same samples.
-  - (iii) With accumulation, ELF counts micro-steps: the final checkpoint is checkpoint_12000, and the 100 warmup steps are micro-steps (= 25 optimizer steps), identical for every arm and seed. Held-out CE batch 8; LangFlow decomposition batch 4 (fp32 L 1024 OOM at 16).
+  - (iii) With accumulation, ELF counts micro-steps: the final checkpoint is checkpoint_12000, and the 100 warmup steps are micro-steps (= 25 optimizer steps), identical for every arm and seed. Held-out CE batch 8; LangFlow decomposition batch 4 (fp32 L 1024 OOM at 16) in 16 chunks of 16 samples (32-sample chunks exceeded the 55-min limit at ~500 s per batch); same noise slices.
   - (iv) The text-type jobs failed to find the Lafa weights (the scheduler's HF_HUB_CACHE pointed at the ELF cache); the path was fixed.
   - Partial outputs from the failed attempts were deleted before rerunning.
 - **2026-11-21: family P outcome (prereg §2.17; frozen `analysis/probe.py`; 100 test docs per grid): INCONCLUSIVE** (Q1 undetermined, Q2 holds). Validity ok: identity true; last-step probe accuracy 0.26 / 0.32.

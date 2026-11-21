@@ -183,14 +183,6 @@
   "mem": "64G"
  },
  {
-  "name": "lf_c0",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_0 --start 0 --count 32 --bs 4 --seed 2 --device cuda",
-  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_0/meta.json",
-  "deps": [],
-  "gres": "gpu:a40:1",
-  "mem": "64G"
- },
- {
   "name": "e4ft_r1",
   "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 1 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s1 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
   "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s1/checkpoint_12000",
@@ -363,14 +355,6 @@
    "e4d_z1_24zero",
    "e4_base"
   ],
-  "gres": "gpu:a40:1",
-  "mem": "64G"
- },
- {
-  "name": "lf_c32",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_32 --start 32 --count 32 --bs 4 --seed 2 --device cuda",
-  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_32/meta.json",
-  "deps": [],
   "gres": "gpu:a40:1",
   "mem": "64G"
  },
@@ -551,14 +535,6 @@
   "mem": "64G"
  },
  {
-  "name": "lf_c64",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_64 --start 64 --count 32 --bs 4 --seed 2 --device cuda",
-  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_64/meta.json",
-  "deps": [],
-  "gres": "gpu:a40:1",
-  "mem": "64G"
- },
- {
   "name": "e4ft_r3",
   "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 3 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s3 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
   "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s3/checkpoint_12000",
@@ -731,14 +707,6 @@
    "e4d_z3_24zero",
    "e4_base"
   ],
-  "gres": "gpu:a40:1",
-  "mem": "64G"
- },
- {
-  "name": "lf_c96",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_96 --start 96 --count 32 --bs 4 --seed 2 --device cuda",
-  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_96/meta.json",
-  "deps": [],
   "gres": "gpu:a40:1",
   "mem": "64G"
  },
@@ -919,14 +887,6 @@
   "mem": "64G"
  },
  {
-  "name": "lf_c128",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_128 --start 128 --count 32 --bs 4 --seed 2 --device cuda",
-  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_128/meta.json",
-  "deps": [],
-  "gres": "gpu:a40:1",
-  "mem": "64G"
- },
- {
   "name": "e4ft_r5",
   "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 5 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s5 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
   "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s5/checkpoint_12000",
@@ -1099,14 +1059,6 @@
    "e4d_z5_24zero",
    "e4_base"
   ],
-  "gres": "gpu:a40:1",
-  "mem": "64G"
- },
- {
-  "name": "lf_c160",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_160 --start 160 --count 32 --bs 4 --seed 2 --device cuda",
-  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_160/meta.json",
-  "deps": [],
   "gres": "gpu:a40:1",
   "mem": "64G"
  },
@@ -1287,14 +1239,6 @@
   "mem": "64G"
  },
  {
-  "name": "lf_c192",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_192 --start 192 --count 32 --bs 4 --seed 2 --device cuda",
-  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_192/meta.json",
-  "deps": [],
-  "gres": "gpu:a40:1",
-  "mem": "64G"
- },
- {
   "name": "e4ft_r7",
   "cmd": "FT_SAVE_FREQ=0.2 /scratch1/$USER/hcfrl/.venv/bin/python elf_ft_decode.py --hcfrl /scratch1/$USER/hcfrl --init $(ls -d /scratch1/$USER/hf_cache/hub/models--embedded-language-flows--ELF-B-owt-torch/snapshots/*/) --data /scratch1/$USER/data/owt_t5 --arm readable --seed 7 --out /scratch1/$USER/mechflow/e4dbg/ft/readable_s7 --steps 3000 --batch 64 --accum 4 --max_length 1024 --lr 2e-5",
   "done": "/scratch1/$USER/mechflow/e4dbg/ft/readable_s7/checkpoint_12000",
@@ -1471,9 +1415,129 @@
   "mem": "64G"
  },
  {
+  "name": "lf_c0",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_0 --start 0 --count 16 --bs 4 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_0/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c16",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_16 --start 16 --count 16 --bs 4 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_16/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c32",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_32 --start 32 --count 16 --bs 4 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_32/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c48",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_48 --start 48 --count 16 --bs 4 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_48/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c64",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_64 --start 64 --count 16 --bs 4 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_64/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c80",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_80 --start 80 --count 16 --bs 4 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_80/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c96",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_96 --start 96 --count 16 --bs 4 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_96/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c112",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_112 --start 112 --count 16 --bs 4 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_112/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c128",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_128 --start 128 --count 16 --bs 4 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_128/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c144",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_144 --start 144 --count 16 --bs 4 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_144/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c160",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_160 --start 160 --count 16 --bs 4 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_160/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c176",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_176 --start 176 --count 16 --bs 4 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_176/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c192",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_192 --start 192 --count 16 --bs 4 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_192/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c208",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_208 --start 208 --count 16 --bs 4 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_208/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
   "name": "lf_c224",
-  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_224 --start 224 --count 32 --bs 4 --seed 2 --device cuda",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_224 --start 224 --count 16 --bs 4 --seed 2 --device cuda",
   "done": "/scratch1/$USER/mechflow/lfdbg/chunk_224/meta.json",
+  "deps": [],
+  "gres": "gpu:a40:1",
+  "mem": "64G"
+ },
+ {
+  "name": "lf_c240",
+  "cmd": "/scratch1/$USER/hcfrl/.venv/bin/python langflow_decomp.py --path $(ls -d /scratch1/$USER/hf_cache/hub/models--Continuous-Rivals-Discrete--langflow-owt/snapshots/*/) --out /scratch1/$USER/mechflow/lfdbg/chunk_240 --start 240 --count 16 --bs 4 --seed 2 --device cuda",
+  "done": "/scratch1/$USER/mechflow/lfdbg/chunk_240/meta.json",
   "deps": [],
   "gres": "gpu:a40:1",
   "mem": "64G"
@@ -1565,13 +1629,21 @@
   "done": "/scratch1/$USER/mechflow/lfdbg/merged/meta.json",
   "deps": [
    "lf_c0",
+   "lf_c16",
    "lf_c32",
+   "lf_c48",
    "lf_c64",
+   "lf_c80",
    "lf_c96",
+   "lf_c112",
    "lf_c128",
+   "lf_c144",
    "lf_c160",
+   "lf_c176",
    "lf_c192",
-   "lf_c224"
+   "lf_c208",
+   "lf_c224",
+   "lf_c240"
   ],
   "gres": "",
   "mem": "16G"
